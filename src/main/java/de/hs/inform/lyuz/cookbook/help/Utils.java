@@ -21,24 +21,15 @@ public class Utils {
 //    public static String CAT_PATH = Utils.class.getClassLoader().getResource("META-INF/category.txt").getPath();
 //    public static String ASSETS_PATH = "/Users/xuer/NetBeansProjects/COOKBOOK/assets/";
 //    public static String ASSETS_PATH = Utils.class.getClassLoader().getResource("META-INF/assets").getPath();
-    public static String INDEX_XSL = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "xsl" + File.separator + "index.xsl";
-    public static String COOKML_XSL = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "xsl" + File.separator + "cookml.xsl";
-    public static String CALALOGEPUB_XSL = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "xsl" + File.separator + "catalogEpub.xsl";
-    public static String EPUB_SPEC_CSS = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "css" + File.separator + "epub-spec.css";
-    public static String STAR_PNG = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "icons" + File.separator + "star.png";
-    public static String STAR_BOARD_PNG = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "icons" + File.separator + "star_borad.png";
-    public static String CONTAINER_XML = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "container.xml";
-    public static String COVER_XHTML= "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "cover.xhtml";
-    public static String MIMETYPE = "META-INF" + File.separator + "assets" + File.separator
-            + "epub" + File.separator + "mimetype";
+    public static String INDEX_XSL = "META-INF/assets/epub/xsl/index.xsl";
+    public static String COOKML_XSL = "META-INF/assets/epub/xsl/cookml.xsl";
+    public static String CALALOGEPUB_XSL = "META-INF/assets/epub/xsl/catalogEpub.xsl";
+    public static String EPUB_SPEC_CSS = "META-INF/assets/epub/css/epub-spec.css";
+    public static String STAR_PNG = "META-INF/assets/epub/icons/star.png";
+    public static String STAR_BOARD_PNG = "META-INF/assets/epub/icons/star_borad.png";
+    public static String CONTAINER_XML = "META-INF/assets/epub/container.xml";
+    public static String COVER_XHTML= "META-INF/assets/epub/cover.xhtml";
+    public static String MIMETYPE = "META-INF/assets/epub/mimetype";
 
     // Text in ein File schreiben
     public static void writeTexttoFile(String text, String filename) {

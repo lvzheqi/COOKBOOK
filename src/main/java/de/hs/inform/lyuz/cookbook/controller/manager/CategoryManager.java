@@ -3,30 +3,41 @@ package de.hs.inform.lyuz.cookbook.controller.manager;
 import de.hs.inform.lyuz.cookbook.help.Utils;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.cookml.Head;
-import java.io.File;
-import java.io.InputStream;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
+import org.jdom2.Document;
+import org.jdom2.Element;
 
 public class CategoryManager {
     
-
-    public static List<String> readCatTemplate() {
-        List<String> catList = new ArrayList<>();
-        String path = CategoryManager.class.getClassLoader().getResource("META-INF/category.txt").getPath();
-        String text = Utils.readFile(CategoryManager.class.getClassLoader().getResourceAsStream("META-INF/category.txt"));
-        
-        Scanner scanner = new Scanner(text);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine().trim();
-            if (!line.equals("")) {
-                catList.add(line);
-            }
+    public static List<String> getCatTemplate() {
+        Document doku = readCatTemplate();
+        ArrayList<String> catList = new ArrayList<>();
+        for(Element e: doku.getRootElement().getChildren()) {
+            catList.add(e.getText());
         }
         return catList;
+    }
+    
+
+    public static Document readCatTemplate() {
+//        List<String> catList = new ArrayList<>();
+////        String path = CategoryManager.class.getClassLoader().getResource("META-INF/category.txt").getPath();
+//        String text = Utils.readFile(CategoryManager.class.getClassLoader().getResourceAsStream("META-INF/category.txt"));
+//        
+//        Scanner scanner = new Scanner(text);
+//        while (scanner.hasNextLine()) {
+//            String line = scanner.nextLine().trim();
+//            if (!line.equals("")) {
+//                catList.add(line);
+//            }
+//        }
+        
+        
+        return null;
     }
     
     public static void writeCatTemplate(List<String> catList) {

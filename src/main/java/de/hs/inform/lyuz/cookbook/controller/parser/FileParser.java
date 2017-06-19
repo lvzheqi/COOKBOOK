@@ -120,7 +120,7 @@ public class FileParser {
                         newcatList.add(catNorm);
                         return catNorm;
                     }).map((catNorm) -> {
-                        for (String ct : CategoryManager.readCatTemplate()) {
+                        for (String ct : CategoryManager.getCatTemplate()) {
                             if (catNorm.equals(ct) && !myBook.getCatTemplate().contains(catNorm)) {
                                 myBook.getCatTemplate().add(catNorm);
                             }

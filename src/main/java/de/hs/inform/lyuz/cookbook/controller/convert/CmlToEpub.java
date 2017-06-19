@@ -147,13 +147,13 @@ public class CmlToEpub {
                     Utils.changeImgeColor2BW(new File(filepath + "EPUB"+File.separator+"images"+File.separator + filename));
                 }
                 Picture p = new Picture();
-                p.setFile("images"+File.separator + filename);
+                p.setFile("images/" + filename);
                 headakt.getPicture().add(p);
 
                 //pic-List for epub2
                 epub.getPicList().add(filepath + "EPUB"+File.separator+"images"+File.separator+ filename);
 
-                EpubItem item = new EpubItem("images"+File.separator + filename, "image/"+ pic.getFormat(), false);
+                EpubItem item = new EpubItem("images/"+ filename, "image/"+ pic.getFormat(), false);
                 addItem2OPF(item);
             }
         }

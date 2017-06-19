@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 
 public class EpubCreater {
 
+    //system relevant
     private String filepath;
 
     public EpubCreater(String filepath) {
@@ -54,6 +55,7 @@ public class EpubCreater {
         }
     }
 
+    //create file
     private void creatEpubIndex() {
         new File(filepath + "EPUB").mkdir();
         new File(filepath + "EPUB" + File.separator + "images").mkdir();
@@ -62,6 +64,7 @@ public class EpubCreater {
         new File(filepath + "META-INF").mkdir();
     }
 
+    // file copy
     private void copyEpubFiles() {
         Utils.writeRessource(EpubCreater.class.getClassLoader().getResourceAsStream(Utils.CONTAINER_XML), filepath + "META-INF" + File.separator + "container.xml");
         Utils.writeRessource(EpubCreater.class.getClassLoader().getResourceAsStream(Utils.STAR_PNG), filepath + "EPUB" + File.separator + "icons" + File.separator + "star.png");
@@ -93,12 +96,12 @@ public class EpubCreater {
             book.getMetadata().addTitle(ExportInfo.title);
             book.getMetadata().addAuthor(new Author(ExportInfo.firstName, ExportInfo.lastName));
             book.getResources().add(new Resource(Utils.file2Byte(new File(filepath + "EPUB" + File.separator + "css" + File.separator + "epub-spec.css")),
-                    "css" + File.separator + "epub-spec.css"));
+                    "css/epub-spec.css"));
 
             //cover
             if (ExportInfo.hasCover && ExportInfo.coverPath != null && !ExportInfo.coverPath.equals("")) {
                 book.setCoverImage(new Resource(Utils.file2Byte(new File(filepath + "EPUB" + File.separator + "images" + File.separator + "cover.jpg")),
-                        "images" + File.separator + "cover.jpg"));
+                        "images/cover.jpg"));
             }
 
             //toc.html
@@ -141,7 +144,7 @@ public class EpubCreater {
             if (ExportInfo.hasPic) {
                 epub2.getPicList().forEach((pic) -> {
                     String[] picname = pic.split(File.separator);
-                    book.getResources().add(new Resource(Utils.file2Byte(new File(pic)), "images" + File.separator + picname[picname.length - 1]));
+                    book.getResources().add(new Resource(Utils.file2Byte(new File(pic)), "images/" + picname[picname.length - 1]));
                 });
             }
 
