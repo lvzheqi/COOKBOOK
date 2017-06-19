@@ -17,7 +17,6 @@ public class CategoryManager {
     public static List<String> readCatTemplate() {
         List<String> catList = new ArrayList<>();
         String path = CategoryManager.class.getClassLoader().getResource("META-INF/category.txt").getPath();
-        System.out.println(path);
         String text = Utils.readFile(CategoryManager.class.getClassLoader().getResourceAsStream("META-INF/category.txt"));
         
         Scanner scanner = new Scanner(text);
