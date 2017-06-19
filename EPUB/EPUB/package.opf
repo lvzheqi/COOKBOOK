@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" version="3.0" xml:lang="en" unique-identifier="pub-identifier">
+	<metadata>
+		<dc:title id="title">CookBook</dc:title>
+		<dc:identifier>urn:isbn:9781449328030</dc:identifier>
+		<meta property="dcterms:modified">2017-45-19 11:45:11</meta>
+		<dc:language>DE</dc:language>
+		<dc:contributor>Rossmann Tester</dc:contributor>
+	</metadata>
+	<manifest>
+		<item id="epub-css" href="css/epub-spec.css" media-type="text/css" />
+		<item id="toc" properties="nav" href="toc.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000000" href="images/Kochbuch_1.jpg" media-type="image/JPG" />
+		<item id="id_1000001" href="images/Kochbuch_2.jpg" media-type="image/JPG" />
+		<item id="id_1000002" href="images/Kochbuch_3.jpg" media-type="image/JPG" />
+		<item id="id_1000003" href="images/Kochbuch_4.jpg" media-type="image/JPG" />
+		<item id="id_1000004" href="SALAT.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000005" href="images/Kochbuch_5.jpg" media-type="image/JPG" />
+		<item id="id_1000006" href="images/Kochbuch_6.jpg" media-type="image/JPG" />
+		<item id="id_1000007" href="images/Kochbuch_7.jpg" media-type="image/JPG" />
+		<item id="id_1000008" href="images/Kochbuch_8.jpg" media-type="image/JPG" />
+		<item id="id_1000009" href="images/Kochbuch_9.jpg" media-type="image/JPG" />
+		<item id="id_1000010" href="images/Kochbuch_10.jpg" media-type="image/JPG" />
+		<item id="id_1000011" href="BEILAGE.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000012" href="images/Kochbuch_11.jpg" media-type="image/JPG" />
+		<item id="id_1000013" href="GEFLUEGEL.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000014" href="images/Kochbuch_12.jpg" media-type="image/JPG" />
+		<item id="id_1000015" href="images/Kochbuch_13.jpg" media-type="image/JPG" />
+		<item id="id_1000016" href="images/Kochbuch_14.jpg" media-type="image/JPG" />
+		<item id="id_1000017" href="images/Kochbuch_15.jpg" media-type="image/JPG" />
+		<item id="id_1000018" href="PASTA.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000019" href="SAUCE.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000020" href="images/Kochbuch_16.jpg" media-type="image/JPG" />
+		<item id="id_1000021" href="images/Kochbuch_17.jpg" media-type="image/JPG" />
+		<item id="id_1000022" href="NACHTISCH.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000023" href="images/Kochbuch_18.jpg" media-type="image/JPG" />
+		<item id="id_1000024" href="SUPPE.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000025" href="images/Kochbuch_19.jpg" media-type="image/JPG" />
+		<item id="id_1000026" href="images/Kochbuch_20.jpg" media-type="image/JPG" />
+		<item id="id_1000027" href="FISCH.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000028" href="GEMUESE.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000029" href="VORSPEISE.xhtml" media-type="application/xhtml+xml" />
+		<item id="id_1000030" href="DRINK.xhtml" media-type="application/xhtml+xml" />
+	</manifest>
+	<spine>
+		<itemref idref="toc" linear="yes" />
+		<itemref idref="id_1000004" />
+		<itemref idref="id_1000011" />
+		<itemref idref="id_1000013" />
+		<itemref idref="id_1000018" />
+		<itemref idref="id_1000019" />
+		<itemref idref="id_1000022" />
+		<itemref idref="id_1000024" />
+		<itemref idref="id_1000027" />
+		<itemref idref="id_1000028" />
+		<itemref idref="id_1000029" />
+		<itemref idref="id_1000030" />
+	</spine>
+</package>
