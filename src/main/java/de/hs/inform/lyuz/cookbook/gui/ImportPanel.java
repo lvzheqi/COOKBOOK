@@ -6,13 +6,10 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-
-public class ImportPanel extends javax.swing.JPanel {
+public class ImportPanel extends MyPanel {
 
     private ArrayList<File> files;
     private DefaultListModel list;
-
-    private final CookMainJFrame cookConvert;
 
     public static boolean action = false;
 
@@ -22,19 +19,37 @@ public class ImportPanel extends javax.swing.JPanel {
      * @param cookConvert
      */
     public ImportPanel(CookMainJFrame cookConvert) {
-        this.cookConvert = cookConvert;
+        super(cookConvert);
 
         initComponents();
         init();
-        
+
     }
-    
+
     private void init() {
-        
         this.files = new ArrayList<>();
-        
         this.list = new DefaultListModel();
         fileList.setModel(list);
+    }
+
+    //check ob file is da.
+    @Override
+    protected void reload() {
+        ArrayList<File> filesCheck = new ArrayList<>();
+        DefaultListModel listCheck = new DefaultListModel();
+        files.stream().filter((f) -> (f.exists())).map((f) -> {
+            filesCheck.add(f);
+            return f;
+        }).forEachOrdered((f) -> {
+            listCheck.addElement(f.getName() + "  " + f.getPath());
+        });
+
+        if (filesCheck.size() != files.size()) {
+            ImportPanel.action = true;
+            files = filesCheck;
+            list = listCheck;
+            fileList.setModel(list);
+        }
     }
 
     /**
@@ -60,7 +75,7 @@ public class ImportPanel extends javax.swing.JPanel {
 
         fileListSP.setViewportView(fileList);
 
-        openBtn.setText("ADD");
+        openBtn.setText("hinzufügen");
         openBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 openBtnActionPerformed(evt);
@@ -68,24 +83,24 @@ public class ImportPanel extends javax.swing.JPanel {
         });
 
         jLabel3.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        jLabel3.setText("List of  Imoport Files");
+        jLabel3.setText("Liste der importierten Dateien");
 
         tippTA.setEditable(false);
         tippTA.setBackground(new java.awt.Color(238, 238, 238));
         tippTA.setColumns(2);
         tippTA.setLineWrap(true);
         tippTA.setRows(2);
-        tippTA.setText("Tip: You can open many files and export them into a file.");
+        tippTA.setText("Tipp: Sie können mehr als eine Datei importieren und dann als eine Datein exportieren.");
         openTippSP.setViewportView(tippTA);
 
-        toCatBtn.setText("NEXT");
+        toCatBtn.setText("nächst");
         toCatBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toCatBtnActionPerformed(evt);
             }
         });
 
-        fileDeleteBtn.setText("DELETE");
+        fileDeleteBtn.setText("löschen");
         fileDeleteBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fileDeleteBtnActionPerformed(evt);
@@ -111,7 +126,7 @@ public class ImportPanel extends javax.swing.JPanel {
                             .addComponent(openBtn)
                             .addComponent(fileDeleteBtn)))
                     .addComponent(jLabel3))
-                .addContainerGap(71, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         importPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {fileDeleteBtn, openBtn});
@@ -141,15 +156,15 @@ public class ImportPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(importPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 14, Short.MAX_VALUE)
                 .addComponent(importPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -173,7 +188,7 @@ public class ImportPanel extends javax.swing.JPanel {
                 File file = file = fc.getSelectedFile();
                 for (int i = 0; i < files.size(); i++) {
                     if (files.get(i).getAbsolutePath().equals(file.getAbsolutePath())) {
-                        JOptionPane.showMessageDialog(null, "Es gibt schon das File", "Warnung", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Die Datei ist bereits vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
                 }
@@ -188,10 +203,15 @@ public class ImportPanel extends javax.swing.JPanel {
 
     private void toCatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toCatBtnActionPerformed
         if (files.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Bitte, geben Sie ein File", "Warnung", JOptionPane.WARNING_MESSAGE);
-        } else {
-            cookConvert.getCookTabPane().setSelectedComponent(CookMainJFrame.categoryPanel);
+            Object[] options = {"zurück", "nächst"};
+            int n = JOptionPane.showOptionDialog(null, "Keine Dateien werden importiert."
+                    + "\n Wollen Sie weiter machen?", "Warnung", 
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (n == 0) {
+                return;
+            }
         }
+        cookConvert.getCookTabPane().setSelectedComponent(cookConvert.getCategoryPanel());
     }//GEN-LAST:event_toCatBtnActionPerformed
 
 
@@ -200,7 +220,7 @@ public class ImportPanel extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(null, "Bitte ein File auswählen", "Warnung", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
+
         ArrayList<String> deleteList = (ArrayList<String>) fileList.getSelectedValuesList();
 
         for (String dlString : deleteList) {
@@ -233,4 +253,5 @@ public class ImportPanel extends javax.swing.JPanel {
     private javax.swing.JTextArea tippTA;
     private javax.swing.JButton toCatBtn;
     // End of variables declaration//GEN-END:variables
+
 }

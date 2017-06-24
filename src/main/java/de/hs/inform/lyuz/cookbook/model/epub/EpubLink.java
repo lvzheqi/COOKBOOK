@@ -1,12 +1,11 @@
 package de.hs.inform.lyuz.cookbook.model.epub;
 
-
 import java.util.HashMap;
 
-public class EpubLink implements Comparable<EpubLink>{
+public class EpubLink implements Comparable<EpubLink> {
+
     private String href;
     private String value;
-
     private HashMap<Integer, EpubLink> navMap = new HashMap<>();
 
     public EpubLink() {
@@ -43,9 +42,8 @@ public class EpubLink implements Comparable<EpubLink>{
 
     @Override
     public int compareTo(EpubLink o) {
-        
+
         return this.value.compareTo(o.getValue());
     }
-    
-    
+
 }

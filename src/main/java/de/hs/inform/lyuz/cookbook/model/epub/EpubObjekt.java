@@ -11,7 +11,6 @@ import org.jdom2.Element;
 
 public class EpubObjekt {
 
-//    public TreeMap<String, TreeMap<EpubLink, Integer>> indexMap;
     public TreeMap<String, TreeMap<String, TreeMap<EpubLink, Integer>>> indexMap;
     public HashMap<Integer, EpubLink> navMap;
 
@@ -23,6 +22,7 @@ public class EpubObjekt {
     private Document indexDom;
     private Document navDom;
     private Document opfDom;
+    
     public LinkedHashMap<String, Cookml> cookmls = new LinkedHashMap<>();
     private List<String> picList = new ArrayList<>();
 

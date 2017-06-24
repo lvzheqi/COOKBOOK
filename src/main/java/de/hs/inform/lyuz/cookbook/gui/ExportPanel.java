@@ -2,18 +2,33 @@ package de.hs.inform.lyuz.cookbook.gui;
 
 import de.hs.inform.lyuz.cookbook.controller.manager.ExportManager;
 import javax.swing.JFileChooser;
-import de.hs.inform.lyuz.cookbook.help.ExportInfo;
+import de.hs.inform.lyuz.cookbook.model.ExportInfo;
+import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
+import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
+import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
-public class ExportPanel extends javax.swing.JPanel {
+public class ExportPanel extends MyPanel {
 
-    private final CookMainJFrame cookConvert;
+    private String type = "";
+    private String suffix = "";
 
     public ExportPanel(CookMainJFrame cookConvert) {
 
-        this.cookConvert = cookConvert;
+        super(cookConvert);
 
         initComponents();
         init();
+    }
+
+    @Override
+    protected void reload() {
+        bookNameTF.setText(myBook.getExportInfo().getBookname());
+        pathTF.setText(myBook.getExportInfo().getFilepath());
     }
 
     private void init() {
@@ -21,9 +36,40 @@ public class ExportPanel extends javax.swing.JPanel {
         radioBtnG.add(epub3RBtn);
         radioBtnG.add(cmlRBtn);
         radioBtnG.add(texRBtn);
-        
-        bookNameTF.setText(ExportInfo.bookname);
-        pathTF.setText(ExportInfo.filepath);
+
+        reload();
+    }
+
+    private boolean exprotFile() {
+        ExportInfo exportInfo = myBook.getExportInfo();
+        exportInfo.updateExportInfo(bookNameTF.getText(), pathTF.getText() + File.separator, type);
+        myBook.setExportInfo(exportInfo);
+
+        try {
+            ConfUtils.updateExportInfo(this.myBook.getExportInfo());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Fehler beim Export", "Fehler", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        ExportManager exportManager = new ExportManager(myBook);
+        try {
+            if (cmlRBtn.isSelected()) {
+                exportManager.cmlExport();
+            } else if (epub2RBtn.isSelected()) {
+                exportManager.epub2Export();
+            } else if (epub3RBtn.isSelected()) {
+                exportManager.epub3Export();
+            } else if (texRBtn.isSelected()) {
+                exportManager.texExport();
+            }
+        } catch (ConvertErrorException | SystemErrorException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+
     }
 
     /**
@@ -103,14 +149,14 @@ public class ExportPanel extends javax.swing.JPanel {
                     .addComponent(epub3RBtn)
                     .addComponent(texRBtn)
                     .addComponent(cmlRBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 267, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 297, Short.MAX_VALUE)
                 .addComponent(setBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
         exportRadioPanelLayout.setVerticalGroup(
             exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(exportRadioPanelLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
+                .addContainerGap(7, Short.MAX_VALUE)
                 .addGroup(exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(epub2RBtn)
                     .addComponent(setBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -119,8 +165,7 @@ public class ExportPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(texRBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmlRBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(cmlRBtn))
         );
 
         exportTippTA.setEditable(false);
@@ -130,7 +175,7 @@ public class ExportPanel extends javax.swing.JPanel {
         exportTippTA.setText("Tip: select an export format.");
         exportTippSP.setViewportView(exportTippTA);
 
-        exportBtn.setText("SAVE");
+        exportBtn.setText("export");
         exportBtn.setToolTipText("");
         exportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -138,7 +183,7 @@ public class ExportPanel extends javax.swing.JPanel {
             }
         });
 
-        backBtn.setText("BACK");
+        backBtn.setText("zurück");
         backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backBtnActionPerformed(evt);
@@ -146,12 +191,12 @@ public class ExportPanel extends javax.swing.JPanel {
         });
 
         bookNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        bookNameLabel.setText("file name:");
+        bookNameLabel.setText("Datei Name");
 
         bookNameTF.setText("CookBook");
 
         pathLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        pathLabel.setText("save as:");
+        pathLabel.setText("Speichern als");
 
         bookPathBtn.setText("...");
         bookPathBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -165,34 +210,34 @@ public class ExportPanel extends javax.swing.JPanel {
         exportPanelLayout.setHorizontalGroup(
             exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(exportPanelLayout.createSequentialGroup()
-                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(25, 25, 25)
+                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(backBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(exportBtn)
-                        .addGap(10, 10, 10))
+                        .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, exportPanelLayout.createSequentialGroup()
-                                .addGap(14, 14, 14)
-                                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(pathLabel)
-                                    .addComponent(bookNameLabel))
-                                .addGap(18, 18, 18)
+                        .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(exportPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
                                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(bookNameLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(pathLabel, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(bookNameTF)
                                     .addGroup(exportPanelLayout.createSequentialGroup()
                                         .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                                        .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(16, 16, 16))
                             .addGroup(exportPanelLayout.createSequentialGroup()
-                                .addContainerGap(10, Short.MAX_VALUE)
-                                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(6, 6, 6)))
-                .addGap(41, 41, 41))
+                                .addComponent(backBtn)
+                                .addGap(311, 311, 311)
+                                .addComponent(exportBtn)))
+                        .addGap(47, 47, 47))
+                    .addGroup(exportPanelLayout.createSequentialGroup()
+                        .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         exportPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, exportBtn});
@@ -203,102 +248,129 @@ public class ExportPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bookNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bookNameLabel))
-                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(pathLabel)
-                        .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                    .addComponent(bookNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pathLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(backBtn)
-                    .addComponent(exportBtn))
+                    .addComponent(exportBtn)
+                    .addComponent(backBtn))
                 .addGap(14, 14, 14))
         );
 
         exportPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backBtn, exportBtn});
 
-        exportPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bookNameLabel, bookNameTF, pathLabel, pathTF});
+        exportPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bookNameLabel, pathLabel});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 29, Short.MAX_VALUE)
-                .addComponent(exportPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(exportPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(exportPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void epub2RBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_epub2RBtnActionPerformed
-        exportTippTA.setText("Export EPUB2 ....");
-        ExportInfo.exportTyp = "EPUB2";
+        exportTippTA.setText("EPUB2 exportieren ....");
+        type = "EPUB2";
+        suffix = ".epub";
     }//GEN-LAST:event_epub2RBtnActionPerformed
 
     private void epub3RBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_epub3RBtnActionPerformed
-        exportTippTA.setText("Export EPUB3 ....");
-        ExportInfo.exportTyp = "EPUB3";
+        exportTippTA.setText("EPUB3 exportieren....");
+        type = "EPUB3";
+        suffix = ".epub";
     }//GEN-LAST:event_epub3RBtnActionPerformed
 
     private void cmlRBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmlRBtnActionPerformed
-        exportTippTA.setText("Export CML ....");
-        ExportInfo.exportTyp = "CML";
+        exportTippTA.setText("CML exportieren ....");
+        type = "CML";
+        suffix = ".cml";
     }//GEN-LAST:event_cmlRBtnActionPerformed
 
     private void exportBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportBtnActionPerformed
         String path = pathTF.getText();
-        if(!pathTF.getText().equals("")) {
-            path += "/";
+        if (!pathTF.getText().equals("")) {
+            path += File.separator;
         }
-        ExportInfo.updateExportInfo(bookNameTF.getText(), path);
 
-        ExportManager exportManager = new ExportManager(cookConvert.getMyBook());
-                     
-        if (cmlRBtn.isSelected()) {
-            exportManager.cmlExport();       
-        } else if (epub2RBtn.isSelected()) {
-            exportManager.epub2Export();
-        } else if (epub3RBtn.isSelected()) {
-            exportManager.epub3Export();
-        } else if (texRBtn.isSelected()) {
-            exportManager.texExport();           
+        File f = new File(path);
+        if (!f.exists()) {
+            JOptionPane.showMessageDialog(null, "Bitte geben Sie einen gültigen Pfad ein", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else if (type.equals("")) {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie ein Export-Format aus", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else if (myBook.getFiles().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Bitte importieren Sie eine Datei", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else if (myBook.getCatTemplate().size()==0) {
+            JOptionPane.showMessageDialog(null, "Keine Kategorien sind vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else {
+            f = new File(path + bookNameTF.getText() + suffix);
+            int n;
+            if (f.exists()) {
+                n = JOptionPane.showConfirmDialog(null, "Wollen Sie die " + bookNameTF.getText() + suffix + " ersetzen?", "Frage", JOptionPane.YES_NO_OPTION);
+            } else {
+                n = JOptionPane.showConfirmDialog(null, "Wollen Sie ein " + type.toUpperCase() + " Kochbuch exportieren?", "Frage", JOptionPane.YES_NO_OPTION);
+            }
+            if (n == 0) {
+                if (exprotFile()) {
+                    JOptionPane.showMessageDialog(null, "Kochbuch ist erfolgreich erstellt", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         }
     }//GEN-LAST:event_exportBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        cookConvert.getCookTabPane().setSelectedComponent(CookMainJFrame.categoryPanel);
+        cookConvert.getCookTabPane().setSelectedComponent(cookConvert.getCategoryPanel());
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void texRBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_texRBtnActionPerformed
-        exportTippTA.setText("Export Latex ....");
-        ExportInfo.exportTyp = "LATEX";
+        exportTippTA.setText("Latex exportieren....");
+        type = "LATEX";
+        suffix = ".tex";
     }//GEN-LAST:event_texRBtnActionPerformed
 
     private void setBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setBtnActionPerformed
         SettingDialog dialog = new SettingDialog(cookConvert, true);
         dialog.setVisible(true);
+
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                myBook.setExportInfo(dialog.getExportInfo());
+            }
+        });
     }//GEN-LAST:event_setBtnActionPerformed
 
     private void bookPathBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookPathBtnActionPerformed
         JFileChooser fc = new JFileChooser();
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY | JFileChooser.SAVE_DIALOG);
         fc.setDialogType(JFileChooser.SAVE_DIALOG);
-        fc.showSaveDialog(null);
-        pathTF.setText(fc.getSelectedFile().getPath());
+        int result = fc.showSaveDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            pathTF.setText(fc.getSelectedFile().getPath());
+        }
     }//GEN-LAST:event_bookPathBtnActionPerformed
+
+    public String getType() {
+        return type;
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

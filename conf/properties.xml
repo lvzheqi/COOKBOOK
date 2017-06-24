@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export>
+	<firstname>Cooker</firstname>
+	<lastname>Cooker</lastname>
+	<title>CookBook</title>
+	<bookname>CookBook</bookname>
+	<type>CML</type>
+	<filepath>/Users/xuer/NetBeansProjects/COOKBOOK//</filepath>
+	<pic value="false" />
+	<color value="true" />
+	<cat value="false" />
+	<source value="false" />
+	<remark value="true" />
+	<time value="false" />
+	<difficulty value="false" />
+	<cover value="false" />
+	<coverpath />
+</export>

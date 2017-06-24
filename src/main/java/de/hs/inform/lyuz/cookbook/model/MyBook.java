@@ -11,9 +11,13 @@ public class MyBook {
     private List<File> files;
     private Cookml cookml;
     private ArrayList<String> catTemplate;
-    private ArrayList<String> catAll;
-    private ArrayList<String> catExtral;
+//    private ArrayList<String> catAll;
+    private ArrayList<String> catExtra;
     private LinkedHashMap<String, Cookml> sortCmlMap;
+    
+    private ExportInfo exportInfo;
+    
+    
     
     public MyBook(){
         init();
@@ -22,10 +26,11 @@ public class MyBook {
     public void init() {
         files = new ArrayList<>();
         cookml = new Cookml();
-        catAll = new ArrayList<>();
+//        catAll = new ArrayList<>();
         catTemplate = new ArrayList<>();
-        catExtral = new ArrayList<>();
+        catExtra = new ArrayList<>();
         sortCmlMap = new LinkedHashMap<>();
+        exportInfo = new ExportInfo();
     }
 
     public List<File> getFiles() {
@@ -52,20 +57,20 @@ public class MyBook {
         this.catTemplate = catTemplate;
     }
 
-    public ArrayList<String> getCatAll() {
-        return catAll;
+//    public ArrayList<String> getCatAll() {
+//        return catAll;
+//    }
+//
+//    public void setCatAll(ArrayList<String> catAll) {
+//        this.catAll = catAll;
+//    }
+
+    public ArrayList<String> getCatExtra() {
+        return catExtra;
     }
 
-    public void setCatAll(ArrayList<String> catAll) {
-        this.catAll = catAll;
-    }
-
-    public ArrayList<String> getCatExtral() {
-        return catExtral;
-    }
-
-    public void setCatExtral(ArrayList<String> catExtral) {
-        this.catExtral = catExtral;
+    public void setCatExtra(ArrayList<String> catExtra) {
+        this.catExtra = catExtra;
     }
 
     public LinkedHashMap<String, Cookml> getSortCmlMap() {
@@ -75,7 +80,14 @@ public class MyBook {
     public void setSortCmlMap(LinkedHashMap<String, Cookml> sortCmlMap) {
         this.sortCmlMap = sortCmlMap;
     }
-    
+
+    public ExportInfo getExportInfo() {
+        return exportInfo;
+    }
+
+    public void setExportInfo(ExportInfo exportInfo) {
+        this.exportInfo = exportInfo;
+    }
     
     
 }

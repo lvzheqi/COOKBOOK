@@ -1,0 +1,94 @@
+<!ELEMENT cookml (recipe*,menu*)>
+<!ATTLIST cookml
+	version      CDATA		#REQUIRED
+	name         CDATA		#IMPLIED
+	prog         CDATA		#REQUIRED
+	progver      CDATA		#REQUIRED
+>
+<!ELEMENT recipe (head,custom*,part*,preparation*,remark*)>
+<!ATTLIST recipe
+	lang         CDATA		#REQUIRED
+>
+<!ELEMENT head (cat*,hint*,sourceline*,card*, content*,picture*,picbin*)>
+<!ATTLIST head 
+	title        CDATA		#REQUIRED
+	rid          CDATA		#REQUIRED
+	servingqty   CDATA		#REQUIRED
+	servingtype  CDATA		#REQUIRED
+	createdate   CDATA		#IMPLIED
+	createuser   CDATA		#IMPLIED
+	createemail  CDATA		#IMPLIED
+	changedate   CDATA		#IMPLIED
+	changeuser   CDATA		#IMPLIED
+	changeemail  CDATA		#IMPLIED
+	timeallqty   CDATA		#IMPLIED
+	timeprepqty  CDATA		#IMPLIED
+	timecookqty  CDATA		#IMPLIED
+	costs        CDATA		#IMPLIED
+	wwpoints     CDATA		#IMPLIED
+>
+<!ELEMENT cat (#PCDATA)>
+<!ELEMENT hint (#PCDATA)>
+<!ELEMENT sourceline (#PCDATA)>
+<!ELEMENT card (#PCDATA)>
+<!ELEMENT content EMPTY>
+<!ATTLIST content
+	type         CDATA		#REQUIRED
+	value        CDATA		#REQUIRED
+>
+<!ELEMENT picture EMPTY>
+<!ATTLIST picture
+	file         CDATA		#REQUIRED
+>
+<!ELEMENT picbin (#PCDATA)>
+<!ATTLIST picbin
+	format       CDATA		#REQUIRED
+>
+<!ELEMENT custom EMPTY>
+<!ATTLIST custom
+	name         CDATA		#IMPLIED
+	datatype     CDATA		#IMPLIED
+	value        CDATA		#IMPLIED
+>
+<!ELEMENT part  (ingredient*)>
+<!ATTLIST part
+	title        CDATA		#IMPLIED
+>
+<!ELEMENT ingredient (inote*)>
+<!ATTLIST ingredient
+	qty          CDATA		#IMPLIED
+	unit         CDATA		#IMPLIED
+	item         CDATA		#IMPLIED
+	bls          CDATA		#IMPLIED
+	gram         CDATA		#IMPLIED
+	shop         CDATA		#IMPLIED
+	calc         CDATA		#IMPLIED
+	ridlink      CDATA		#IMPLIED
+>
+<!ELEMENT inote (#PCDATA)>
+<!ELEMENT preparation (text*, step*)>
+<!ELEMENT text (#PCDATA)>
+<!ELEMENT step (#PCDATA)>
+<!ELEMENT remark (line*)>
+<!ATTLIST remark
+	user         CDATA		#IMPLIED
+>
+<!ELEMENT line (#PCDATA)>
+<!ELEMENT menu (mcustom*, mrecipe*)*>
+<!ATTLIST menu
+	title        CDATA		#IMPLIED
+>
+<!ELEMENT mcustom EMPTY>
+<!ATTLIST mcustom
+	name         CDATA		#IMPLIED
+	datatype     CDATA		#IMPLIED
+	value        CDATA		#IMPLIED
+>
+<!ELEMENT mrecipe (desc)>
+<!ATTLIST mrecipe
+	rid          CDATA		#REQUIRED
+	title        CDATA		#REQUIRED
+	amount       CDATA		#IMPLIED
+	persons      CDATA		#IMPLIED
+>
+<!ELEMENT desc (#PCDATA)>

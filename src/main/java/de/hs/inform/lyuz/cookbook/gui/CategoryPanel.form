@@ -17,9 +17,20 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="backBtn" min="-2" pref="77" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="toExpBtn" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="catTempLabel" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="catExtraLabel" min="-2" pref="127" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="catTemplateSP" min="-2" pref="168" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -29,24 +40,10 @@
                           <Component id="deleteBtn" linkSize="2" alignment="0" max="32767" attributes="0"/>
                           <Component id="renameBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
                           <Component id="allocateBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="savaCatBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="saveCatBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="46" max="32767" attributes="0"/>
+                      <EmptySpace pref="17" max="32767" attributes="0"/>
                       <Component id="catExtraSP" min="-2" pref="162" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
-                      <Component id="catTempLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="catExtraLabel" min="-2" pref="127" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                      <Component id="backBtn" min="-2" pref="77" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="toExpBtn" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
@@ -75,7 +72,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="allocateBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="savaCatBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
+                              <Component id="saveCatBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="catTemplateSP" pref="260" max="32767" attributes="0"/>
                       </Group>
@@ -90,7 +87,7 @@
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="backBtn" linkSize="6" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="toExpBtn" linkSize="6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="toExpBtn" linkSize="6" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -110,7 +107,11 @@
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
               <StringArray count="0"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="die kategorien zum Export zeigen"/>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="catTempListMouseClicked"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
@@ -122,7 +123,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="existing categories"/>
+        <Property name="text" type="java.lang.String" value="vorhandene Kategorien"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="catExtraLabel">
@@ -130,7 +131,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="extra categories"/>
+        <Property name="text" type="java.lang.String" value="extra kategoorien"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="catExtraSP">
@@ -145,6 +146,7 @@
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
               <StringArray count="0"/>
             </Property>
+            <Property name="toolTipText" type="java.lang.String" value="extra kategorien von importierten Dateien zeigen"/>
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
@@ -154,7 +156,8 @@
     </Container>
     <Component class="javax.swing.JButton" name="deleteBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="DELETE"/>
+        <Property name="text" type="java.lang.String" value="l&#xf6;schen"/>
+        <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie aus linken Seite ausw&#xe4;hlen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteBtnActionPerformed"/>
@@ -162,7 +165,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="upBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="UP"/>
+        <Property name="text" type="java.lang.String" value="nach oben"/>
+        <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie aus linken Seite ausw&#xe4;hlen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upBtnActionPerformed"/>
@@ -170,7 +174,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="downBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="DOWN"/>
+        <Property name="text" type="java.lang.String" value="nach unter"/>
+        <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie aus linken Seite ausw&#xe4;hlen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="downBtnActionPerformed"/>
@@ -178,7 +183,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="toExpBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="NEXT"/>
+        <Property name="text" type="java.lang.String" value="n&#xe4;chst"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toExpBtnActionPerformed"/>
@@ -186,7 +191,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="leftBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Left"/>
+        <Property name="text" type="java.lang.String" value="nach rechts"/>
+        <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie aus rechte Seite ausw&#xe4;hlen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="leftBtnActionPerformed"/>
@@ -194,7 +200,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="renameBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="RENAME"/>
+        <Property name="text" type="java.lang.String" value="umbenennen"/>
+        <Property name="toolTipText" type="java.lang.String" value="Umbenennen nur f&#xfc;r vorhandene Kategorien"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="renameBtnActionPerformed"/>
@@ -202,7 +209,8 @@
     </Component>
     <Component class="javax.swing.JButton" name="allocateBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="MERGE"/>
+        <Property name="text" type="java.lang.String" value="zuordnen"/>
+        <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie auf jede Spalte ausw&#xe4;hlen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="allocateBtnActionPerformed"/>
@@ -210,19 +218,19 @@
     </Component>
     <Component class="javax.swing.JButton" name="backBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="BACK"/>
+        <Property name="text" type="java.lang.String" value="zur&#xfc;ck"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="backBtnActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="savaCatBtn">
+    <Component class="javax.swing.JButton" name="saveCatBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="SAVE AS"/>
-        <Property name="toolTipText" type="java.lang.String" value="sava the categories as templete"/>
+        <Property name="text" type="java.lang.String" value="speichern"/>
+        <Property name="toolTipText" type="java.lang.String" value="vorhandene Kategorien als Muster speichern"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="savaCatBtnActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveCatBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

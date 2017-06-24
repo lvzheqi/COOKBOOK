@@ -2,13 +2,19 @@ package de.hs.inform.lyuz.cookbook.controller.parser;
 
 import java.io.File;
 import java.util.*;
-import de.hs.inform.lyuz.cookbook.controller.convert.BSToCml;
+import de.hs.inform.lyuz.cookbook.controller.convert.BsToCml;
 import de.hs.inform.lyuz.cookbook.controller.convert.McbToCml;
-import de.hs.inform.lyuz.cookbook.controller.convert.MMToCml;
-import de.hs.inform.lyuz.cookbook.controller.manager.CategoryManager;
+import de.hs.inform.lyuz.cookbook.controller.convert.MmToCml;
+import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.cookml.*;
-
+import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
+import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jdom2.JDOMException;
 
 public class FileParser {
 
@@ -17,19 +23,25 @@ public class FileParser {
     public MyBook getMyBook() {
         return myBook;
     }
-    
-    public FileParser() {
+
+    public FileParser() throws SystemErrorException {
         myBook = new MyBook();
+        try {
+            myBook.setExportInfo(ConfUtils.getExportInfo());
+        } catch (Exception ex) {
+            Logger.getLogger(FileParser.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SystemErrorException("Fehler beim Lesen Config.sys Information");
+        }
     }
-    
-    public void reloadFiles(List<File> files) {
+
+    public void reloadFiles(List<File> files) throws ParserErrorExcepetion, ConvertErrorException {
         myBook = new MyBook();
         myBook.setFiles(files);
         fileParser();
     }
 
-    private void fileParser() {
-        myBook.getFiles().forEach((File f) -> {
+    private void fileParser() throws ParserErrorExcepetion, ConvertErrorException {
+        for (File f : myBook.getFiles()) {
             Cookml cookml = null;
             if (f.getName().endsWith("cml")) {
                 CMLParser cmlParser = new CMLParser(f);
@@ -38,19 +50,18 @@ public class FileParser {
                 McbToCml mcbToCml = new McbToCml(f);
                 cookml = mcbToCml.getCookml();
             } else if (f.getName().endsWith("mm")) {
-                MMToCml mmToCML = new MMToCml(f);
+                MmToCml mmToCML = new MmToCml(f);
                 cookml = mmToCML.getCookml();
             } else if (f.getName().endsWith("bs")) {
-                BSToCml bsTocml = new BSToCml(f);
+                BsToCml bsTocml = new BsToCml(f);
                 cookml = bsTocml.getCookml();
             }
 
             sortCatList(cookml);
             add2cooml(cookml);
-        });
+        }
     }
 
-    
     private void add2cooml(Cookml cml) {
         if (myBook.getCookml() == null) {
             myBook.setCookml(cml);
@@ -61,7 +72,6 @@ public class FileParser {
         }
     }
 
-    
     private String normCat(String catakt) {
         String catNorm;
 
@@ -79,10 +89,10 @@ public class FileParser {
         } else if (catakt.toUpperCase().contains("GEFLUEGEL") || catakt.toUpperCase().contains("GEFLÜGEL")
                 || catakt.toUpperCase().contains("HUHN")
                 || catakt.toUpperCase().contains("ENTE") || catakt.toUpperCase().contains("GANS")) {
-            catNorm = "GEFLUEGEL";
+            catNorm = "GEFLÜGEL";
         } else if (catakt.toUpperCase().contains("GEMUESE") || catakt.toUpperCase().contains("GEMÜSE")
                 || catakt.toUpperCase().contains("VAGETABLE")) {
-            catNorm = "GEMUESE";
+            catNorm = "GEMÜSE";
         } else if (catakt.toUpperCase().contains("VEGETARISCH") || catakt.toUpperCase().contains("VEGETARIAN")) {
             catNorm = "VEGETARISCH";
         } else if (catakt.toUpperCase().contains("BEILAGE")) {
@@ -98,7 +108,7 @@ public class FileParser {
         } else if (catakt.toUpperCase().contains("DRINK")
                 || catakt.toUpperCase().contains("GETRAENKE") || catakt.toUpperCase().contains("GETRANKE")) {
             catNorm = "DRINK";
-        } else if (catakt.toUpperCase().contains("DRINK")
+        } else if (catakt.toUpperCase().contains("SONSTIGES")
                 || catakt.toUpperCase().contains("SONSTIGE")) {
             catNorm = "SONSTIGE";
         } else {
@@ -108,40 +118,64 @@ public class FileParser {
     }
 
     private void sortCatList(Cookml cookml) {
-
-        if (!myBook.getCatTemplate().contains("SONSTIGE")) {
-            myBook.getCatTemplate().add("SONSTIGE");
+        List<String> catTemp = new ArrayList<>();
+        try {
+            catTemp = ConfUtils.getCatTemplate();
+        } catch (Exception ex) {
+            Logger.getLogger(FileParser.class.getName()).log(Level.SEVERE, null, ex);
+//            throw new SystemErrorException("Fehler beim Lesen Kategorien");
         }
-        cookml.getRecipe().forEach((Recipe recakt) -> {
+
+        for (Recipe recakt : cookml.getRecipe()) {
             for (Object objakt : recakt.getHeadAndCustomAndPart()) {
                 if (objakt.getClass().getCanonicalName().equals("de.hs.inform.lyuz.cookbook.model.cookml.Head")) {
                     Set<String> newcatList = new HashSet<>();
-                    ((Head) objakt).getCat().stream().map((catakt) -> normCat(catakt)).map((catNorm) -> {
+
+                    for (String catakt : ((Head) objakt).getCat()) {
+                        String catNorm = normCat(catakt);
                         newcatList.add(catNorm);
-                        return catNorm;
-                    }).map((catNorm) -> {
-                        for (String ct : CategoryManager.getCatTemplate()) {
+
+                        for (String ct : catTemp) {
                             if (catNorm.equals(ct) && !myBook.getCatTemplate().contains(catNorm)) {
                                 myBook.getCatTemplate().add(catNorm);
                             }
                         }
-                        return catNorm;
-                    }).filter((catNorm) -> (!myBook.getCatTemplate().contains(catNorm) && !myBook.getCatExtral().contains(catNorm))).forEachOrdered((catNorm) -> {
-                        myBook.getCatExtral().add(catNorm);
-                    });
+
+                        if (!myBook.getCatTemplate().contains(catNorm) && !myBook.getCatExtra().contains(catNorm)) {
+                            myBook.getCatExtra().add(catNorm);
+                        }
+                    }
+
                     if (newcatList.isEmpty()) {
-                        newcatList.add("SONSTIGE");
+                        newcatList.add("ANDERE");
                     }
                     ((Head) objakt).setCat(new ArrayList<>(newcatList));
 
-                    newcatList.stream().filter((ct)
-                            -> (!myBook.getCatAll().contains(ct))).forEachOrdered((ct) -> {
-                        myBook.getCatAll().add(ct);
-                    });
+//                    newcatList.stream().filter((ct)
+//                            -> (!myBook.getCatAll().contains(ct))).forEachOrdered((ct) -> {
+//                        myBook.getCatAll().add(ct);
+//                    });
                 }
             }
-        });
+        }
     }
-
+// ((Head) objakt).getCat().stream().map((catakt) -> normCat(catakt)).map((catNorm) -> {
+//                        newcatList.add(catNorm);
+//                        return catNorm;
+//                    }).map((catNorm) -> {
+//                        try {
+//                            for (String ct : ConfUtils.getCatTemplate()) {
+//                                if (catNorm.equals(ct) && !myBook.getCatTemplate().contains(catNorm)) {
+//                                    myBook.getCatTemplate().add(catNorm);
+//                                }
+//                            }
+//                        } catch (IOException | JDOMException ex) {
+//                            Logger.getLogger(FileParser.class.getName()).log(Level.SEVERE, null, ex);
+//                            throw new SystemErrorException("Fehler beim Lesen Config.sys Information");
+//                        }
+//                        return catNorm;
+//                    }).filter((catNorm) -> (!myBook.getCatTemplate().contains(catNorm) && !myBook.getCatExtra().contains(catNorm))).forEachOrdered((catNorm) -> {
+//                        myBook.getCatExtra().add(catNorm);
+//                    });
 
 }

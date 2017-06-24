@@ -1,45 +1,53 @@
 package de.hs.inform.lyuz.cookbook.controller.convert;
 
-
-import de.hs.inform.lyuz.cookbook.help.FormatHelper;
+import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import de.hs.inform.lyuz.cookbook.controller.parser.MCBParser;
-import de.hs.inform.lyuz.cookbook.help.Utils;
 import de.hs.inform.lyuz.cookbook.model.cookml.*;
+import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
 import de.hs.inform.lyuz.cookbook.model.mycookbook.Cookbook;
 import java.io.File;
 import java.math.BigInteger;
+import org.apache.commons.io.FileUtils;
 
+// TODO: when more than a categroy fehler
+/**
+ * imageurl, video ignore
+ */
 public class McbToCml {
 
     private final Cookml cookml;
     private final MCBParser mcbParser;
 
-    public McbToCml(File f) {
+    public McbToCml(File f) throws ParserErrorExcepetion, ConvertErrorException {
 
-        // TODO: throw
         cookml = new Cookml();
         mcbParser = new MCBParser(f);
 
         Cookbook mcb = mcbParser.getMcb();
 
         cookml.setProg("MYCOOKBOOK");
-        cookml.setVersion(mcb.getVersion());
-        cookml.setProgver("0.91");
+        cookml.setProgver(mcb.getVersion());
 
-        mcb.getRecipe().forEach((recipe) -> {
-            setRecipe(recipe);
-        });
+        for (Cookbook.Recipe recipe : mcb.getRecipe()) {
+            try {
+                setRecipe(recipe);
+            } catch (Exception ex) {
+                throw new ConvertErrorException("Fehler beim Konvertierung von MCB");
+            }
+        }
     }
 
-    private void setRecipe(Cookbook.Recipe recipe) {
+    private void setRecipe(Cookbook.Recipe recipe) throws Exception {
         Recipe recakt = new Recipe();
         Head headakt = new Head();
 
-        headakt.setTitle(recipe.getTitle());
+//        headakt.setTitle(recipe.getTitle());
+        // TODO: when more than a categroy fehler
         if (recipe.getCategory() != null) {
             headakt.getCat().add(recipe.getCategory());
         } else {
-            headakt.getCat().add("Sonstige");
+            headakt.getCat().add("Andere");
         }
 
         if (recipe.getRating() != null) {
@@ -69,16 +77,11 @@ public class McbToCml {
 
         if (recipe.getQuantity() != null) {
             String[] tmp = recipe.getQuantity().trim().split(" ");
-            try {
-                Float.parseFloat(tmp[0]);
+            if (tmp.length == 2) {
                 headakt.setServingqty(tmp[0]);
-                if (tmp.length == 1) {
-                    headakt.setServingtype("Protionen");
-                } else if (tmp.length == 2) {
-                    headakt.setServingtype(tmp[1]);
-                }
-            } catch (NumberFormatException e) {
-                prepakt.getText().add(recipe.getQuantity());
+                headakt.setServingtype(tmp[1]);
+            } else {
+                headakt.setServingtype(recipe.getQuantity().trim());
             }
         }
 
@@ -94,6 +97,7 @@ public class McbToCml {
             headakt.setTimecookqty(time);
         } else if (recipe.getCooktime() != null) {
             prepakt.getText().add("Zubereitungszeit: " + recipe.getCooktime());
+
         }
 
         time = FormatHelper.setCookTime(recipe.getTotaltime());
@@ -101,6 +105,7 @@ public class McbToCml {
             headakt.setTimeallqty(time);
         } else if (recipe.getTotaltime() != null) {
             prepakt.getText().add("Arbeitzeit: " + recipe.getTotaltime());
+
         }
         recakt.getHeadAndCustomAndPart().add(prepakt);
 
@@ -138,8 +143,9 @@ public class McbToCml {
                 if (f.getName().equals(picpath[picpath.length - 1])) {
                     Picbin picbin = new Picbin();
                     picbin.setFormat("JPG");
-                    picbin.setValue(Utils.file2Byte(f));
+                    picbin.setValue(FileUtils.readFileToByteArray(f));
                     headakt.getPicbin().add(picbin);
+                    break;
                 }
             }
         }

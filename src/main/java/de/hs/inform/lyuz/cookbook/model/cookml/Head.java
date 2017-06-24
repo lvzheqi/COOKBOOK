@@ -274,6 +274,27 @@ public class Head {
         return this.picture;
     }
 
+    public void setHint(List<String> hint) {
+        this.hint = hint;
+    }
+
+    public void setSourceline(List<String> sourceline) {
+        this.sourceline = sourceline;
+    }
+
+    public void setContent(List<Content> content) {
+        this.content = content;
+    }
+
+    public void setPicture(List<Picture> picture) {
+        this.picture = picture;
+    }
+
+    public void setPicbin(List<Picbin> picbin) {
+        this.picbin = picbin;
+    }
+
+    
 
     /**
      * Gets the value of the picbin property.

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+    
+    <firstname>Cooker</firstname>
+    <lastname>Cooker</lastname>
+    
+    <title>KochBuch</title>
+    
+    <bookname>KochBuch</bookname>
+    <type>EPUB3</type>
+    <filepath></filepath>
+    
+    <pic value="true" />
+    <color value="true"/>
+    <cat value="true"/>
+    <source value="false"/>
+    <remark value="false"/>
+    <time value="true"/>
+    <difficulty value="true"/>
+    <cover value="false"/>
+    <coverpath></coverpath>
+    
+    
+</export>

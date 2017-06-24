@@ -8,34 +8,46 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import de.hs.inform.lyuz.cookbook.controller.manager.CategoryManager;
+import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JCheckBox;
 
-public class CategoryPanel extends javax.swing.JPanel {
+public class CategoryPanel extends MyPanel {
 
     private DefaultListModel catTempListModel;
     private DefaultListModel catExtraListModel;
 
-    public CategoryManager categoryManager;
+    private final CategoryManager categoryManager;
 
-    private final CookMainJFrame cookConvert;
-
-    /**
-     * Creates new form CategoriePanel
-     *
-     * @param cookConvert
-     */
     public CategoryPanel(CookMainJFrame cookConvert) {
 
-        this.cookConvert = cookConvert;
-        categoryManager = new CategoryManager();
+        super(cookConvert);
 
         initComponents();
         init();
+
+        categoryManager = new CategoryManager();
+    }
+
+    @Override
+    protected void reload() {
+        catTempListModel = new DefaultListModel();
+        catExtraListModel = new DefaultListModel();
+
+        this.myBook.getCatTemplate().forEach((ct) -> {
+            catTempListModel.addElement(ct);
+        });
+        catTempList.setModel(catTempListModel);
+
+        this.myBook.getCatExtra().forEach((s) -> {
+            catExtraListModel.addElement(s);
+        });
+        catExtraList.setModel(catExtraListModel);
     }
 
     private void init() {
-        allocateBtn.setToolTipText("Bitte die Katelogie Item aus beide Listen auswählen");
-        renameBtn.setToolTipText("Bitte die Katelogie Item aus linken Seite auswählen und umnennen");
-        leftBtn.setToolTipText("Bitte die Katelogie Item aus linken Seite auswählen");
 
         //TODO: 点击空白处,取消所选选项
         catTempList.addMouseListener(new MouseAdapter() {
@@ -52,29 +64,12 @@ public class CategoryPanel extends javax.swing.JPanel {
     }
 
     private boolean isMenuShortcutKeyDown(InputEvent event) {
-
         return (event.getModifiers()
                 & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) != 0;
 
     }
 
-    public void reloadCatList() {
-        catTempListModel = new DefaultListModel();
-        catExtraListModel = new DefaultListModel();
-
-        cookConvert.getMyBook().getCatTemplate().forEach((ct) -> {
-            catTempListModel.addElement(ct);
-        });
-        catTempList.setModel(catTempListModel);
-
-        cookConvert.getMyBook().getCatExtral().forEach((s) -> {
-            catExtraListModel.addElement(s);
-        });
-        catExtraList.setModel(catExtraListModel);
-    }
-
     private void switchListModel(DefaultListModel dModel, int index, boolean UOD) {
-
         Object n1 = dModel.get(index);
         Object n2;
         if (UOD) {
@@ -90,7 +85,22 @@ public class CategoryPanel extends javax.swing.JPanel {
                 dModel.set(index + 1, n1);
             }
         }
+    }
 
+    private void renameTempList(int index) {
+        String catItem = (String) catTempListModel.get(catTempList.getSelectedIndex());
+        String rename = javax.swing.JOptionPane.showInputDialog("Bitte geben einen Name");
+        if (rename != null && !rename.trim().equals("")) {
+            rename = rename.toUpperCase();
+            if (!cookConvert.getMyBook().getCatExtra().contains(rename) && !cookConvert.getMyBook().getCatTemplate().contains(rename)) {
+                catTempListModel.remove(index);
+                catTempListModel.add(index, rename);
+
+                myBook = categoryManager.renameCategory(cookConvert.getMyBook(), catItem, rename);
+            } else {
+                JOptionPane.showMessageDialog(null, "Der Name ist schon vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
+            }
+        }
     }
 
     /**
@@ -116,79 +126,92 @@ public class CategoryPanel extends javax.swing.JPanel {
         renameBtn = new javax.swing.JButton();
         allocateBtn = new javax.swing.JButton();
         backBtn = new javax.swing.JButton();
-        savaCatBtn = new javax.swing.JButton();
+        saveCatBtn = new javax.swing.JButton();
 
+        catTempList.setToolTipText("die kategorien zum Export zeigen");
+        catTempList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                catTempListMouseClicked(evt);
+            }
+        });
         catTemplateSP.setViewportView(catTempList);
 
         catTempLabel.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        catTempLabel.setText("existing categories");
+        catTempLabel.setText("vorhandene Kategorien");
 
         catExtraLabel.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        catExtraLabel.setText("extra categories");
+        catExtraLabel.setText("extra kategoorien");
 
+        catExtraList.setToolTipText("extra kategorien von importierten Dateien zeigen");
         catExtraSP.setViewportView(catExtraList);
 
-        deleteBtn.setText("DELETE");
+        deleteBtn.setText("löschen");
+        deleteBtn.setToolTipText("Bitte eine Kategorie aus linken Seite auswählen");
         deleteBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 deleteBtnActionPerformed(evt);
             }
         });
 
-        upBtn.setText("UP");
+        upBtn.setText("nach oben");
+        upBtn.setToolTipText("Bitte eine Kategorie aus linken Seite auswählen");
         upBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 upBtnActionPerformed(evt);
             }
         });
 
-        downBtn.setText("DOWN");
+        downBtn.setText("nach unter");
+        downBtn.setToolTipText("Bitte eine Kategorie aus linken Seite auswählen");
         downBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 downBtnActionPerformed(evt);
             }
         });
 
-        toExpBtn.setText("NEXT");
+        toExpBtn.setText("nächst");
         toExpBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toExpBtnActionPerformed(evt);
             }
         });
 
-        leftBtn.setText("Left");
+        leftBtn.setText("nach rechts");
+        leftBtn.setToolTipText("Bitte eine Kategorie aus rechte Seite auswählen");
         leftBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 leftBtnActionPerformed(evt);
             }
         });
 
-        renameBtn.setText("RENAME");
+        renameBtn.setText("umbenennen");
+        renameBtn.setToolTipText("Umbenennen nur für vorhandene Kategorien");
         renameBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 renameBtnActionPerformed(evt);
             }
         });
 
-        allocateBtn.setText("MERGE");
+        allocateBtn.setText("zuordnen");
+        allocateBtn.setToolTipText("Bitte eine Kategorie auf jede Spalte auswählen");
         allocateBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 allocateBtnActionPerformed(evt);
             }
         });
 
-        backBtn.setText("BACK");
+        backBtn.setText("zurück");
         backBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 backBtnActionPerformed(evt);
             }
         });
 
-        savaCatBtn.setText("SAVE AS");
-        savaCatBtn.setToolTipText("sava the categories as templete");
-        savaCatBtn.addActionListener(new java.awt.event.ActionListener() {
+        saveCatBtn.setText("speichern");
+        saveCatBtn.setToolTipText("vorhandene Kategorien als Muster speichern");
+        saveCatBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                savaCatBtnActionPerformed(evt);
+                saveCatBtnActionPerformed(evt);
             }
         });
 
@@ -197,9 +220,18 @@ public class CategoryPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
+                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(toExpBtn))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(catTempLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(catExtraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(catTemplateSP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -209,25 +241,13 @@ public class CategoryPanel extends javax.swing.JPanel {
                             .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(renameBtn)
                             .addComponent(allocateBtn)
-                            .addComponent(savaCatBtn))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
-                        .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(52, 52, 52)
-                        .addComponent(catTempLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(catExtraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(57, 57, 57)
-                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(toExpBtn)
-                        .addGap(18, 18, 18)))
+                            .addComponent(saveCatBtn))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                        .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(40, 40, 40))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, savaCatBtn, upBtn});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, saveCatBtn, upBtn});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -251,7 +271,7 @@ public class CategoryPanel extends javax.swing.JPanel {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(allocateBtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(savaCatBtn))
+                                .addComponent(saveCatBtn))
                             .addComponent(catTemplateSP, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
@@ -265,7 +285,7 @@ public class CategoryPanel extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, savaCatBtn, upBtn});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, saveCatBtn, upBtn});
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backBtn, toExpBtn});
 
@@ -273,7 +293,7 @@ public class CategoryPanel extends javax.swing.JPanel {
 
     private void downBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downBtnActionPerformed
         if (catTempList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, "Bitte ein Item aus linken Seite auswählen", "Warnung", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
             return;
         }
         int index = catTempList.getSelectedIndex();
@@ -285,17 +305,26 @@ public class CategoryPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_downBtnActionPerformed
 
     private void toExpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toExpBtnActionPerformed
-        if (!cookConvert.getMyBook().getFiles().isEmpty()) {
-            cookConvert.getCookTabPane().setSelectedComponent(CookMainJFrame.exportPanel);
-        } else {
-            JOptionPane.showMessageDialog(null, "Bitte eine Datei geben", "Warnung", JOptionPane.WARNING_MESSAGE);
-        }
+        if (myBook.getFiles().isEmpty()) {
+            Object[] options = {"zurück", "nächst"};
+            int n = JOptionPane.showOptionDialog(null, "Keine Datein werden importiert.\n Wollen Sie weiter machen?", "Warnung", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (n == 0) {
+                return;
+            }
+        }else if (myBook.getCatTemplate().size()==0) {
+            Object[] options = {"zurück", "nächst"};
+            int n = JOptionPane.showOptionDialog(null, "Keine Kategorien sind vorhanden.\n Wollen Sie weiter machen?", "Warnung", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+            if (n == 0) {
+                return;
+            }
+        } 
+        cookConvert.getCookTabPane().setSelectedComponent(cookConvert.getExportPanel());
     }//GEN-LAST:event_toExpBtnActionPerformed
 
     private void upBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upBtnActionPerformed
 
         if (catTempList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, "Bitte ein Item aus linken Seite auswählen", "Warnung", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
             return;
         }
         int index = catTempList.getSelectedIndex();
@@ -308,85 +337,99 @@ public class CategoryPanel extends javax.swing.JPanel {
 
     private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
 
-        //TODO: 变为一个Dialog
         if (!catTempList.isSelectionEmpty()) {
-            int n = JOptionPane.showConfirmDialog(null, "Katalogie " + catTempListModel.get(catTempList.getSelectedIndex()) + " lösen ?", "Warnung", JOptionPane.YES_NO_OPTION);
+            JCheckBox checkbox = new JCheckBox("Löschen alle Rezepte unter dieser Kategorie,");
+            String tipp = "\t \t \t sonst werden die Rezepte zu ANDERE zugeordnet.";
+            String message = "Wollen Sie die Kategorie" + catTempListModel.get(catTempList.getSelectedIndex()) + " löschen?\n";
+            Object[] params = {message, "\n", checkbox, tipp};
+            int n = JOptionPane.showConfirmDialog(null, params, "Löschen", JOptionPane.YES_NO_OPTION);
             if (n == 0) {
                 String catItem = (String) catTempListModel.get(catTempList.getSelectedIndex());
                 catTempListModel.remove(catTempList.getSelectedIndex());
-                cookConvert.setMyBook(
-                        categoryManager.removeCat4AllList(cookConvert.getMyBook(),catItem, true));
+                myBook = categoryManager.removeCategory(cookConvert.getMyBook(), catItem, checkbox.isSelected());
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_deleteBtnActionPerformed
 
     private void leftBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftBtnActionPerformed
         if (!catExtraList.isSelectionEmpty()) {
-            int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die Item " + catExtraListModel.get(catExtraList.getSelectedIndex()) + " hinzufügen ?", "Warnung", JOptionPane.YES_NO_OPTION);
+            int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die Kategorie " + catExtraListModel.get(catExtraList.getSelectedIndex())
+                    + " auf der linken Seite hinzufügen, \n damit werden alle Rezepte unter der Kategorie importiert", "Warnung", JOptionPane.YES_NO_OPTION);
             if (n == 0) {
                 String catItem = (String) catExtraListModel.get(catExtraList.getSelectedIndex());
 
                 catTempListModel.addElement(catItem);
                 catExtraListModel.remove(catExtraList.getSelectedIndex());
-                cookConvert.setMyBook(
-                        categoryManager.addCatAllList(cookConvert.getMyBook(),catItem));
+
+                myBook = categoryManager.leftCategory(cookConvert.getMyBook(), catItem);
             }
+        } else {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus rechten Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_leftBtnActionPerformed
 
     private void renameBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameBtnActionPerformed
         if (catTempList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, "Bitte ein Item aus linken Seite auswählen ", "Warnung", JOptionPane.YES_NO_OPTION);
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
         } else {
-            String catItem = (String) catTempListModel.get(catTempList.getSelectedIndex());
-            String rename = javax.swing.JOptionPane.showInputDialog("Bitte einen Name eingeben");
-            rename = rename.toUpperCase();
-            if (!cookConvert.getMyBook().getCatAll().contains(rename)) {
-                int index = catTempList.getSelectedIndex();
-                catTempListModel.remove(index);
-                catTempListModel.add(index, rename);
-                cookConvert.setMyBook(
-                        categoryManager.renameCatList(cookConvert.getMyBook(),catItem, rename));
-            } else {
-                JOptionPane.showMessageDialog(null, "Der Name ist schon gegeben!", "Warnung", JOptionPane.YES_NO_OPTION);
-            }
-
+            int index = catTempList.getSelectedIndex();
+            renameTempList(index);
         }
     }//GEN-LAST:event_renameBtnActionPerformed
 
     private void allocateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_allocateBtnActionPerformed
-        if (catExtraList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, "Bitte ein Item aus rechten Seite auswählen ", "Warnung", JOptionPane.YES_NO_OPTION);
+        if (catExtraList.isSelectionEmpty() && catTempList.isSelectionEmpty()) {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie jeweils eine Kategrie aus ", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else if (catExtraList.isSelectionEmpty()) {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie noch eine Kategorie aus rechten Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
         } else if (catTempList.isSelectionEmpty()) {
-            JOptionPane.showMessageDialog(null, "Bitte ein Item aus linken Seite auswählen ", "Warnung", JOptionPane.YES_NO_OPTION);
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie noch eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
         } else {
-            int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die Item " + catExtraListModel.get(catExtraList.getSelectedIndex())
-                    + " mit " + catTempListModel.get(catTempList.getSelectedIndex())
-                    + " hinzufügen ?", "Warnung", JOptionPane.YES_NO_OPTION);
+            int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die Kategorie" + catExtraListModel.get(catExtraList.getSelectedIndex())
+                    + " zu " + catTempListModel.get(catTempList.getSelectedIndex()) + " zuordenen ?",
+                    "Frage", JOptionPane.YES_NO_OPTION);
             if (n == 0) {
                 String cat1 = (String) catExtraListModel.get(catExtraList.getSelectedIndex());
                 String cat2 = (String) catTempListModel.get(catTempList.getSelectedIndex());
                 catExtraListModel.remove(catExtraList.getSelectedIndex());
-                cookConvert.setMyBook(
-                        categoryManager.allocateCatList(cookConvert.getMyBook(),cat1, cat2));
+
+                myBook = categoryManager.allocateCatList(cookConvert.getMyBook(), cat1, cat2);
             }
         }
     }//GEN-LAST:event_allocateBtnActionPerformed
 
     private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backBtnActionPerformed
-        int n = JOptionPane.showConfirmDialog(null, "Die geänderte Katelogie werden nicht gespreichert. Wollen Sie noch zurückgeben?", "Warnung", JOptionPane.YES_NO_OPTION);
-        if (n == 0) {
-            cookConvert.getCookTabPane().setSelectedComponent(CookMainJFrame.importPanel);
-        }
-
+        cookConvert.getCookTabPane().setSelectedComponent(cookConvert.getImportPanel());
     }//GEN-LAST:event_backBtnActionPerformed
 
-    private void savaCatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_savaCatBtnActionPerformed
-        int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die Katelogie von der linken Seite ansatt der alten als Muster spreichern?", "Warnung", JOptionPane.YES_NO_OPTION);
-        if (n == 0) {
-            CategoryManager.writeCatTemplate(cookConvert.getMyBook().getCatTemplate());
+    private void saveCatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveCatBtnActionPerformed
+        if (catTempList.isSelectionEmpty()) {
+            JOptionPane.showMessageDialog(null, "Keine Kategorien in linken Seite für Speichern", "Warnung", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    }//GEN-LAST:event_savaCatBtnActionPerformed
+
+        int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die vorhanden Kategorien als Muster speichern?", "Warnung", JOptionPane.YES_NO_OPTION);
+        if (n == 0) {
+            try {
+                ConfUtils.updateCatTemplate(myBook.getCatTemplate());
+            } catch (IOException ex) {
+                Logger.getLogger(CategoryPanel.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(null, "Fehler beim Spreichern Kategorien", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_saveCatBtnActionPerformed
+
+    private void catTempListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_catTempListMouseClicked
+        JList list = (JList) evt.getSource();
+        if (evt.getClickCount() == 2) {
+            int index = list.locationToIndex(evt.getPoint());
+            if (index > -1) {
+                renameTempList(index);
+            }
+        }
+    }//GEN-LAST:event_catTempListMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -402,8 +445,9 @@ public class CategoryPanel extends javax.swing.JPanel {
     private javax.swing.JButton downBtn;
     private javax.swing.JButton leftBtn;
     private javax.swing.JButton renameBtn;
-    private javax.swing.JButton savaCatBtn;
+    private javax.swing.JButton saveCatBtn;
     private javax.swing.JButton toExpBtn;
     private javax.swing.JButton upBtn;
     // End of variables declaration//GEN-END:variables
+
 }

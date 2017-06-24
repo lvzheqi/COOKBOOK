@@ -2,57 +2,65 @@ package de.hs.inform.lyuz.cookbook.gui;
 
 import java.io.File;
 import javax.swing.JFileChooser;
-import de.hs.inform.lyuz.cookbook.help.ExportInfo;
-
+import de.hs.inform.lyuz.cookbook.model.ExportInfo;
+import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 
 public class SettingDialog extends javax.swing.JDialog {
 
-    /**
-     * Creates new form SettingDialog
-     *
-     * @param parent
-     * @param modal
-     */
-    public SettingDialog(java.awt.Frame parent, boolean modal) {
+    private final ExportInfo exportInfo;
+
+    public SettingDialog(CookMainJFrame parent, boolean modal) {
         super(parent, modal);
 
+        exportInfo = parent.getMyBook().getExportInfo();
+
         initComponents();
-        init();
+        init(parent.getExportPanel().getType());
 
         setLocationRelativeTo(null);
     }
 
-    private void init() {
-        firstNameTF.setText(ExportInfo.firstName);
-        lastNameTF.setText(ExportInfo.lastName);
-        titleTF.setText(ExportInfo.title);
-        
-        hasPicCB.setSelected(ExportInfo.hasPic);
-        isColorCB.setSelected(ExportInfo.isColor);
-        
-        hasCatCB.setSelected(ExportInfo.hasCat);
-        hasIndexCB.setSelected(ExportInfo.hasIndex);
-        hasSourceCB.setSelected(ExportInfo.hasSource);
-        hasRemarkCB.setSelected(ExportInfo.hasRemark);
-        hasTimeCB.setSelected(ExportInfo.hasTime);
-        hasDifficultyCB.setSelected(ExportInfo.hasDiffculty);
-        
-        hasCover.setSelected(ExportInfo.hasCover);
-        coverTF.setText(ExportInfo.coverPath);
+    private void init(String type) {
+        firstNameTF.setText(exportInfo.getFirstName());
+        lastNameTF.setText(exportInfo.getLastName());
+        titleTF.setText(exportInfo.getTitle());
+
+        hasPicCB.setSelected(exportInfo.isHasPic());
+        isColorCB.setSelected(exportInfo.isIsColor());
+
+        hasCatCB.setSelected(exportInfo.isHasCat());
+        hasIndexCB.setSelected(exportInfo.isHasIndex());
+        hasSourceCB.setSelected(exportInfo.isHasSource());
+        hasRemarkCB.setSelected(exportInfo.isHasRemark());
+        hasTimeCB.setSelected(exportInfo.isHasTime());
+        hasDifficultyCB.setSelected(exportInfo.isHasDiffculty());
+
+        hasCover.setSelected(exportInfo.isHasCover());
+        coverTF.setText(exportInfo.getCoverPath());
         coverTF.setEnabled(false);
         fileChooseBtn.setEnabled(false);
-        
-        
-        switch (ExportInfo.exportTyp) {
-            case "MM":
-            case "CML":
-            case "MCB":
-                hasPicCB.setEnabled(false);
-                hasCatCB.setEnabled(false);
-                hasIndexCB.setEnabled(false);
+
+        switch (type) {
+            case "LATEX":
+                hasCatCB.setSelected(true);
                 hasCover.setEnabled(false);
                 coverTF.setEnabled(false);
                 fileChooseBtn.setEnabled(false);
+                hasDifficultyCB.setEnabled(false);
+                break;
+            case "CML":
+                hasIndexCB.setEnabled(false);
+                isColorCB.setEnabled(false);
+                hasCatCB.setEnabled(false);
+                hasCover.setEnabled(false);
+                coverTF.setEnabled(false);
+                fileChooseBtn.setEnabled(false);
+                break;
+            case "EPUB3":
+                hasCatCB.setSelected(true);
+                hasCatCB.setEnabled(false);
                 break;
             default:
                 break;
@@ -71,11 +79,7 @@ public class SettingDialog extends javax.swing.JDialog {
         titleLabel = new javax.swing.JLabel();
         settingLabel = new javax.swing.JLabel();
         saveBtn = new javax.swing.JButton();
-        lastNameLabel = new javax.swing.JLabel();
         cancelBtn = new javax.swing.JButton();
-        firstNameLabel = new javax.swing.JLabel();
-        lastNameTF = new javax.swing.JTextField();
-        firstNameTF = new javax.swing.JTextField();
         titleTF = new javax.swing.JTextField();
         hasPicPanel = new javax.swing.JPanel();
         hasPicCB = new javax.swing.JCheckBox();
@@ -91,42 +95,40 @@ public class SettingDialog extends javax.swing.JDialog {
         hasCover = new javax.swing.JCheckBox();
         coverTF = new javax.swing.JTextField();
         fileChooseBtn = new javax.swing.JButton();
+        autorPanel = new javax.swing.JPanel();
+        firstNameLabel = new javax.swing.JLabel();
+        lastNameLabel = new javax.swing.JLabel();
+        firstNameTF = new javax.swing.JTextField();
+        lastNameTF = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        titleLabel.setText("title:");
+        titleLabel.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
+        titleLabel.setText("TITLEL");
 
         settingLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
-        settingLabel.setText("Settings");
+        settingLabel.setText("Einstellung");
 
-        saveBtn.setText("SAVE");
+        saveBtn.setText("speichern");
         saveBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveBtnActionPerformed(evt);
             }
         });
 
-        lastNameLabel.setText("last name:");
-
-        cancelBtn.setText("CANCEL");
+        cancelBtn.setText("abbrechnen");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
             }
         });
 
-        firstNameLabel.setText("first name:");
-
-        lastNameTF.setText("Tester");
-
-        firstNameTF.setText("Rossmann");
-
         titleTF.setText("CookBook");
 
-        hasPicPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("picture"));
+        hasPicPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Bilder"));
 
         hasPicCB.setSelected(true);
-        hasPicCB.setText("picture");
+        hasPicCB.setText("Bilder");
         hasPicCB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 hasPicCBActionPerformed(evt);
@@ -134,14 +136,14 @@ public class SettingDialog extends javax.swing.JDialog {
         });
 
         isColorCB.setSelected(true);
-        isColorCB.setText("color");
+        isColorCB.setText("Color");
 
         javax.swing.GroupLayout hasPicPanelLayout = new javax.swing.GroupLayout(hasPicPanel);
         hasPicPanel.setLayout(hasPicPanelLayout);
         hasPicPanelLayout.setHorizontalGroup(
             hasPicPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(hasPicPanelLayout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
+                .addContainerGap(39, Short.MAX_VALUE)
                 .addComponent(hasPicCB)
                 .addGap(18, 18, 18)
                 .addComponent(isColorCB)
@@ -156,73 +158,67 @@ public class SettingDialog extends javax.swing.JDialog {
                     .addComponent(isColorCB)))
         );
 
-        contentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("content"));
+        contentPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Inhalt"));
 
-        hasSourceCB.setText("source");
+        hasSourceCB.setText("Quelle");
 
-        hasRemarkCB.setText("remark");
+        hasRemarkCB.setText("Bemerkung");
 
         hasCatCB.setSelected(true);
-        hasCatCB.setText("tabel of contents");
+        hasCatCB.setText("Inhaltsverzeichnis");
         hasCatCB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 hasCatCBActionPerformed(evt);
             }
         });
 
-        hasIndexCB.setText("index");
+        hasIndexCB.setText("Index");
 
-        hasTimeCB.setText("cooktime");
+        hasTimeCB.setSelected(true);
+        hasTimeCB.setText("Kochenzeit");
         hasTimeCB.setToolTipText("");
 
-        hasDifficultyCB.setText("difficulty");
+        hasDifficultyCB.setSelected(true);
+        hasDifficultyCB.setText("Schwerigkeit");
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(contentPanelLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(contentPanelLayout.createSequentialGroup()
-                        .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(contentPanelLayout.createSequentialGroup()
-                                .addComponent(hasRemarkCB)
-                                .addGap(102, 102, 102))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, contentPanelLayout.createSequentialGroup()
-                                .addComponent(hasCatCB)
-                                .addGap(39, 39, 39)))
-                        .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(hasIndexCB)
-                            .addComponent(hasTimeCB)))
-                    .addGroup(contentPanelLayout.createSequentialGroup()
-                        .addComponent(hasSourceCB)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(hasDifficultyCB)))
+                .addContainerGap()
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hasCatCB)
+                    .addComponent(hasDifficultyCB)
+                    .addComponent(hasTimeCB))
+                .addGap(18, 18, 18)
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hasIndexCB)
+                    .addComponent(hasSourceCB)
+                    .addComponent(hasRemarkCB))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(contentPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hasIndexCB)
-                    .addComponent(hasCatCB))
-                .addGap(27, 27, 27)
-                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hasRemarkCB)
-                    .addComponent(hasTimeCB))
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(hasCatCB, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(hasIndexCB))
                 .addGap(18, 18, 18)
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hasSourceCB)
-                    .addComponent(hasDifficultyCB))
-                .addContainerGap(39, Short.MAX_VALUE))
+                    .addComponent(hasTimeCB)
+                    .addComponent(hasSourceCB))
+                .addGap(18, 18, 18)
+                .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(hasDifficultyCB)
+                    .addComponent(hasRemarkCB))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
-        coverPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("cover"));
+        coverPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Cover"));
 
-        hasCover.setSelected(true);
-        hasCover.setText("cover");
+        hasCover.setText("Cover");
         hasCover.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 hasCoverActionPerformed(evt);
@@ -241,9 +237,9 @@ public class SettingDialog extends javax.swing.JDialog {
         coverPanelLayout.setHorizontalGroup(
             coverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(coverPanelLayout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
+                .addContainerGap(23, Short.MAX_VALUE)
                 .addComponent(hasCover)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(coverTF, javax.swing.GroupLayout.PREFERRED_SIZE, 422, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fileChooseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -251,13 +247,56 @@ public class SettingDialog extends javax.swing.JDialog {
         );
         coverPanelLayout.setVerticalGroup(
             coverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(coverPanelLayout.createSequentialGroup()
-                .addContainerGap(7, Short.MAX_VALUE)
+            .addGroup(coverPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(coverTF, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
                 .addComponent(hasCover))
-            .addComponent(coverTF)
             .addGroup(coverPanelLayout.createSequentialGroup()
                 .addComponent(fileChooseBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        autorPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Autor"));
+
+        firstNameLabel.setText("Vorname:");
+
+        lastNameLabel.setText("Nachname:");
+
+        firstNameTF.setText("Cooker");
+
+        lastNameTF.setText("Cooker");
+
+        javax.swing.GroupLayout autorPanelLayout = new javax.swing.GroupLayout(autorPanel);
+        autorPanel.setLayout(autorPanelLayout);
+        autorPanelLayout.setHorizontalGroup(
+            autorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(autorPanelLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(autorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(autorPanelLayout.createSequentialGroup()
+                        .addComponent(firstNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                        .addComponent(firstNameTF, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE))
+                    .addGroup(autorPanelLayout.createSequentialGroup()
+                        .addComponent(lastNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lastNameTF)))
+                .addContainerGap())
+        );
+
+        autorPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {firstNameTF, lastNameTF});
+
+        autorPanelLayout.setVerticalGroup(
+            autorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(autorPanelLayout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(autorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(firstNameLabel)
+                    .addComponent(firstNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(autorPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lastNameLabel)
+                    .addComponent(lastNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -266,71 +305,55 @@ public class SettingDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(29, 29, 29)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(settingLabel)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(cancelBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(saveBtn)
+                        .addGap(27, 27, 27))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cancelBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(saveBtn))
-                            .addComponent(coverPanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(lastNameTF)
-                                        .addComponent(firstNameTF, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(titleLabel)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(titleTF))
-                                            .addComponent(hasPicPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(4, 4, 4)
-                                        .addComponent(firstNameLabel))
-                                    .addComponent(lastNameLabel))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(27, 27, 27))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                        .addGap(12, 12, 12)
+                                        .addComponent(titleLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(titleTF, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(16, 16, 16))
+                                    .addComponent(hasPicPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(autorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(26, 26, 26)
+                                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(settingLabel)
+                                .addComponent(coverPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 30, Short.MAX_VALUE))))
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {firstNameTF, lastNameTF, titleTF});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addComponent(settingLabel)
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(firstNameLabel)
-                            .addComponent(firstNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lastNameLabel)
-                            .addComponent(lastNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(titleLabel)
-                            .addComponent(titleTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(12, 12, 12)
-                        .addComponent(hasPicPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(titleTF, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(autorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(hasPicPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(coverPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelBtn)
                     .addComponent(saveBtn))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
-
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lastNameTF, titleTF});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -340,13 +363,25 @@ public class SettingDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_hasCatCBActionPerformed
 
     private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
-        ExportInfo.updateBookInfo(firstNameTF.getText(), lastNameTF.getText(),
-                titleTF.getText(), hasPicCB.isSelected(), isColorCB.isSelected(), 
-                hasCatCB.isSelected(), hasIndexCB.isSelected(), 
-                hasSourceCB.isSelected(), hasRemarkCB.isSelected(),
-                hasTimeCB.isSelected(), hasDifficultyCB.isSelected(),
-                hasCover.isSelected(), coverTF.getText());
-        dispose();
+
+        if (titleTF.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Bitte geben Sie einen Titel ein", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else if (firstNameTF.getText().equals("") || lastNameTF.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Bitte geben Sie einen Name ein", "Warnung", JOptionPane.WARNING_MESSAGE);
+        } else {
+            exportInfo.updateBookInfo(firstNameTF.getText(), lastNameTF.getText(),
+                    titleTF.getText(), hasPicCB.isSelected(), isColorCB.isSelected(),
+                    hasCatCB.isSelected(), hasIndexCB.isSelected(),
+                    hasSourceCB.isSelected(), hasRemarkCB.isSelected(),
+                    hasTimeCB.isSelected(), hasDifficultyCB.isSelected(),
+                    hasCover.isSelected(), coverTF.getText());
+            try {
+                ConfUtils.updateExportInfo(exportInfo);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Fehler beim Speichern Export Information", "Fehler", JOptionPane.ERROR_MESSAGE);
+            }
+            dispose();
+        }
     }//GEN-LAST:event_saveBtnActionPerformed
 
     private void fileChooseBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileChooseBtnActionPerformed
@@ -365,7 +400,7 @@ public class SettingDialog extends javax.swing.JDialog {
             case JFileChooser.APPROVE_OPTION:
                 File file = file = fc.getSelectedFile();
                 coverTF.setText(file.getAbsolutePath());
-                ExportInfo.coverPath = file.getAbsolutePath();
+                exportInfo.setCoverPath(file.getAbsolutePath());
                 break;
             default:
                 break;
@@ -373,14 +408,14 @@ public class SettingDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_fileChooseBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-        dispose();
+       dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void hasCoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasCoverActionPerformed
         if (!hasCover.isSelected()) {
             coverTF.setEnabled(false);
             fileChooseBtn.setEnabled(false);
-        }else {
+        } else {
             coverTF.setEnabled(true);
             fileChooseBtn.setEnabled(true);
         }
@@ -389,13 +424,14 @@ public class SettingDialog extends javax.swing.JDialog {
     private void hasPicCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasPicCBActionPerformed
         if (!hasPicCB.isSelected()) {
             isColorCB.setEnabled(false);
-        }else {
+        } else {
             isColorCB.setEnabled(true);
         }
     }//GEN-LAST:event_hasPicCBActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel autorPanel;
     private javax.swing.JButton cancelBtn;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JPanel coverPanel;
@@ -420,4 +456,9 @@ public class SettingDialog extends javax.swing.JDialog {
     private javax.swing.JLabel titleLabel;
     private javax.swing.JTextField titleTF;
     // End of variables declaration//GEN-END:variables
+
+    public ExportInfo getExportInfo() {
+        return exportInfo;
+    }
+
 }

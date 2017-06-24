@@ -1,28 +1,37 @@
 package de.hs.inform.lyuz.cookbook.gui;
 
-
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import de.hs.inform.lyuz.cookbook.controller.parser.FileParser;
+import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
+import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
+import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
 
 
 public class CookMainJFrame extends javax.swing.JFrame {
 
-    public static ImportPanel importPanel;
-    public static CategoryPanel categoryPanel;
-    public static ExportPanel exportPanel;
+    private ImportPanel importPanel;
+    private CategoryPanel categoryPanel;
+    private ExportPanel exportPanel;
 
-    private final FileParser fileParser;
+    private int previousTabIndex;
+
+    private FileParser fileParser = null;
     private MyBook myBook;
-    
-    
+
     public CookMainJFrame() {
-        
-        fileParser = new FileParser();
-        myBook = fileParser.getMyBook();
-        
+
+        try {
+            fileParser = new FileParser();
+            myBook = fileParser.getMyBook();
+        } catch (SystemErrorException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
+
         initComponents();
         init();
 
@@ -38,29 +47,48 @@ public class CookMainJFrame extends javax.swing.JFrame {
         cookTabPane.addTab("Category", categoryPanel);
         cookTabPane.addTab("Export", exportPanel);
 
-        cookTabPane.addChangeListener((ChangeEvent e) -> {
-            JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
-            int selectedIndex = tabbedPane.getSelectedIndex();
-            switch (selectedIndex) {
-                case 1:
-                case 2:
-                    if (!fileParser.getMyBook().getFiles().isEmpty() && ImportPanel.action) {
-                        JOptionPane.showMessageDialog(null, "Die Kategorien werden neu importiert.", "Warnung", JOptionPane.WARNING_MESSAGE);
+        previousTabIndex = cookTabPane.getSelectedIndex();
+
+        cookTabPane.addChangeListener(
+                (ChangeEvent e) -> {
+
+                    MyPanel myPanel = (MyPanel) cookTabPane.getComponentAt(previousTabIndex);
+                    this.myBook = myPanel.getMyBook();
+
+                    JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
+                    int selectedIndex = tabbedPane.getSelectedIndex();
+                    switch (selectedIndex) {
+                        case 0:
+                            importPanel.update(this);
+                            previousTabIndex = 0;
+                            break;
+                        case 1:
+
+                            if (!fileParser.getMyBook().getFiles().isEmpty() && ImportPanel.action) {
+                                JOptionPane.showMessageDialog(null, "Die Kategorien werden wieder importiert", "Warnung", JOptionPane.WARNING_MESSAGE);
+                            }
+                            if (ImportPanel.action) {
+                                try {
+                                    fileParser.reloadFiles(importPanel.getFiles());
+                                } catch (ParserErrorExcepetion | ConvertErrorException ex) {
+                                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                                } finally {
+                                    ExportInfo exportInfo = myBook.getExportInfo();
+                                    myBook = fileParser.getMyBook();
+                                    myBook.setExportInfo(exportInfo);
+                                    ImportPanel.action = false;
+                                }
+                            }
+                            categoryPanel.update(this);
+                            previousTabIndex = 1;
+                            break;
+                        case 2:
+                            exportPanel.update(this);
+                            previousTabIndex = 2;
+                            break;
                     }
-                    if (ImportPanel.action) {
-                        
-                        fileParser.reloadFiles(importPanel.getFiles());    
-                        myBook = fileParser.getMyBook();
-                        
-                   
-                        categoryPanel.reloadCatList();
-                        ImportPanel.action = false;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        });
+                }
+        );
 
     }
 
@@ -80,42 +108,41 @@ public class CookMainJFrame extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(cookTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(cookTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(cookTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(cookTabPane, javax.swing.GroupLayout.PREFERRED_SIZE, 399, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>                        
 
-
-    public static ImportPanel getImportPanel() {
+    public ImportPanel getImportPanel() {
         return importPanel;
     }
 
-    public static void setImportPanel(ImportPanel importPanel) {
-        CookMainJFrame.importPanel = importPanel;
+    public void setImportPanel(ImportPanel importPanel) {
+        this.importPanel = importPanel;
     }
 
-    public static CategoryPanel getCategoryPanel() {
+    public CategoryPanel getCategoryPanel() {
         return categoryPanel;
     }
 
-    public static void setCategoryPanel(CategoryPanel categoryPanel) {
-        CookMainJFrame.categoryPanel = categoryPanel;
+    public void setCategoryPanel(CategoryPanel categoryPanel) {
+        this.categoryPanel = categoryPanel;
     }
 
-    public static ExportPanel getExportPanel() {
+    public ExportPanel getExportPanel() {
         return exportPanel;
     }
 
-    public static void setExportPanel(ExportPanel exportPanel) {
-        CookMainJFrame.exportPanel = exportPanel;
+    public void setExportPanel(ExportPanel exportPanel) {
+        this.exportPanel = exportPanel;
     }
 
     public JTabbedPane getCookTabPane() {
@@ -134,10 +161,7 @@ public class CookMainJFrame extends javax.swing.JFrame {
         this.myBook = myBook;
     }
 
-
-    
     // Variables declaration - do not modify                     
     private javax.swing.JTabbedPane cookTabPane;
     // End of variables declaration                   
 }
-
