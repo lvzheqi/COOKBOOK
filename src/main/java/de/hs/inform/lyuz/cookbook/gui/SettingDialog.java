@@ -45,6 +45,7 @@ public class SettingDialog extends javax.swing.JDialog {
         switch (type) {
             case "LATEX":
                 hasCatCB.setSelected(true);
+                hasCatCB.setEnabled(false);
                 hasCover.setEnabled(false);
                 coverTF.setEnabled(false);
                 fileChooseBtn.setEnabled(false);

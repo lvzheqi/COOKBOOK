@@ -182,7 +182,7 @@ public class CmlToEpubObject {
                 //pic-List for epub2
                 epub.getPicList().add(path);
 
-                EpubItem item = new EpubItem("images/" + filename, "image/" + pic.getFormat(), false);
+                EpubItem item = new EpubItem("images/" + filename, "image/jpeg", false);
                 addItem2OPF(item);
                 
             } catch (Exception ex) {

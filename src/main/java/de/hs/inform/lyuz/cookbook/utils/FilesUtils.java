@@ -5,7 +5,10 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -59,15 +62,37 @@ public class FilesUtils {
         }
     }
 
+        public static String readFile(File f) {
+        StringBuilder stringBuilder = null;
+        try {
+            InputStreamReader read = new InputStreamReader(
+                    new FileInputStream(f), StandardCharsets.ISO_8859_1);
+            BufferedReader bufferedReader = new BufferedReader(read);
+            String lineTxt;
+            stringBuilder = new StringBuilder();
+
+            while ((lineTxt = bufferedReader.readLine()) != null) {
+                stringBuilder.append(lineTxt);
+                stringBuilder.append("\n");
+              }
+            read.close();
+
+        } catch (IOException e) {
+            Logger.getLogger(FilesUtils.class
+                    .getName()).log(Level.SEVERE, null, e);
+
+        }
+      return String.valueOf(stringBuilder);
+    }
     public static void compress(ZipOutputStream out, File sourceFile, String base) throws IOException {
 
         if (sourceFile.isDirectory()) {
             File[] flist = sourceFile.listFiles();
             if (flist.length == 0) {
-                out.putNextEntry(new ZipEntry(base + File.separator));
+                out.putNextEntry(new ZipEntry(base + "/"));
             } else {
                 for (File f : flist) {
-                    compress(out, f, base + File.separator + f.getName());
+                    compress(out, f, base + "/" + f.getName());
                 }
             }
         } else {

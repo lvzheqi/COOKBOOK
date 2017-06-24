@@ -279,9 +279,9 @@ public class CategoryPanel extends MyPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(backBtn)
-                    .addComponent(toExpBtn))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(toExpBtn)
+                    .addComponent(backBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -405,7 +405,7 @@ public class CategoryPanel extends MyPanel {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void saveCatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveCatBtnActionPerformed
-        if (catTempList.isSelectionEmpty()) {
+        if (myBook.getCatTemplate().size()==0) {
             JOptionPane.showMessageDialog(null, "Keine Kategorien in linken Seite für Speichern", "Warnung", JOptionPane.WARNING_MESSAGE);
             return;
         }

@@ -4,6 +4,7 @@ import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import de.hs.inform.lyuz.cookbook.model.cookml.*;
 import de.hs.inform.lyuz.cookbook.model.cookml.Recipe.Part;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
+import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
@@ -25,7 +26,8 @@ public class BsToCml {
     public BsToCml(File f) throws ConvertErrorException {
         String bs;
         try {
-            bs = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
+//            bs = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
+            bs = FilesUtils.readFile(f);
             cookml = new Cookml();
             cookml.setProg("B&S");
             cookml.setProgver("0.91");

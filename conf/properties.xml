@@ -4,15 +4,15 @@
 	<lastname>Cooker</lastname>
 	<title>CookBook</title>
 	<bookname>CookBook</bookname>
-	<type>CML</type>
-	<filepath>/Users/xuer/NetBeansProjects/COOKBOOK//</filepath>
-	<pic value="false" />
-	<color value="true" />
-	<cat value="false" />
-	<source value="false" />
+	<type>EPUB3</type>
+	<filepath>C:\Users\lvzhe\Documents\NetBeansProjects\COOKBOOK\\</filepath>
+	<pic value="true" />
+	<color value="false" />
+	<cat value="true" />
+	<source value="true" />
 	<remark value="true" />
-	<time value="false" />
-	<difficulty value="false" />
-	<cover value="false" />
-	<coverpath />
+	<time value="true" />
+	<difficulty value="true" />
+	<cover value="true" />
+	<coverpath>C:\Users\lvzhe\Documents\NetBeansProjects\COOKBOOK\LATEX\image\cookbook_1.jpg</coverpath>
 </export>

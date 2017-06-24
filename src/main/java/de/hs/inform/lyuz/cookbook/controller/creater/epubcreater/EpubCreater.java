@@ -74,8 +74,8 @@ public class EpubCreater {
             throw new SystemErrorException("Fehler beim Lesen Config.sys Information");
         }
         try {
-            FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.png"));
-            FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.png"));
+            FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.jpg"));
+            FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.jpg"));
             FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.EPUB_SPEC_CSS), new File(filepath + "EPUB" + File.separator + "css" + File.separator + "epub-spec.css"));
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
@@ -114,9 +114,10 @@ public class EpubCreater {
         // pic resources
         if (myBook.getExportInfo().isHasPic()) {
             for (String pic : epub2.getPicList()) {
-                String[] picname = pic.split(File.separator);
+                String picname = pic.substring(pic.lastIndexOf(File.separator)+1);
+//                String[] picname = pic.split(File.separator);
                 try {
-                    book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(pic)), "images/" + picname[picname.length - 1]));
+                    book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(pic)), "images/" + picname));
                 } catch (Exception ex) {
                     Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
                     System.err.println("Fehler beim Bild Geben -- EPUB2");
@@ -133,13 +134,6 @@ public class EpubCreater {
                 book.addSection("Inhaltsverzeichnis", new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "toc.html")), "toc.html"));
             }
 
-            // index
-            if (myBook.getExportInfo().isHasIndex()) {
-                InputStream inputStream = EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.INDEX_XSL);
-                FilesUtils.writeDOMHTML(inputStream, epub2.getIndexDom(), filepath + "EPUB" + File.separator + "index.html");
-                book.addSection("Index", new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "index.html")), "index.html"));
-            }
-
             JAXBContext jc = JAXBContext.newInstance("de.hs.inform.lyuz.cookbook.model.cookml");
             Transformer tf = TransformerFactory.newInstance().newTransformer(new StreamSource(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.COOKML_XSL)));
             for (String cat : epub2.getCookmls().keySet()) {
@@ -148,6 +142,13 @@ public class EpubCreater {
                 Result result = new StreamResult(new File(fname));
                 tf.transform(source, result);
                 book.addSection(cat, new Resource(FileUtils.readFileToByteArray(new File(fname)), cat + ".html"));
+            }
+            
+            // index
+            if (myBook.getExportInfo().isHasIndex()) {
+                InputStream inputStream = EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.INDEX_XSL);
+                FilesUtils.writeDOMHTML(inputStream, epub2.getIndexDom(), filepath + "EPUB" + File.separator + "index.html");
+                book.addSection("Index", new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "index.html")), "index.html"));
             }
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);

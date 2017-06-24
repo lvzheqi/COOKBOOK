@@ -42,7 +42,7 @@ public class McbToCml {
         Recipe recakt = new Recipe();
         Head headakt = new Head();
 
-//        headakt.setTitle(recipe.getTitle());
+        headakt.setTitle(recipe.getTitle());
         // TODO: when more than a categroy fehler
         if (recipe.getCategory() != null) {
             headakt.getCat().add(recipe.getCategory());

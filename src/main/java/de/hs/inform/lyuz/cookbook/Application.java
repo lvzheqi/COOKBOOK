@@ -1,6 +1,7 @@
 package de.hs.inform.lyuz.cookbook;
 
 import de.hs.inform.lyuz.cookbook.gui.CookMainJFrame;
+import java.io.File;
 
 public class Application {
 

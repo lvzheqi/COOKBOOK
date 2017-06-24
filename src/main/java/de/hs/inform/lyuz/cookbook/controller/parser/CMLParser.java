@@ -9,6 +9,7 @@ import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,12 +28,12 @@ public class CMLParser {
             jc = JAXBContext.newInstance("de.hs.inform.lyuz.cookbook.model.cookml");
 
             //ignore DTD check
-            XMLInputFactory xif = XMLInputFactory.newFactory();
-            xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+//            XMLInputFactory xif = XMLInputFactory.newFactory();
+//            xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+//            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
 
             Unmarshaller u = jc.createUnmarshaller();
-            cookml = (Cookml) u.unmarshal(xsr);
+            cookml = (Cookml) u.unmarshal(f);
         } catch (Exception ex) {
             Logger.getLogger(CMLParser.class.getName()).log(Level.SEVERE, null, ex);
             throw new ParserErrorExcepetion("Fehler Beim CML Parser");
@@ -46,7 +47,7 @@ public class CMLParser {
     private InputStream checkCML(File file) throws ParserErrorExcepetion {
         String owText = "";
         try {
-            String cmlText = FileUtils.readFileToString(file, "UTF-8");
+            String cmlText = FileUtils.readFileToString(file, StandardCharsets.ISO_8859_1);
             Scanner scanner = new Scanner(cmlText);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
