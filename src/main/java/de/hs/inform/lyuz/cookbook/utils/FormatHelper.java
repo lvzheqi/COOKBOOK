@@ -74,7 +74,6 @@ public class FormatHelper {
             case "oz.fl.":
                 unitForm = "fl.oz.";
                 break;
-            case "g":
             case "gal":
             case "gal.":
                 unitForm = "Gallon";
@@ -170,7 +169,6 @@ public class FormatHelper {
             case "Tr":
                 unitForm = "Tropfen";
                 break;
-
             default:
                 break;
         }

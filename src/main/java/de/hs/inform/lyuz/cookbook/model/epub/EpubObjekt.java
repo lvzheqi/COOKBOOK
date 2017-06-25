@@ -11,21 +11,62 @@ import org.jdom2.Element;
 
 public class EpubObjekt {
 
-    public TreeMap<String, TreeMap<String, TreeMap<EpubLink, Integer>>> indexMap;
-    public HashMap<Integer, EpubLink> navMap;
+    private TreeMap<String, TreeMap<String, TreeMap<EpubLink, Integer>>> indexMap;
+    private HashMap<Integer, EpubLink> navMap;
 
-    public List<Element> elements;
-    public List<EpubItem> items;
+    private List<Element> elements;
+    private List<EpubItem> items;
 
-    public int index = 1;
-    
+    private int index = 1;
+
     private Document indexDom;
     private Document navDom;
     private Document opfDom;
-    
-    public LinkedHashMap<String, Cookml> cookmls = new LinkedHashMap<>();
-    private List<String> picList = new ArrayList<>();
 
+    private LinkedHashMap<String, Cookml> cookmls;
+    private List<String> picList;
+
+    public TreeMap<String, TreeMap<String, TreeMap<EpubLink, Integer>>> getIndexMap() {
+        return indexMap;
+    }
+
+    public void setIndexMap(TreeMap<String, TreeMap<String, TreeMap<EpubLink, Integer>>> indexMap) {
+        this.indexMap = indexMap;
+    }
+
+    public HashMap<Integer, EpubLink> getNavMap() {
+        return navMap;
+    }
+
+    public void setNavMap(HashMap<Integer, EpubLink> navMap) {
+        this.navMap = navMap;
+    }
+
+    public List<Element> getElements() {
+        return elements;
+    }
+
+    public void setElements(List<Element> elements) {
+        this.elements = elements;
+    }
+
+    public List<EpubItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<EpubItem> items) {
+        this.items = items;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    
     public List<String> getPicList() {
         return picList;
     }
@@ -65,13 +106,14 @@ public class EpubObjekt {
     public void setOpfDom(Document opfDom) {
         this.opfDom = opfDom;
     }
-    
-    
+
     public EpubObjekt() {
         index = 1;
+        cookmls = new LinkedHashMap<>();
         navMap = new HashMap<>();
         elements = new ArrayList<>();
         items = new ArrayList<>();
         indexMap = new TreeMap<>();
+        picList = new ArrayList<>();
     }
 }

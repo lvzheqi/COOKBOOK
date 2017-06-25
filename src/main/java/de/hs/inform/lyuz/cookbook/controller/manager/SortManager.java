@@ -6,7 +6,7 @@ import java.util.*;
 
 public class SortManager {
 
-    private final MyBook myBook;
+    private MyBook myBook;
 
     
     public SortManager(MyBook myBook) {
@@ -16,7 +16,7 @@ public class SortManager {
     public MyBook sortCML(){
         sortCategory();
         refactorCookml();
-        return this.myBook;        
+        return myBook;        
     }
     
     private void refactorCookml() {

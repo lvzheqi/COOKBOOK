@@ -16,8 +16,8 @@ import org.apache.commons.io.FileUtils;
  */
 public class McbToCml {
 
-    private final Cookml cookml;
-    private final MCBParser mcbParser;
+    private Cookml cookml;
+    private MCBParser mcbParser;
 
     public McbToCml(File f) throws ParserErrorExcepetion, ConvertErrorException {
 
@@ -42,7 +42,12 @@ public class McbToCml {
         Recipe recakt = new Recipe();
         Head headakt = new Head();
 
-//        headakt.setTitle(recipe.getTitle());
+        if (recipe.getTitle() == null && recipe.getTitle().trim().equals("")) {
+            headakt.setTitle("Unbekannt");
+        } else {
+            headakt.setTitle(recipe.getTitle());
+        }
+        
         // TODO: when more than a categroy fehler
         if (recipe.getCategory() != null) {
             headakt.getCat().add(recipe.getCategory());

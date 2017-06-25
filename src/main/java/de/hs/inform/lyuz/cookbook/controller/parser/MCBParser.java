@@ -14,6 +14,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.io.FileUtils;
 
+
+
 public class MCBParser {
 
     private Cookbook mcb = null;
@@ -29,15 +31,14 @@ public class MCBParser {
             creatMcbFiles(0);
             uncompress(zipFile, path);
         } catch (Exception ex) {
-            throw new ParserErrorExcepetion("Parser Error by Mycookbook");
-        } finally {
             try {
-                System.out.println("delete");
                 FileUtils.deleteDirectory(new File(path));
-            } catch (IOException ex) {
-                Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex);
-                System.err.println("Error during delete files for mcb-copy");
+            } catch (IOException ex1) {
+                Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex1);
+                System.err.println("Fehler beim Löschen Dateien");
             }
+            Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ParserErrorExcepetion("Fehler beim MCB Parser");
         }
 
         if (xml != null) {
@@ -54,10 +55,10 @@ public class MCBParser {
                 mcb = (Cookbook) u.unmarshal(xsr);
             } catch (Exception ex) {
                 Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ParserErrorExcepetion("Parser Error by Mycookbook");
+                throw new ParserErrorExcepetion("Fehler beim MCB Parser");
             }
         } else {
-            throw new ParserErrorExcepetion("Parser Error by Mycookbook");
+            throw new ParserErrorExcepetion("Fehler beim MCB Parser");
         }
     }
 
@@ -74,6 +75,8 @@ public class MCBParser {
         } else {
             file.mkdir();
             path = file.getAbsolutePath() + File.separator;
+            file = new File(path + "images");
+            file.mkdir();
         }
     }
 

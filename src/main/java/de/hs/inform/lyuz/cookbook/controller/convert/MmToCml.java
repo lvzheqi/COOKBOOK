@@ -23,7 +23,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class MmToCml {
 
-    private final Cookml cookml;
+    private Cookml cookml;
     private Recipe recakt;
     private Head headakt;
 
@@ -31,9 +31,9 @@ public class MmToCml {
     private String nextLine = "";
 
     public MmToCml(File f) throws ConvertErrorException {
-//        String mm = FileUtils.readFileToString(f, "UTF-8");
         String mm;
         try {
+
             mm = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
             cookml = new Cookml();
             cookml.setName(f.getName());
@@ -61,7 +61,6 @@ public class MmToCml {
 
         scanner.nextLine();
 
-        recakt.setLang("DE");
         headakt.setTitle(setHeadAndQty(getNextLine().trim()).trim());
 
         headakt.getCat().addAll(Arrays.asList(setCat(getNextLine().trim())));

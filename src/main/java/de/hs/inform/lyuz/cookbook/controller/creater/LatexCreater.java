@@ -13,9 +13,9 @@ import org.apache.commons.io.FileUtils;
 
 public class LatexCreater {
 
-    private final ExportInfo exportInfo;
+    private ExportInfo exportInfo;
 
-    private final String tex;
+    private String tex;
     private String filepath;
 
     public LatexCreater(MyBook myBook) throws SystemErrorException {

@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class EpubNav {
 
-    private final Document doc;
+    private Document doc;
 
 
     public EpubNav(String title, HashMap<Integer, EpubLink> navMap) {

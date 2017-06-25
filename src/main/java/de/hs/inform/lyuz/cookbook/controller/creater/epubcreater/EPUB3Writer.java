@@ -31,14 +31,16 @@ public class EPUB3Writer {
             mimetypeZipEntry.setCrc(calculateCrc(mimetypeBytes));
             resultStream.putNextEntry(mimetypeZipEntry);
             resultStream.write(mimetypeBytes);
+            
+            // container.xml
+            File metaFile = new File(filepath + "META-INF");
+            FilesUtils.compress(resultStream, metaFile, "META-INF");
 
             // main file
             File mainFile = new File(filepath + "EPUB");
             FilesUtils.compress(resultStream, mainFile, "EPUB");
 
-            // container.xml
-            File metaFile = new File(filepath + "META-INF");
-            FilesUtils.compress(resultStream, metaFile, "META-INF");
+
 
         } catch (Exception e) {
             Logger.getLogger(EPUB3Writer.class.getName()).log(Level.SEVERE, null, e);

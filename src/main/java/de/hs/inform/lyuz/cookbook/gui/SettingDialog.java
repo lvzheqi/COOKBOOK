@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 public class SettingDialog extends javax.swing.JDialog {
 
-    private final ExportInfo exportInfo;
+    private ExportInfo exportInfo;
 
     public SettingDialog(CookMainJFrame parent, boolean modal) {
         super(parent, modal);
@@ -45,6 +45,7 @@ public class SettingDialog extends javax.swing.JDialog {
         switch (type) {
             case "LATEX":
                 hasCatCB.setSelected(true);
+                hasCatCB.setEnabled(false);
                 hasCover.setEnabled(false);
                 coverTF.setEnabled(false);
                 fileChooseBtn.setEnabled(false);
