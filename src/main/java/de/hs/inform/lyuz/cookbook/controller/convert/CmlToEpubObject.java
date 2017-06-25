@@ -64,11 +64,12 @@ public class CmlToEpubObject {
             } else {
                 epubLink = new EpubLink(category + ".html", category);
             }
-            Cookml cookml = setEpubObjekt(this.myBook.getSortCmlMap().get(category), epubLink, filepath);
-            cookml.setType(category);
+            Cookml cookml = this.myBook.getSortCmlMap().get(category);
+            setEpubObjekt(this.myBook.getSortCmlMap().get(category), epubLink, filepath);
+            this.myBook.getSortCmlMap().get(category).setType(category);
             epub.getNavMap().put(epub.getIndex()+1, epubLink);
             epub.setIndex(epub.getIndex()+1);
-            epub.getCookmls().put(category, cookml);
+            epub.getCookmls().put(category, this.myBook.getSortCmlMap().get(category));
             setEpubOpf(category);
         }
 
@@ -82,7 +83,7 @@ public class CmlToEpubObject {
 
     }
 
-    private Cookml setEpubObjekt(Cookml cookml, EpubLink epubLink, String filepath) {
+    private void setEpubObjekt(Cookml cookml, EpubLink epubLink, String filepath) {
 
         for (Recipe recipe : cookml.getRecipe()) {
             for (Object objakt : recipe.getHeadAndCustomAndPart()) {
@@ -125,7 +126,7 @@ public class CmlToEpubObject {
             }
 
         }
-        return cookml;
+//        return cookml;
     }
 
 //    private void setHeadQty(Head headakt) {

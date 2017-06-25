@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -70,7 +71,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         "headAndCustomAndPart"
 })
 @XmlRootElement(name = "recipe")
-public class Recipe {
+public class Recipe implements Serializable{
 
     @XmlElements({
             @XmlElement(name = "remark", type = Remark.class),
@@ -162,7 +163,7 @@ public class Recipe {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class Custom {
+    public static class Custom implements Serializable{
 
         @XmlAttribute(required = true)
         protected String name;
@@ -256,7 +257,7 @@ public class Recipe {
     @XmlType(name = "", propOrder = {
             "ingredient"
     })
-    public static class Part {
+    public static class Part implements Serializable{
 
         protected List<Ingredient> ingredient;
         @XmlAttribute

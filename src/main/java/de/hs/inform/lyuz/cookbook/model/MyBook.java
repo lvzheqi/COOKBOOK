@@ -1,40 +1,57 @@
 package de.hs.inform.lyuz.cookbook.model;
 
 import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MyBook {
-    
+public class MyBook implements Serializable {
+
     private List<File> files;
     private Cookml cookml;
     private ArrayList<String> catTemplate;
 //    private ArrayList<String> catAll;
     private ArrayList<String> catExtra;
     private LinkedHashMap<String, Cookml> sortCmlMap;
-    
+
     private ExportInfo exportInfo;
-    
-    
-    
-    public MyBook(){
+
+    public MyBook() {
         init();
     }
 
-    
-        
-    public void setMybook(MyBook mb){
+    public MyBook myclone() {
+        MyBook outer = null;
+        try { 
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            oos.writeObject(this);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream ois = new ObjectInputStream(bais);
+            outer = (MyBook) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return outer;
+    }
+
+    public void setMybook(MyBook mb) {
         files = mb.getFiles();
         cookml = mb.getCookml();
         catTemplate = mb.getCatTemplate();
         catExtra = mb.getCatExtra();
         sortCmlMap = mb.getSortCmlMap();
         exportInfo = mb.getExportInfo();
-                
-        
+
     }
+
     public void init() {
         files = new ArrayList<>();
         cookml = new Cookml();
@@ -76,7 +93,6 @@ public class MyBook {
 //    public void setCatAll(ArrayList<String> catAll) {
 //        this.catAll = catAll;
 //    }
-
     public ArrayList<String> getCatExtra() {
         return catExtra;
     }

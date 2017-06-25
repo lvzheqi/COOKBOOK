@@ -96,7 +96,7 @@ public class CategoryPanel extends MyPanel {
                 catTempListModel.remove(index);
                 catTempListModel.add(index, rename);
 
-                myBook = categoryManager.renameCategory(cookConvert.getMyBook(), catItem, rename);
+                categoryManager.renameCategory(cookConvert.getMyBook(), catItem, rename);
             } else {
                 JOptionPane.showMessageDialog(null, "Der Name ist schon vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
             }
@@ -346,7 +346,7 @@ public class CategoryPanel extends MyPanel {
             if (n == 0) {
                 String catItem = (String) catTempListModel.get(catTempList.getSelectedIndex());
                 catTempListModel.remove(catTempList.getSelectedIndex());
-                myBook = categoryManager.removeCategory(cookConvert.getMyBook(), catItem, checkbox.isSelected());
+                categoryManager.removeCategory(cookConvert.getMyBook(), catItem, checkbox.isSelected());
 
                 if (!checkbox.isSelected()) {
                     int i = 0;
@@ -376,7 +376,7 @@ public class CategoryPanel extends MyPanel {
                 catTempListModel.addElement(catItem);
                 catExtraListModel.remove(catExtraList.getSelectedIndex());
 
-                myBook = categoryManager.leftCategory(cookConvert.getMyBook(), catItem);
+                categoryManager.leftCategory(cookConvert.getMyBook(), catItem);
             }
         } else {
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus rechten Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
@@ -408,7 +408,7 @@ public class CategoryPanel extends MyPanel {
                 String cat2 = (String) catTempListModel.get(catTempList.getSelectedIndex());
                 catExtraListModel.remove(catExtraList.getSelectedIndex());
 
-                myBook = categoryManager.allocateCatList(cookConvert.getMyBook(), cat1, cat2);
+                categoryManager.allocateCatList(cookConvert.getMyBook(), cat1, cat2);
             }
         }
     }//GEN-LAST:event_allocateBtnActionPerformed

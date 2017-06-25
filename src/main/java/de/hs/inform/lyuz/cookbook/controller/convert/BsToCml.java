@@ -70,7 +70,6 @@ public class BsToCml {
                 } else {
                     setBS(line, remark);
                     line = scanner.nextLine();
-                    break;
                 }
             }
 

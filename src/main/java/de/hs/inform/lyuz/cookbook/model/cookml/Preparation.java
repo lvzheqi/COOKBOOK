@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -42,7 +43,7 @@ import javax.xml.bind.annotation.XmlType;
     "step"
 })
 @XmlRootElement(name = "preparation")
-public class Preparation {
+public class Preparation implements Serializable{
 
     protected List<String> text;
     protected List<String> step;

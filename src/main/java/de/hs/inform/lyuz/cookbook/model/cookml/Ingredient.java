@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ import javax.xml.bind.annotation.XmlType;
     "inote"
 })
 @XmlRootElement(name = "ingredient")
-public class Ingredient {
+public class Ingredient implements Serializable{
 
     protected List<String> inote;
     @XmlAttribute

@@ -1,6 +1,13 @@
 package de.hs.inform.lyuz.cookbook.model;
 
-public class ExportInfo {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class ExportInfo implements Serializable{
 
     private String firstName;
     private String lastName;
@@ -25,7 +32,7 @@ public class ExportInfo {
 
     public ExportInfo() {
     }
-
+    
     public String getFirstName() {
         return firstName;
     }

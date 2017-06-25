@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class CategoryManager {
 
-    public MyBook renameCategory(MyBook myBook, String oldName, String newName) {
+    public void renameCategory(MyBook myBook, String oldName, String newName) {
         myBook.getCookml().getRecipe().forEach((recakt) -> {
             recakt.getHeadAndCustomAndPart().stream().filter((objakt)
                     -> (objakt.getClass().getCanonicalName().equals("de.hs.inform.lyuz.cookbook.model.cookml.Head")))
@@ -29,10 +29,10 @@ public class CategoryManager {
         myBook.getCatTemplate().add(newName);
         myBook.getCatTemplate().remove(oldName);
 
-        return myBook;
+//        return myBook;
     }
 
-    public MyBook allocateCatList(MyBook myBook, String cat1, String cat2) {
+    public void allocateCatList(MyBook myBook, String cat1, String cat2) {
         myBook.getCookml().getRecipe().forEach((recakt) -> {
             recakt.getHeadAndCustomAndPart().stream().filter((objakt)
                     -> (objakt.getClass().getCanonicalName().equals("de.hs.inform.lyuz.cookbook.model.cookml.Head")))
@@ -50,10 +50,10 @@ public class CategoryManager {
         });
 
         myBook.getCatExtra().remove(cat1);
-        return myBook;
+//        return myBook;
     }
 
-    public MyBook removeCategory(MyBook myBook, String cat, boolean b) {
+    public void removeCategory(MyBook myBook, String cat, boolean b) {
         if (!b) {
             myBook.getCookml().getRecipe().forEach((recakt) -> {
                 recakt.getHeadAndCustomAndPart().stream().filter((objakt)
@@ -76,15 +76,15 @@ public class CategoryManager {
         }
         myBook.getCatTemplate().remove(cat);
 
-        return myBook;
+//        return myBook;
     }
 
-    public MyBook leftCategory(MyBook myBook, String catakt) {
+    public void leftCategory(MyBook myBook, String catakt) {
 
         myBook.getCatTemplate().add(catakt);
         myBook.getCatExtra().remove(catakt);
 
-        return myBook;
+//        return myBook;
     }
 
 }

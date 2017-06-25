@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
     "picbin"
 })
 @XmlRootElement(name = "head")
-public class Head {
+public class Head implements Serializable{
 
     protected List<String> cat;
     protected List<String> hint;
@@ -722,7 +723,7 @@ public class Head {
      */
     @XmlAccessorType(XmlAccessType.FIELD)
     @XmlType(name = "")
-    public static class Content {
+    public static class Content implements Serializable{
 
         @XmlAttribute(required = true)
         protected String type;

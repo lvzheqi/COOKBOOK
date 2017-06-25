@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -45,7 +46,7 @@ import javax.xml.bind.annotation.XmlType;
     "mcustomAndMrecipe"
 })
 @XmlRootElement(name = "menu")
-public class Menu {
+public class Menu implements Serializable{
 
     @XmlElements({
         @XmlElement(name = "mrecipe", type = Mrecipe.class),

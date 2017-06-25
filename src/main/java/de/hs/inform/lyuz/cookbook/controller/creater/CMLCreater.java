@@ -28,10 +28,10 @@ public class CMLCreater {
 
     public CMLCreater(MyBook myBook) {
         this.myBook = myBook;
-        this.cookml = formatWithExportInfo(myBook.getCookml());
+        formatWithExportInfo(myBook.getCookml());
     }
 
-    private Cookml formatWithExportInfo(Cookml cookml) {
+    private void formatWithExportInfo(Cookml cookml) {
         ExportInfo exportInfo = myBook.getExportInfo();
         cookml.setName(exportInfo.getTitle());
         cookml.setVersion("1.1.2");
@@ -99,7 +99,7 @@ public class CMLCreater {
             }
 
         }
-        return cookml;
+//        return cookml;
     }
 
     public void write() throws ConvertErrorException {

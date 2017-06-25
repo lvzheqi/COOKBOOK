@@ -5,10 +5,7 @@ import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -47,52 +44,22 @@ public class FilesUtils {
     public static String COOKML_XSD = "META-INF/cml/cookml.xsd";
     public static String COOKML_DTD = "META-INF/cml/cookml.dtd";
 
+    
     public static void changeImgeColor2BW(InputStream img, File desFile) throws IOException {
-
-        Image image = ImageIO.read(img);
-        int srcW = image.getHeight(null);
-        int srcH = image.getWidth(null);
-        BufferedImage bufferedImage = new BufferedImage(srcW, srcH, BufferedImage.TYPE_3BYTE_BGR);
-        bufferedImage.getGraphics().drawImage(image, 0, 0, srcW, srcH, null);
-        bufferedImage = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null).filter(bufferedImage, null);
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(desFile);
-            ImageIO.write(bufferedImage, "jpg", fos);
-        } finally {
-            IOUtils.closeQuietly(fos);
-        }
+        BufferedImage bufferedImage = ImageIO.read(img);
+        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+        ColorConvertOp op = new ColorConvertOp(cs, null);
+        bufferedImage = op.filter(bufferedImage, null);
+        ImageIO.write(bufferedImage, "jpg", desFile);
     }
 
-    public static String readFile(File f) {
-        StringBuilder stringBuilder = null;
-        InputStreamReader read = null;
-        try {
-            read = new InputStreamReader(
-                    new FileInputStream(f), StandardCharsets.ISO_8859_1);
-            BufferedReader bufferedReader = new BufferedReader(read);
-            String lineTxt;
-            stringBuilder = new StringBuilder();
-
-            while ((lineTxt = bufferedReader.readLine()) != null) {
-                stringBuilder.append(lineTxt);
-                stringBuilder.append("\n");
-            }
-
-        } catch (IOException e) {
-            Logger.getLogger(FilesUtils.class
-                    .getName()).log(Level.SEVERE, null, e);
-
-        } finally {
-            try {
-                if (read != null) {
-                    read.close();
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(FilesUtils.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        return String.valueOf(stringBuilder);
+    public static Object cloneObject(Object obj) throws Exception{
+           ByteArrayOutputStream  byteOut = new ByteArrayOutputStream();  
+           ObjectOutputStream out = new ObjectOutputStream(byteOut);  
+           out.writeObject(obj);         
+           ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());  
+           ObjectInputStream in =new ObjectInputStream(byteIn);        
+           return in.readObject();
     }
 
     public static void compress(ZipOutputStream out, File sourceFile, String base) throws IOException {
@@ -181,6 +148,37 @@ public class FilesUtils {
     }
 
 }
+
+//    public static String readFile(File f) {
+//        StringBuilder stringBuilder = null;
+//        InputStreamReader read = null;
+//        try {
+//            read = new InputStreamReader(
+//                    new FileInputStream(f), StandardCharsets.ISO_8859_1);
+//            BufferedReader bufferedReader = new BufferedReader(read);
+//            String lineTxt;
+//            stringBuilder = new StringBuilder();
+//
+//            while ((lineTxt = bufferedReader.readLine()) != null) {
+//                stringBuilder.append(lineTxt);
+//                stringBuilder.append("\n");
+//            }
+//
+//        } catch (IOException e) {
+//            Logger.getLogger(FilesUtils.class
+//                    .getName()).log(Level.SEVERE, null, e);
+//
+//        } finally {
+//            try {
+//                if (read != null) {
+//                    read.close();
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(FilesUtils.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//        return String.valueOf(stringBuilder);
+//    }
 
 // Text in ein File schreiben
 //    public static void writeTexttoFile(String text, String filename) throws FileNotFoundException {

@@ -4,10 +4,10 @@
 	<lastname>Cooker</lastname>
 	<title>CookBook</title>
 	<bookname>CookBook</bookname>
-	<type>EPUB3</type>
+	<type>EPUB2</type>
 	<filepath>/Users/xuer/NetBeansProjects/COOKBOOK//</filepath>
 	<pic value="true" />
-	<color value="false" />
+	<color value="true" />
 	<cat value="true" />
 	<source value="true" />
 	<remark value="true" />

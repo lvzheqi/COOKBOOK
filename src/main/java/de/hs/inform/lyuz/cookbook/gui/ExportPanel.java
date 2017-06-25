@@ -3,6 +3,7 @@ package de.hs.inform.lyuz.cookbook.gui;
 import de.hs.inform.lyuz.cookbook.controller.manager.ExportManager;
 import javax.swing.JFileChooser;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
+import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
 import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
@@ -51,8 +52,9 @@ public class ExportPanel extends MyPanel {
             JOptionPane.showMessageDialog(null, "Fehler beim Export", "Fehler", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-//        MyBook mybook = this.myBook;
-        ExportManager exportManager = new ExportManager(myBook);
+        MyBook mybook = this.myBook.myclone();
+
+        ExportManager exportManager = new ExportManager(mybook);
         try {
             if (cmlRBtn.isSelected()) {
                 exportManager.cmlExport();
