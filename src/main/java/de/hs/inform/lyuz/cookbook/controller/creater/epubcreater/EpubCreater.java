@@ -130,6 +130,7 @@ public class EpubCreater {
             if (myBook.getExportInfo().isHasCat()) {
                 InputStream inputStream = EpubCreater.class
                         .getClassLoader().getResourceAsStream(FilesUtils.CALALOGEPUB_XSL);
+                
                 FilesUtils.writeDOMHTML(inputStream, epub2.getNavDom(), filepath + "EPUB" + File.separator + "toc.html");
                 book.addSection("Inhaltsverzeichnis", new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "toc.html")), "toc.html"));
             }
@@ -199,7 +200,7 @@ public class EpubCreater {
 
             }
             // opf
-            FilesUtils.writeDOMXML(epub.getOpfDom(), new FileWriter(filepath + "EPUB" + File.separator + "package.opf"));
+            FilesUtils.writeDOMXML(epub.getOpfDom(), new FileOutputStream(filepath + "EPUB" + File.separator + "package.opf"));
 
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);

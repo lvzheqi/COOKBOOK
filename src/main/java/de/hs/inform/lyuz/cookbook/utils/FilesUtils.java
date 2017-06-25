@@ -140,7 +140,7 @@ public class FilesUtils {
 
     }
 
-    public static void writeDOMXML(Document document, FileWriter w) throws IOException {
+    public static void writeDOMXML(Document document, FileOutputStream w) throws IOException {
         XMLOutputter o = new XMLOutputter();
         Format format = Format.getPrettyFormat();
         format.setEncoding("UTF-8");
@@ -156,7 +156,7 @@ public class FilesUtils {
 
         tf = TransformerFactory.newInstance().newTransformer(new StreamSource(inputStream));
         tf.transform(new JDOMSource(document), out);
-        FilesUtils.writeDOMXML(out.getDocument(), new FileWriter(path));
+        FilesUtils.writeDOMXML(out.getDocument(), new FileOutputStream(path));
 
     }
 
