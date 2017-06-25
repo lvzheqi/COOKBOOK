@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cookml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.2" name="CookBook" prog="CgoesE" progver="1.0.0" xsi:schemaLocation="cookml.xsd">
+    <recipe lang="DE">
+        <part>
+            <ingredient qty="1.25" unit="g" item="Tomaten "/>
+            <ingredient qty="2.0" unit="g" item="(bis 4 ) Weiche, suesse Birnen "/>
+        </part>
+        <remark/>
+        <preparation>
+            <text>Die Tomaten und Birnen werden mit etwas Anis, ganz wenig Fenchel und Ingwer im eigenen Saft gekocht...</text>
+        </preparation>
+        <head title="TOMATEN-BIRNEN-MARMELADE" rid="746334245, -1279086111" servingqty="1" servingtype="Rezept" changeuser="Cooker Cooker">
+            <cat>TOMATE</cat>
+            <cat>BIRNE</cat>
+            <cat>MARMELADE</cat>
+            <cat>AUFBAU</cat>
+            <cat>AUFSTRICH</cat>
+        </head>
+    </recipe>
+    <recipe lang="DE">
+        <part>
+            <ingredient qty="1.0" unit="kg" item="Blaue Pflaumen "/>
+            <ingredient qty="1.0" unit="kg" item="Mirabellen "/>
+            <ingredient qty="1.0" unit="l" item="Weisswein; trocken, etwa Riesling "/>
+            <ingredient qty="300.0" unit="g" item="Weisser Kandiszucker "/>
+            <ingredient qty="60.0" unit="ml" item="Mandellikoer "/>
+            <ingredient qty="1.0" unit="pk" item="Einmachhilfe "/>
+            <ingredient qty="300.0" unit="ml" item=";Wasser "/>
+        </part>
+        <remark/>
+        <preparation>
+            <text>Obst waschen, putzen, entsteinen und vierteln. Eng in Glaeser schichten.</text>
+            <text>Wein mit Kandiszucker und Wasser aufkochen, bis sich der Zucker geloest hat. Likoer einruehren und ueber das Obst giessen. Pro Glas eine Messerspitze Einmachhilfe streuen. Glaeser verschliessen, in die 2cm hoch mit Wasser gefuellte Fettpfanne stellen. Im Ofen (150 oC, Gas Stufe 1) 30 Minuten sterilisieren (der Vorgang beginnt, wenn die Fluessigkeit im Glas zu perlen anfaengt, kann bis zu einer Stunde dauern).</text>
+            <text>Haelt etwa 6 Monate</text>
+        </preparation>
+        <head title="FEINES PFLAUMEN-MIRABELLEN-KOMPOTT" rid="746334245, -1279082015" servingqty="1" servingtype="Rezept" changeuser="Cooker Cooker">
+            <cat>OBST</cat>
+            <cat>PFLAUME</cat>
+            <cat>MARMELADE</cat>
+            <cat>AUFBAU</cat>
+        </head>
+    </recipe>
+    <recipe lang="DE">
+        <part>
+            <ingredient qty="2.0" unit="kg" item="Aepfel "/>
+            <ingredient qty="1.0" unit="kg" item="Gelierzucker; (1: 1) "/>
+            <ingredient qty="1.0" item="Zitrone; den Saft davon "/>
+            <ingredient qty="60.0" unit="ml" item="Calvados "/>
+            <ingredient item="Babyaepfel aus der Dose "/>
+        </part>
+        <remark/>
+        <preparation>
+            <text>Aepfel im Entsafter entsaften. Apfelsaft mit Gelierzucker und Zitronensaft verruehren und aufkochen. 4 Minuten sprudelnd kochen lassen.</text>
+            <text>Calvados zufuegen. Gelee in vorbereitete Glaeser fuellen. Babyaepfel hineingeben und sofort verschliessen.</text>
+        </preparation>
+        <head title="APFELGELEE MIT CALVADOS" rid="746334245, -1279077919" servingqty="4" servingtype="400ml-glas" changeuser="Cooker Cooker">
+            <cat>CALVADOS</cat>
+            <cat>APFEL</cat>
+            <cat>MARMELADE</cat>
+            <cat>AUFBAU</cat>
+        </head>
+    </recipe>
+    <recipe lang="DE">
+        <part>
+            <ingredient qty="75.0" unit="kg" item="Zwetschen "/>
+            <ingredient qty="5.0" unit="kg" item="Zucker "/>
+        </part>
+        <part title="IM WEITEREN">
+            <ingredient qty="1.0" unit="lg" item="Kupferner Waschkessel "/>
+        </part>
+        <remark/>
+        <preparation>
+            <text>Die Zwetschen entkernen und im Kessel bei maessiger Hitze, unter staendigem Umruehren mindestens 5-6 Stunden kochen. Am Schluss den Zucker dazuruehren. In irdene Toepfe (oder Glaeser) abfuellen, nach ein paar Tagen mit Pergamentpapier abdecken und zubinden. Statt Zucker nahmen die Frauen frueher den Saft gekochter kleingehackter Zuckerrueben. Die Latwerge isst man in Aulendiebach (und nicht nur dort) nicht allein auf Brot, sondern streicht sie auch auf Pellkartoffeln, die zuvor dick mit Matte (Quark) bestrichen wurden.</text>
+            <text>Eine Bekannte meiner Eltern gab zu den Pflaumen auch immer noch 1-2 Liter gekochten Kaffee, ein paar Gewuerznelken und etwas Zimt. Bei ihr dauerte das Einkochen der Zwetschen 10-12 Stunden. Das Endprodukt war eine zaehe schwarze Masse, die im Laufe der Zeit immer fester wurde. Sie wurde dann in etwas Kaffee aufgekocht und somit wieder streichfaehig gemacht.</text>
+            <text>Info (fuer die Nichthessen): </text>
+            <text>Wie anderwaerts Apfel und Ruebenkraut, so sind im Buedinger Land Zwetschenund Birnenmus ein beliebter Brotaufstrich. Er heisst hier, wie in Suedhessen allgemein, 'Latwerge', waehrend man das Mus aus Birnen zur Unterscheidung 'Hoink' nennt, was sich von dem suessen Honig herleitet. Der Jahresbedarf wird im kupfernen Waschkessel eingekocht. Nur durch Mobilisierung aller nachbarschaftlichen Hilfe ist das Entkernen der Koerbe voll Zwetschen, das Schaelen und Schnitzeln der Birnen und vor allem das Tag und Nacht dauernde Ruehren zu bewaeltigen. Kaffee und Kuchen, kraeftige hausmacher Wurst mit deftigem Bauernbrot und hin und wieder ein wuerziger Schnaps lockern die stundenlange Taetigkeit auf. Die koestlich duftende 'Latwerge' wird dann in die Vorratstoepfe aus grauem Steinzeug abgefuellt.</text>
+        </preparation>
+        <head title="LATWERGE" rid="746334245, -1279073823" servingqty="1" servingtype="Rezept" changeuser="Cooker Cooker">
+            <cat>ZWETSCHE</cat>
+            <cat>HESSEN</cat>
+            <cat>MARMELADE</cat>
+            <cat>AUFBAU</cat>
+        </head>
+    </recipe>
+</cookml>

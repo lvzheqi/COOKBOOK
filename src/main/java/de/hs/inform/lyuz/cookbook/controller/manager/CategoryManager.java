@@ -48,7 +48,7 @@ public class CategoryManager {
                         ((Head) objakt).setCat(new ArrayList<>(newcatList));
                     });
         });
-        
+
         myBook.getCatExtra().remove(cat1);
         return myBook;
     }
@@ -70,6 +70,9 @@ public class CategoryManager {
                             ((Head) objakt).setCat(new ArrayList<>(newcatList));
                         });
             });
+            if (myBook.getCatTemplate().contains("ANDERE")) {
+                myBook.getCatTemplate().add("ANDERE");
+            } 
         }
         myBook.getCatTemplate().remove(cat);
 
@@ -77,10 +80,10 @@ public class CategoryManager {
     }
 
     public MyBook leftCategory(MyBook myBook, String catakt) {
-        
+
         myBook.getCatTemplate().add(catakt);
         myBook.getCatExtra().remove(catakt);
-        
+
         return myBook;
     }
 

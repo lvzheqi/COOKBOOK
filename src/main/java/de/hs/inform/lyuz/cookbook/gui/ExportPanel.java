@@ -40,7 +40,7 @@ public class ExportPanel extends MyPanel {
         reload();
     }
 
-    private boolean exprotFile() {
+    private boolean exportFile() {
         ExportInfo exportInfo = myBook.getExportInfo();
         exportInfo.updateExportInfo(bookNameTF.getText(), pathTF.getText() + File.separator, type);
         myBook.setExportInfo(exportInfo);
@@ -51,7 +51,7 @@ public class ExportPanel extends MyPanel {
             JOptionPane.showMessageDialog(null, "Fehler beim Export", "Fehler", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-
+//        MyBook mybook = this.myBook;
         ExportManager exportManager = new ExportManager(myBook);
         try {
             if (cmlRBtn.isSelected()) {
@@ -329,7 +329,7 @@ public class ExportPanel extends MyPanel {
                 n = JOptionPane.showConfirmDialog(null, "Wollen Sie ein " + type.toUpperCase() + " Kochbuch exportieren?", "Frage", JOptionPane.YES_NO_OPTION);
             }
             if (n == 0) {
-                if (exprotFile()) {
+                if (exportFile()) {
                     JOptionPane.showMessageDialog(null, "Kochbuch ist erfolgreich erstellt", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
                 }
             }

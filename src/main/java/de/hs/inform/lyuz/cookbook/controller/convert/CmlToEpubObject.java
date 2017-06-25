@@ -14,6 +14,7 @@ import de.hs.inform.lyuz.cookbook.controller.creater.epubcreater.EpubIndex;
 import de.hs.inform.lyuz.cookbook.controller.creater.epubcreater.EpubNav;
 import de.hs.inform.lyuz.cookbook.controller.creater.epubcreater.EpubOpf;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,12 +34,12 @@ public class CmlToEpubObject {
     private EpubObjekt epub;
 
     public EpubObjekt getEpub() {
-        epub.setNavDom(new EpubNav(myBook.getExportInfo().getTitle(), epub.navMap).getDoc());
-        epub.setIndexDom(new EpubIndex(epub.indexMap).getDoc());
+        epub.setNavDom(new EpubNav(myBook.getExportInfo().getTitle(), epub.getNavMap()).getDoc());
+        epub.setIndexDom(new EpubIndex(epub.getIndexMap()).getDoc());
         epub.setOpfDom(new EpubOpf(myBook.getExportInfo().getBookname(),
                 myBook.getExportInfo().getFirstName(),
                 myBook.getExportInfo().getLastName(),
-                epub.elements, epub.items).getOpf());
+                epub.getElements(), epub.getItems()).getOpf());
         return epub;
     }
 
@@ -63,18 +64,19 @@ public class CmlToEpubObject {
             } else {
                 epubLink = new EpubLink(category + ".html", category);
             }
-
             Cookml cookml = setEpubObjekt(this.myBook.getSortCmlMap().get(category), epubLink, filepath);
             cookml.setType(category);
-            epub.navMap.put(epub.index++, epubLink);
-            epub.cookmls.put(category, cookml);
+            epub.getNavMap().put(epub.getIndex()+1, epubLink);
+            epub.setIndex(epub.getIndex()+1);
+            epub.getCookmls().put(category, cookml);
             setEpubOpf(category);
         }
 
         if (this.myBook.getExportInfo().isHasIndex()) {
             EpubLink epubLink = new EpubLink("index.xhtml", "Index");
-            epub.navMap.put(epub.index++, epubLink);
-            epub.indexMap = sortIndex(indexTreeMap);
+            epub.getNavMap().put(epub.getIndex()+1, epubLink);
+            epub.setIndex(epub.getIndex()+1);
+            epub.setIndexMap(sortIndex(indexTreeMap));
             setEpubOpf("index");
         }
 
@@ -131,7 +133,6 @@ public class CmlToEpubObject {
 //            headakt.setServingqty(FormatHelper.formatQTY(Float.valueOf(headakt.getServingqty())));
 //        }
 //    }
-
     private void setHeadTitle(Head headakt) {
         String ht = checkRepeatHead(headakt.getTitle());
         headakt.setTitle(ht);
@@ -145,7 +146,7 @@ public class CmlToEpubObject {
                 && !this.myBook.getExportInfo().getCoverPath().equals("")) {
 
             File file = new File(filepath + "EPUB" + File.separator + "images" + File.separator + "cover.jpg");
-            InputStream inputStream;
+            InputStream inputStream = null;
             try {
                 inputStream = FileUtils.openInputStream(new File(this.myBook.getExportInfo().getCoverPath()));
 
@@ -157,6 +158,14 @@ public class CmlToEpubObject {
             } catch (Exception ex) {
                 Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Fehler beim Schreiben Bild -- EPUB");
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
 
@@ -167,9 +176,10 @@ public class CmlToEpubObject {
 
             String path = filepath + "EPUB" + File.separator + "images" + File.separator + filename;
             File file = new File(path);
-            InputStream inputStream = new ByteArrayInputStream(pic.getValue());
-
+            InputStream inputStream = null;
             try {
+                inputStream = new ByteArrayInputStream(pic.getValue());
+
                 if (!this.myBook.getExportInfo().isIsColor()) {
                     FilesUtils.changeImgeColor2BW(inputStream, file);
                 } else {
@@ -184,10 +194,18 @@ public class CmlToEpubObject {
 
                 EpubItem item = new EpubItem("images/" + filename, "image/jpeg", false);
                 addItem2OPF(item);
-                
+
             } catch (Exception ex) {
                 Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Fehler beim Schreiben Bild -- EPUB");
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
         }
     }
@@ -240,7 +258,7 @@ public class CmlToEpubObject {
     private void addItem2OPF(EpubItem item) {
 
         if (item.isSPine()) {
-            epub.items.add(item);
+            epub.getItems().add(item);
         }
 
         Element e = new Element("item");
@@ -252,7 +270,7 @@ public class CmlToEpubObject {
             e.setAttribute("properties", item.getProperties(), e.getNamespace());
         }
 
-        epub.elements.add(e);
+        epub.getElements().add(e);
 
     }
 

@@ -24,6 +24,8 @@ import org.jdom2.transform.JDOMResult;
 import org.jdom2.transform.JDOMSource;
 import org.apache.commons.io.IOUtils;
 
+
+
 public class FilesUtils {
 
     public static String INDEX_XSL = "META-INF/epub/xsl/index.xsl";
@@ -41,7 +43,7 @@ public class FilesUtils {
 
     public static String KOCHBUCHFUSS_LEX = "META-INF/latex/kochbuchfuss.tex";
     public static String KOCHBUCHKOPF_LEX = "META-INF/latex/kochbuchkopf.tex";
-    
+
     public static String COOKML_XSD = "META-INF/cml/cookml.xsd";
     public static String COOKML_DTD = "META-INF/cml/cookml.dtd";
 
@@ -62,10 +64,11 @@ public class FilesUtils {
         }
     }
 
-        public static String readFile(File f) {
+    public static String readFile(File f) {
         StringBuilder stringBuilder = null;
+        InputStreamReader read = null;
         try {
-            InputStreamReader read = new InputStreamReader(
+            read = new InputStreamReader(
                     new FileInputStream(f), StandardCharsets.ISO_8859_1);
             BufferedReader bufferedReader = new BufferedReader(read);
             String lineTxt;
@@ -74,16 +77,24 @@ public class FilesUtils {
             while ((lineTxt = bufferedReader.readLine()) != null) {
                 stringBuilder.append(lineTxt);
                 stringBuilder.append("\n");
-              }
-            read.close();
+            }
 
         } catch (IOException e) {
             Logger.getLogger(FilesUtils.class
                     .getName()).log(Level.SEVERE, null, e);
 
+        } finally {
+            try {
+                if (read != null) {
+                    read.close();
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(FilesUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-      return String.valueOf(stringBuilder);
+        return String.valueOf(stringBuilder);
     }
+
     public static void compress(ZipOutputStream out, File sourceFile, String base) throws IOException {
 
         if (sourceFile.isDirectory()) {
@@ -111,43 +122,53 @@ public class FilesUtils {
     }
 
     public static void uncompress(File zipFile, String descDir) throws Exception {
-        ZipFile zip ;
-        InputStream in;
-        OutputStream out ;
-        zip = new ZipFile(zipFile);
-        for (Enumeration entries = zip.entries(); entries.hasMoreElements();) {
-            ZipEntry entry = (ZipEntry) entries.nextElement();
-            String zipEntryName = entry.getName();
+        ZipFile zip = null;
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            zip = new ZipFile(zipFile);
+            for (Enumeration entries = zip.entries(); entries.hasMoreElements();) {
+                ZipEntry entry = (ZipEntry) entries.nextElement();
+                String zipEntryName = entry.getName();
 
-            in = zip.getInputStream(entry);
-            String outPath = (descDir + zipEntryName);
-            File file = new File(outPath.substring(0, outPath.lastIndexOf(File.separator)));
-            if (!file.exists()) {
-                file.mkdirs();
-            }
-            if (new File(outPath).isDirectory()) {
-                continue;
-            }
-            out = new FileOutputStream(outPath);
-            byte[] buf1 = new byte[1024];
-            int len;
-            while ((len = in.read(buf1)) > 0) {
-                out.write(buf1, 0, len);
-            }
-            out.close();
+                in = zip.getInputStream(entry);
+                String outPath = (descDir + zipEntryName);
+                File file = new File(outPath.substring(0, outPath.lastIndexOf(File.separator)));
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                if (new File(outPath).isDirectory()) {
+                    continue;
+                }
+                out = new FileOutputStream(outPath);
+                byte[] buf1 = new byte[1024];
+                int len;
+                while ((len = in.read(buf1)) > 0) {
+                    out.write(buf1, 0, len);
+                }
 
+            }
+        } finally {
+            if (out != null) {
+                out.close();
+            }
+            if (in != null) {
+                in.close();
+            }
+            if (zip != null) {
+                zip.close();
+            }
         }
 
     }
 
-    public static void writeDOMXML(Document document, FileWriter w) throws IOException {
+    public static void writeDOMXML(Document document, FileOutputStream w) throws IOException {
         XMLOutputter o = new XMLOutputter();
         Format format = Format.getPrettyFormat();
         format.setEncoding("UTF-8");
         format.setIndent("\t");
         o.setFormat(format);
         o.output(document, w);
-
     }
 
     public static void writeDOMHTML(InputStream inputStream, Document document, String path) throws TransformerException, IOException {
@@ -156,8 +177,7 @@ public class FilesUtils {
 
         tf = TransformerFactory.newInstance().newTransformer(new StreamSource(inputStream));
         tf.transform(new JDOMSource(document), out);
-        FilesUtils.writeDOMXML(out.getDocument(), new FileWriter(path));
-
+        FilesUtils.writeDOMXML(out.getDocument(), new FileOutputStream(path));
     }
 
 }

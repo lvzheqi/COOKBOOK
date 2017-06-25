@@ -9,7 +9,6 @@ import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.siegmann.epublib.domain.Book;
@@ -19,7 +18,7 @@ import nl.siegmann.epublib.epub.EpubWriter;
 
 public class ExportManager {
 
-    private final MyBook myBook;
+    private MyBook myBook;
 
     public ExportManager(MyBook myBook) {
         this.myBook = new SortManager(myBook).sortCML();

@@ -2,6 +2,7 @@ package de.hs.inform.lyuz.cookbook.utils;
 
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -171,8 +172,7 @@ public class ConfUtils {
         if (!file.exists()) {
             file.getParentFile().mkdir();
         }
-        FileWriter w = new FileWriter(file);
-        FilesUtils.writeDOMXML(document, w);
+        FilesUtils.writeDOMXML(document, new FileOutputStream(file));
     }
 
     private static Document readConfXML(String path1, String path2) throws IOException, JDOMException {

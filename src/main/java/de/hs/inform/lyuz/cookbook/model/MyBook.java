@@ -23,6 +23,18 @@ public class MyBook {
         init();
     }
 
+    
+        
+    public void setMybook(MyBook mb){
+        files = mb.getFiles();
+        cookml = mb.getCookml();
+        catTemplate = mb.getCatTemplate();
+        catExtra = mb.getCatExtra();
+        sortCmlMap = mb.getSortCmlMap();
+        exportInfo = mb.getExportInfo();
+                
+        
+    }
     public void init() {
         files = new ArrayList<>();
         cookml = new Cookml();
@@ -88,6 +100,5 @@ public class MyBook {
     public void setExportInfo(ExportInfo exportInfo) {
         this.exportInfo = exportInfo;
     }
-    
-    
+
 }

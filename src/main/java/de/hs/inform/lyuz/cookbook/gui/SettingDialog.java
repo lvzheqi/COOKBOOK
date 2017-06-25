@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 public class SettingDialog extends javax.swing.JDialog {
 
-    private final ExportInfo exportInfo;
+    private ExportInfo exportInfo;
 
     public SettingDialog(CookMainJFrame parent, boolean modal) {
         super(parent, modal);

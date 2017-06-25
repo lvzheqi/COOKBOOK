@@ -33,23 +33,28 @@ public class XalanHelper {
     }
 
     public static int isHasPic() {
-        return ExportInfo.hasPic ? 1 : 0;
+//        return ExportInfo.hasPic ? 1 : 0;
+        return 1;
     }
 
     public static int isHasSource() {
-        return ExportInfo.hasSource ? 1 : 0;
+//        return ExportInfo.hasSource ? 1 : 0;
+        return 1;
     }
 
     public static int isHasRemark() {
-        return ExportInfo.hasRemark ? 1 : 0;
+//        return ExportInfo.hasRemark ? 1 : 0;
+        return 1;
     }
 
     public static int isHasTime() {
-        return ExportInfo.hasTime ? 1 : 0;
+//        return ExportInfo.hasTime ? 1 : 0;
+        return 1;
     }
 
     public static int isHasDiffculty() {
-        return ExportInfo.hasDiffculty ? 1 : 0;
+//        return ExportInfo.hasDiffculty ? 1 : 0;
+        return 1;
     }
 
     public static void setContent(String type, String value) {

@@ -1,5 +1,6 @@
 package de.hs.inform.lyuz.cookbook.controller.creater;
 
+import de.hs.inform.lyuz.cookbook.controller.convert.BsToCml;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
@@ -14,12 +15,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class CMLCreater {
 
-    private final MyBook myBook;
-    private final Cookml cookml;
-    
+    private MyBook myBook;
+    private Cookml cookml;
+
     private int serialID = new Random().nextInt();
 
     public CMLCreater(MyBook myBook) {
@@ -43,7 +47,19 @@ public class CMLCreater {
                         Head headakt = (Head) objakt;
                         headakt.setChangeuser(exportInfo.getFirstName() + " " + exportInfo.getLastName());
                         headakt.setRid(setRidID());
-                        
+
+                        try {
+                            XMLGregorianCalendar d = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+                            Calendar c = Calendar.getInstance();
+                            d.setYear(c.get(Calendar.YEAR));
+                            d.setMonth(c.get(Calendar.MONTH));
+                            d.setDay(c.get(Calendar.DATE));
+                            headakt.setChangedate(d);
+                        } catch (DatatypeConfigurationException ex) {
+                            Logger.getLogger(BsToCml.class.getName()).log(Level.SEVERE, null, ex);
+                            System.err.println("Fehler beim Konvertierung auf BS-Datum");
+                        }
+
                         if (headakt.getServingqty() == null || headakt.getServingqty().trim().equals("")) {
                             headakt.setServingqty("1");
                         }
@@ -107,13 +123,15 @@ public class CMLCreater {
 
         Calendar c = Calendar.getInstance();
         int generatorID = 0;
-        String createuser = myBook.getExportInfo().getFirstName()+" "
-                +myBook.getExportInfo().getLastName();
+        String createuser = myBook.getExportInfo().getFirstName() + " "
+                + myBook.getExportInfo().getLastName();
         for (int i = 0; i < createuser.length(); i++) {
             generatorID += createuser.charAt(i) * (createuser.length() - i);
         }
         generatorID = (generatorID % 4048) | (serialID++ << 12);
-        int date = c.get(Calendar.MINUTE) << 24 | c.get(Calendar.HOUR_OF_DAY) << 19 | (c.get(Calendar.DATE) << 15) | (c.get(Calendar.MONTH) << 11) | (c.get(Calendar.YEAR) - 1980);
+        int date = c.get(Calendar.MINUTE) << 24 | c.get(Calendar.HOUR_OF_DAY) << 19 
+                | (c.get(Calendar.DATE) << 15) | (c.get(Calendar.MONTH) << 11) 
+                | (c.get(Calendar.YEAR) - 1980);
         return date + "," + generatorID;
     }
 

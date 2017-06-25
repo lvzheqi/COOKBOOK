@@ -22,7 +22,7 @@ import org.apache.commons.io.FileUtils;
 public class EpubCreater {
 
     //system relevant
-    private final MyBook myBook;
+    private MyBook myBook;
     private String filepath = System.getProperty("user.dir");
 
     public String getFilepath() {
@@ -199,7 +199,7 @@ public class EpubCreater {
 
             }
             // opf
-            FilesUtils.writeDOMXML(epub.getOpfDom(), new FileWriter(filepath + "EPUB" + File.separator + "package.opf"));
+            FilesUtils.writeDOMXML(epub.getOpfDom(), new FileOutputStream(filepath + "EPUB" + File.separator + "package.opf"));
 
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);

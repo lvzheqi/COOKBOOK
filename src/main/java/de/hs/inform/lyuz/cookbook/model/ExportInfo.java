@@ -9,12 +9,12 @@ public class ExportInfo {
     public static boolean hasPic;
     private boolean isColor;
 
-    public static boolean hasCat;
-    public static boolean hasIndex;
-    public static boolean hasSource;
-    public static boolean hasRemark;
-    public static boolean hasTime;
-    public static boolean hasDiffculty;
+    private boolean hasCat;
+    private boolean hasIndex;
+    private boolean hasSource;
+    private boolean hasRemark;
+    private boolean hasTime;
+    private boolean hasDiffculty;
 
     private boolean hasCover;
     private String coverPath;
