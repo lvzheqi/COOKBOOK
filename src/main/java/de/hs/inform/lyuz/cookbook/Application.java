@@ -1,7 +1,9 @@
 package de.hs.inform.lyuz.cookbook;
 
 import de.hs.inform.lyuz.cookbook.gui.CookMainJFrame;
-import java.io.File;
+
+
+
 
 public class Application {
 
@@ -23,16 +25,11 @@ public class Application {
             java.util.logging.Logger.getLogger(CookMainJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-
+        //</editor-fold>      
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
             new CookMainJFrame().setVisible(true);
         });
     }
-
-
-
-
 }

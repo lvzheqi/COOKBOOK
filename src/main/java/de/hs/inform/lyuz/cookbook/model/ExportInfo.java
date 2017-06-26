@@ -1,6 +1,13 @@
 package de.hs.inform.lyuz.cookbook.model;
 
-public class ExportInfo {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class ExportInfo implements Serializable{
 
     private String firstName;
     private String lastName;
@@ -9,12 +16,12 @@ public class ExportInfo {
     public static boolean hasPic;
     private boolean isColor;
 
-    public static boolean hasCat;
-    public static boolean hasIndex;
-    public static boolean hasSource;
-    public static boolean hasRemark;
-    public static boolean hasTime;
-    public static boolean hasDiffculty;
+    private boolean hasCat;
+    private boolean hasIndex;
+    private boolean hasSource;
+    private boolean hasRemark;
+    private boolean hasTime;
+    private boolean hasDiffculty;
 
     private boolean hasCover;
     private String coverPath;
@@ -25,7 +32,7 @@ public class ExportInfo {
 
     public ExportInfo() {
     }
-
+    
     public String getFirstName() {
         return firstName;
     }

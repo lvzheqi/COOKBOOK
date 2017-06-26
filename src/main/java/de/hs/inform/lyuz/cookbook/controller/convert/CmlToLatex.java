@@ -25,10 +25,10 @@ import org.apache.commons.io.FileUtils;
 
 public class CmlToLatex {
 
-    private final LinkedHashMap<String, Cookml> cmlSort;
-    private final ExportInfo exportInfo;
+    private LinkedHashMap<String, Cookml> cmlSort;
+    private ExportInfo exportInfo;
 
-    private final String filepath;
+    private String filepath;
 
     private String tex = "";
 

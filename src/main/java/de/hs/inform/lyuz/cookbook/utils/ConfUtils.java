@@ -171,7 +171,6 @@ public class ConfUtils {
         if (!file.exists()) {
             file.getParentFile().mkdir();
         }
-//         w = new FileWriter(file);
         FilesUtils.writeDOMXML(document, new FileOutputStream(file));
     }
 

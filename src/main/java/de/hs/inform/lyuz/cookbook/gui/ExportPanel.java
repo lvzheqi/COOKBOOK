@@ -3,6 +3,7 @@ package de.hs.inform.lyuz.cookbook.gui;
 import de.hs.inform.lyuz.cookbook.controller.manager.ExportManager;
 import javax.swing.JFileChooser;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
+import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
 import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
@@ -40,7 +41,7 @@ public class ExportPanel extends MyPanel {
         reload();
     }
 
-    private boolean exprotFile() {
+    private boolean exportFile() {
         ExportInfo exportInfo = myBook.getExportInfo();
         exportInfo.updateExportInfo(bookNameTF.getText(), pathTF.getText() + File.separator, type);
         myBook.setExportInfo(exportInfo);
@@ -51,8 +52,9 @@ public class ExportPanel extends MyPanel {
             JOptionPane.showMessageDialog(null, "Fehler beim Export", "Fehler", JOptionPane.ERROR_MESSAGE);
             return false;
         }
+        MyBook mybook = this.myBook.myclone();
 
-        ExportManager exportManager = new ExportManager(myBook);
+        ExportManager exportManager = new ExportManager(mybook);
         try {
             if (cmlRBtn.isSelected()) {
                 exportManager.cmlExport();
@@ -329,7 +331,7 @@ public class ExportPanel extends MyPanel {
                 n = JOptionPane.showConfirmDialog(null, "Wollen Sie ein " + type.toUpperCase() + " Kochbuch exportieren?", "Frage", JOptionPane.YES_NO_OPTION);
             }
             if (n == 0) {
-                if (exprotFile()) {
+                if (exportFile()) {
                     JOptionPane.showMessageDialog(null, "Kochbuch ist erfolgreich erstellt", "Erfolg", JOptionPane.INFORMATION_MESSAGE);
                 }
             }

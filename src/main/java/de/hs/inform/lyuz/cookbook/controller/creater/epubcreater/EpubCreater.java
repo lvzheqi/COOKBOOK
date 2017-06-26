@@ -22,7 +22,7 @@ import org.apache.commons.io.FileUtils;
 public class EpubCreater {
 
     //system relevant
-    private final MyBook myBook;
+    private MyBook myBook;
     private String filepath = System.getProperty("user.dir");
 
     public String getFilepath() {

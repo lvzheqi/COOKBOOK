@@ -4,9 +4,7 @@ import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import de.hs.inform.lyuz.cookbook.model.cookml.*;
 import de.hs.inform.lyuz.cookbook.model.cookml.Recipe.Part;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
-import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +16,7 @@ import org.apache.commons.io.FileUtils;
 
 public class BsToCml {
 
-    private final Cookml cookml;
+    private Cookml cookml;
     private Recipe recakt;
     private Head headakt;
     private Scanner scanner;
@@ -26,8 +24,8 @@ public class BsToCml {
     public BsToCml(File f) throws ConvertErrorException {
         String bs;
         try {
-//            bs = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
-            bs = FilesUtils.readFile(f);
+            bs = FileUtils.readFileToString(f, "UTF-8");
+//            bs = FilesUtils.readFile(f);
             cookml = new Cookml();
             cookml.setProg("B&S");
             cookml.setProgver("0.91");
@@ -48,7 +46,6 @@ public class BsToCml {
         if (scanner.hasNextLine()) {
 
             recakt = new Recipe();
-            recakt.setLang("DE");
             headakt = new Head();
             headakt.setTitle(scanner.nextLine());
 
@@ -73,7 +70,6 @@ public class BsToCml {
                 } else {
                     setBS(line, remark);
                     line = scanner.nextLine();
-                    break;
                 }
             }
 

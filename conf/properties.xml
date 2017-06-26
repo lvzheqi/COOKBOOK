@@ -5,14 +5,14 @@
 	<title>CookBook</title>
 	<bookname>CookBook</bookname>
 	<type>EPUB2</type>
-	<filepath>C:\Users\lvzhe\Documents\NetBeansProjects\COOKBOOK\\</filepath>
+	<filepath>/Users/xuer/NetBeansProjects/COOKBOOK//</filepath>
 	<pic value="true" />
-	<color value="false" />
+	<color value="true" />
 	<cat value="true" />
 	<source value="true" />
 	<remark value="true" />
 	<time value="true" />
 	<difficulty value="true" />
-	<cover value="true" />
+	<cover value="false" />
 	<coverpath>C:\Users\lvzhe\Documents\NetBeansProjects\COOKBOOK\LATEX\image\cookbook_1.jpg</coverpath>
 </export>

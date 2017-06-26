@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -43,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
     "desc"
 })
 @XmlRootElement(name = "mrecipe")
-public class Mrecipe {
+public class Mrecipe implements Serializable{
 
     protected String desc;
     @XmlAttribute(required = true)

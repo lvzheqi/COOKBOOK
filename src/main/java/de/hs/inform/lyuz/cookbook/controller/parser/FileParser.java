@@ -11,10 +11,10 @@ import de.hs.inform.lyuz.cookbook.model.cookml.*;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jdom2.JDOMException;
+
+
 
 public class FileParser {
 

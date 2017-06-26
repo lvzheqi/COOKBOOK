@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -43,7 +44,7 @@ import javax.xml.bind.annotation.XmlType;
     "line"
 })
 @XmlRootElement(name = "remark")
-public class Remark {
+public class Remark implements Serializable{
 
     @XmlElement(required = true)
     protected List<String> line;

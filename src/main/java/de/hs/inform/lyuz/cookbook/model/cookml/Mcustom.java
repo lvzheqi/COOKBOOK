@@ -8,6 +8,7 @@
 
 package de.hs.inform.lyuz.cookbook.model.cookml;
 
+import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -37,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "mcustom")
-public class Mcustom {
+public class Mcustom implements Serializable{
 
     @XmlAttribute(required = true)
     protected String name;

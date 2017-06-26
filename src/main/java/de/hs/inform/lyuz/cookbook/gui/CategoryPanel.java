@@ -19,7 +19,7 @@ public class CategoryPanel extends MyPanel {
     private DefaultListModel catTempListModel;
     private DefaultListModel catExtraListModel;
 
-    private final CategoryManager categoryManager;
+    private CategoryManager categoryManager;
 
     public CategoryPanel(CookMainJFrame cookConvert) {
 
@@ -96,7 +96,7 @@ public class CategoryPanel extends MyPanel {
                 catTempListModel.remove(index);
                 catTempListModel.add(index, rename);
 
-                myBook = categoryManager.renameCategory(cookConvert.getMyBook(), catItem, rename);
+                categoryManager.renameCategory(cookConvert.getMyBook(), catItem, rename);
             } else {
                 JOptionPane.showMessageDialog(null, "Der Name ist schon vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
             }
@@ -311,13 +311,13 @@ public class CategoryPanel extends MyPanel {
             if (n == 0) {
                 return;
             }
-        }else if (myBook.getCatTemplate().size()==0) {
+        } else if (myBook.getCatTemplate().size() == 0) {
             Object[] options = {"zurück", "nächst"};
             int n = JOptionPane.showOptionDialog(null, "Keine Kategorien sind vorhanden.\n Wollen Sie weiter machen?", "Warnung", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
             if (n == 0) {
                 return;
             }
-        } 
+        }
         cookConvert.getCookTabPane().setSelectedComponent(cookConvert.getExportPanel());
     }//GEN-LAST:event_toExpBtnActionPerformed
 
@@ -346,7 +346,20 @@ public class CategoryPanel extends MyPanel {
             if (n == 0) {
                 String catItem = (String) catTempListModel.get(catTempList.getSelectedIndex());
                 catTempListModel.remove(catTempList.getSelectedIndex());
-                myBook = categoryManager.removeCategory(cookConvert.getMyBook(), catItem, checkbox.isSelected());
+                categoryManager.removeCategory(cookConvert.getMyBook(), catItem, checkbox.isSelected());
+
+                if (!checkbox.isSelected()) {
+                    int i = 0;
+                    for (i = 0; i < catTempListModel.getSize(); i++) {
+                        String catS = (String) catTempListModel.get(i);
+                        if (catS.equals("ANDERE")) {
+                            break;
+                        }
+                    }
+                    if (i == catTempListModel.getSize()) {
+                        catTempListModel.addElement("ANDERE");
+                    }
+                }
             }
         } else {
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
@@ -363,7 +376,7 @@ public class CategoryPanel extends MyPanel {
                 catTempListModel.addElement(catItem);
                 catExtraListModel.remove(catExtraList.getSelectedIndex());
 
-                myBook = categoryManager.leftCategory(cookConvert.getMyBook(), catItem);
+                categoryManager.leftCategory(cookConvert.getMyBook(), catItem);
             }
         } else {
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus rechten Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
@@ -395,7 +408,7 @@ public class CategoryPanel extends MyPanel {
                 String cat2 = (String) catTempListModel.get(catTempList.getSelectedIndex());
                 catExtraListModel.remove(catExtraList.getSelectedIndex());
 
-                myBook = categoryManager.allocateCatList(cookConvert.getMyBook(), cat1, cat2);
+                categoryManager.allocateCatList(cookConvert.getMyBook(), cat1, cat2);
             }
         }
     }//GEN-LAST:event_allocateBtnActionPerformed
@@ -405,7 +418,7 @@ public class CategoryPanel extends MyPanel {
     }//GEN-LAST:event_backBtnActionPerformed
 
     private void saveCatBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveCatBtnActionPerformed
-        if (myBook.getCatTemplate().size()==0) {
+        if (myBook.getCatTemplate().size() == 0) {
             JOptionPane.showMessageDialog(null, "Keine Kategorien in linken Seite für Speichern", "Warnung", JOptionPane.WARNING_MESSAGE);
             return;
         }
