@@ -1,11 +1,12 @@
 package de.hs.inform.lyuz.cookbook.utils;
 
-import java.awt.Image;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -19,9 +20,6 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.JDOMResult;
 import org.jdom2.transform.JDOMSource;
-import org.apache.commons.io.IOUtils;
-
-
 
 public class FilesUtils {
 
@@ -44,22 +42,19 @@ public class FilesUtils {
     public static String COOKML_XSD = "META-INF/cml/cookml.xsd";
     public static String COOKML_DTD = "META-INF/cml/cookml.dtd";
 
-    
     public static void changeImgeColor2BW(InputStream img, File desFile) throws IOException {
-        BufferedImage bufferedImage = ImageIO.read(img);
-        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-        ColorConvertOp op = new ColorConvertOp(cs, null);
-        bufferedImage = op.filter(bufferedImage, null);
-        ImageIO.write(bufferedImage, "jpg", desFile);
-    }
-
-    public static Object cloneObject(Object obj) throws Exception{
-           ByteArrayOutputStream  byteOut = new ByteArrayOutputStream();  
-           ObjectOutputStream out = new ObjectOutputStream(byteOut);  
-           out.writeObject(obj);         
-           ByteArrayInputStream byteIn = new ByteArrayInputStream(byteOut.toByteArray());  
-           ObjectInputStream in =new ObjectInputStream(byteIn);        
-           return in.readObject();
+        BufferedImage bufferedImage = null;
+        try {
+            bufferedImage = ImageIO.read(img);
+            ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+            ColorConvertOp op = new ColorConvertOp(cs, null);
+            bufferedImage = op.filter(bufferedImage, null);
+            ImageIO.write(bufferedImage, "jpg", desFile);
+        } finally {
+            if (bufferedImage != null) {
+                bufferedImage.flush();
+            }
+        }
     }
 
     public static void compress(ZipOutputStream out, File sourceFile, String base) throws IOException {
@@ -130,12 +125,21 @@ public class FilesUtils {
     }
 
     public static void writeDOMXML(Document document, FileOutputStream w) throws IOException {
-        XMLOutputter o = new XMLOutputter();
-        Format format = Format.getPrettyFormat();
-        format.setEncoding("UTF-8");
-        format.setIndent("\t");
-        o.setFormat(format);
-        o.output(document, w);
+        try {
+            XMLOutputter o = new XMLOutputter();
+            Format format = Format.getPrettyFormat();
+            format.setEncoding("UTF-8");
+            format.setIndent("\t");
+            o.setFormat(format);
+            o.output(document, w);
+        } finally {
+            try {
+                w.close();
+            } catch (IOException ex) {
+                Logger.getLogger(FilesUtils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
     }
 
     public static void writeDOMHTML(InputStream inputStream, Document document, String path) throws TransformerException, IOException {
@@ -144,7 +148,20 @@ public class FilesUtils {
 
         tf = TransformerFactory.newInstance().newTransformer(new StreamSource(inputStream));
         tf.transform(new JDOMSource(document), out);
-        FilesUtils.writeDOMXML(out.getDocument(), new FileOutputStream(path));
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(path);
+            FilesUtils.writeDOMXML(out.getDocument(), outputStream);
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException ex) {
+                    Logger.getLogger(FilesUtils.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+
     }
 
 }
@@ -179,7 +196,6 @@ public class FilesUtils {
 //        }
 //        return String.valueOf(stringBuilder);
 //    }
-
 // Text in ein File schreiben
 //    public static void writeTexttoFile(String text, String filename) throws FileNotFoundException {
 //

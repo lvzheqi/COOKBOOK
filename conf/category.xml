@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <category>
-	<name>SALAT</name>
-	<name>BEILAGE</name>
-	<name>SAUCE</name>
-	<name>NACHTISCH</name>
 	<name>SUPPE</name>
 	<name>FISCH</name>
+	<name>SAUCE</name>
+	<name>NACHTISCH</name>
+	<name>SALAT</name>
 	<name>VORSPEISE</name>
-	<name>DRINK</name>
-	<name>PASTA</name>
 </category>

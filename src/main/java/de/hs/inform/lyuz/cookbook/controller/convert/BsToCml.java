@@ -59,7 +59,7 @@ public class BsToCml {
                     line = setPart(line);
                     continue;
                 }
-                if (line.length() == 2 && line.substring(0, 2).equals("#B")) {
+                if (line.length() >= 2 && line.substring(0, 2).equals("#B")) {
                     line = setPreparation();
                     continue;
                 }

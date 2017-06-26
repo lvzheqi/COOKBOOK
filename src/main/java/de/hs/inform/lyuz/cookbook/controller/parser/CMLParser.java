@@ -7,8 +7,10 @@ import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
 import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
 import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -28,12 +30,12 @@ public class CMLParser {
             jc = JAXBContext.newInstance("de.hs.inform.lyuz.cookbook.model.cookml");
 
             //ignore DTD check
-//            XMLInputFactory xif = XMLInputFactory.newFactory();
-//            xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-//            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream);
+            XMLInputFactory xif = XMLInputFactory.newFactory();
+            xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream,"UTF-8");
 
             Unmarshaller u = jc.createUnmarshaller();
-            cookml = (Cookml) u.unmarshal(f);
+            cookml = (Cookml) u.unmarshal(xsr);
         } catch (Exception ex) {
             Logger.getLogger(CMLParser.class.getName()).log(Level.SEVERE, null, ex);
             throw new ParserErrorExcepetion("Fehler Beim CML Parser");
@@ -44,10 +46,10 @@ public class CMLParser {
         return cookml;
     }
 
-    private InputStream checkCML(File file) throws ParserErrorExcepetion {
+    private InputStream checkCML(File file) throws ParserErrorExcepetion, UnsupportedEncodingException {
         String owText = "";
         try {
-            String cmlText = FileUtils.readFileToString(file, StandardCharsets.ISO_8859_1);
+            String cmlText = FileUtils.readFileToString(file, "UTF-8");
             Scanner scanner = new Scanner(cmlText);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -67,7 +69,7 @@ public class CMLParser {
             throw new ParserErrorExcepetion("Fehler beim CML File Read");
         }
 
-        return new ByteArrayInputStream(owText.getBytes());
+        return new ByteArrayInputStream(owText.getBytes("UTF-8"));
     }
 
     private String checkValue(String line, String name, int typ) {

@@ -270,14 +270,16 @@ public class CmlToLatex {
     // Portionen
     private String serve2tex(Head head) {
         String serve = "";
-        if (head.getServingqty() != null || !head.getServingqty().equals("")) {
+        if (head.getServingqty() != null && !head.getServingqty().equals("")) {
             serve += head.getServingqty() + " ";
         }
-        if (head.getServingtype() != null || !head.getServingtype().equals("")) {
+        if (head.getServingtype() != null && !head.getServingtype().equals("")) {
             serve += head.getServingtype();
         }
         if (!serve.equals("")) {
             serve = "{\\" + "bfseries Menge:} " + serve + "\n\n";
+        } else {
+            serve = "{\\" + "bfseries Menge:} 1 Portion \n\n";
         }
         return serve;
     }

@@ -64,7 +64,6 @@ public class CmlToEpubObject {
             } else {
                 epubLink = new EpubLink(category + ".html", category);
             }
-            Cookml cookml = this.myBook.getSortCmlMap().get(category);
             setEpubObjekt(this.myBook.getSortCmlMap().get(category), epubLink, filepath);
             this.myBook.getSortCmlMap().get(category).setType(category);
             epub.getNavMap().put(epub.getIndex()+1, epubLink);
