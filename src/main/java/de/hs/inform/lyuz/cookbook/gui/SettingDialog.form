@@ -97,7 +97,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="14" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="TITLEL"/>
+        <Property name="text" type="java.lang.String" value="TITEL"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="settingLabel">
@@ -118,7 +118,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="cancelBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="abbrechnen"/>
+        <Property name="text" type="java.lang.String" value="abbrechen"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelBtnActionPerformed"/>
@@ -260,7 +260,7 @@
         <Component class="javax.swing.JCheckBox" name="hasTimeCB">
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Kochenzeit"/>
+            <Property name="text" type="java.lang.String" value="Kochzeit"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>

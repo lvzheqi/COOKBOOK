@@ -39,19 +39,13 @@ public class SettingDialog extends javax.swing.JDialog {
 
         hasCover.setSelected(exportInfo.isHasCover());
         coverTF.setText(exportInfo.getCoverPath());
-        coverTF.setEnabled(false);
-        fileChooseBtn.setEnabled(false);
+//        coverTF.setEnabled(false);
+//        fileChooseBtn.setEnabled(false);
 
         switch (type) {
-            case "LATEX":
-                hasCatCB.setSelected(true);
-                hasCatCB.setEnabled(false);
-                hasCover.setEnabled(false);
-                coverTF.setEnabled(false);
-                fileChooseBtn.setEnabled(false);
-                hasDifficultyCB.setEnabled(false);
-                break;
             case "CML":
+                firstNameTF.setEnabled(false);
+                lastNameTF.setEnabled(false);
                 hasIndexCB.setEnabled(false);
                 isColorCB.setEnabled(false);
                 hasCatCB.setEnabled(false);
@@ -105,7 +99,7 @@ public class SettingDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         titleLabel.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        titleLabel.setText("TITLEL");
+        titleLabel.setText("TITEL");
 
         settingLabel.setFont(new java.awt.Font("Lucida Grande", 0, 24)); // NOI18N
         settingLabel.setText("Einstellung");
@@ -117,7 +111,7 @@ public class SettingDialog extends javax.swing.JDialog {
             }
         });
 
-        cancelBtn.setText("abbrechnen");
+        cancelBtn.setText("abbrechen");
         cancelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cancelBtnActionPerformed(evt);
@@ -176,7 +170,7 @@ public class SettingDialog extends javax.swing.JDialog {
         hasIndexCB.setText("Index");
 
         hasTimeCB.setSelected(true);
-        hasTimeCB.setText("Kochenzeit");
+        hasTimeCB.setText("Kochzeit");
         hasTimeCB.setToolTipText("");
 
         hasDifficultyCB.setSelected(true);
@@ -409,7 +403,7 @@ public class SettingDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_fileChooseBtnActionPerformed
 
     private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
-       dispose();
+        dispose();
     }//GEN-LAST:event_cancelBtnActionPerformed
 
     private void hasCoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasCoverActionPerformed

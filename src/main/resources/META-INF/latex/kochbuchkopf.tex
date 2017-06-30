@@ -5,6 +5,10 @@
 \usepackage[portrait]{geometry}
 \geometry{a4paper,left=20mm,right=20mm, top=22mm, bottom=22mm}
 \usepackage[utf8]{inputenc}
+\usepackage{pdfpages}
+\usepackage{pgffor}
+\usepackage{ifthen}
+
 \hypersetup{colorlinks,breaklinks=true,
             linkcolor=black,
             bookmarksnumbered,citecolor=black, 
@@ -46,4 +50,19 @@
 
 \newcommand{\bild}[1]{\vspace{0.5ex}\par\begin{center}
 \includegraphics[width=\maxwidth]{#1}\end{center}}
+
+\newcommand{\icons}[3]{\vspace{0.5ex}
+	\begin{flushleft}
+			\ifnum #3>0
+		\foreach \index in {1, ..., #3} {%
+			\includegraphics[height=0.8cm]{#1}
+		}
+		\fi
+		\ifnum #3<5
+		\foreach \index in {#3,...,4} {%
+			\includegraphics[height=0.8cm]{#2}
+		}
+		\fi
+		\end{flushleft}
+	}
 \date{\today}

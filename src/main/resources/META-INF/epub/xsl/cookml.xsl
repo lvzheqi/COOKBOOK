@@ -53,9 +53,17 @@
         <br />
         
         <xsl:if test="pn:isHasRemark()=1">
-            <xsl:if test="remark"> 
-                <xsl:apply-templates select="remark"/>
+            
+            <xsl:if test="pn:isHasTime()=1">
+                <xsl:if test="head/@timeprepqty or head/@timecookqty or head/@timeallqty">
+                    <b>
+                        <xsl:text>Zeit: </xsl:text>
+                    </b>
+                    <xsl:value-of select="pn:getTime(head/@timecookqty,head/@timeprepqty,head/@timeallqty)"/> 
+                    <br/>
+                </xsl:if>
             </xsl:if>
+            
             <xsl:if test="head/content">
                 <b>
                     <xsl:text>Gesamt:  </xsl:text>
@@ -63,6 +71,9 @@
                 <xsl:apply-templates select="head/content"/>
                 <xsl:value-of select="pn:getContent()"/>
                 <br/>
+            </xsl:if>
+            <xsl:if test="remark and remark!='' "> 
+                <xsl:apply-templates select="remark"/>
             </xsl:if>
         </xsl:if>
         
@@ -95,6 +106,7 @@
                 <xsl:value-of select="@servingqty"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="@servingtype"/>
+                <xsl:value-of select="pn:setServQty(@servingqty)"/>
             </div>
             <div style="display:inline; float:right">
                 <xsl:if test="@wwpoints">
@@ -102,43 +114,15 @@
                     <xsl:variable name="difficult" select="@wwpoints" />
                     <xsl:for-each select="(//*)[position()&lt;=$count]" >
                         <xsl:if test="$difficult &gt;= position()">
-                            <img src="icon/star.png" width="20px" height="20px"/>
+                            <img src="icons/star.jpg" width="20px" height="20px"/>
                         </xsl:if>
                         <xsl:if test="$difficult &lt; position()">
-                            <img src="icon/star_board.png"  width="20px" height="20px"/>
+                            <img src="icons/star_board.jpg"  width="20px" height="20px"/>
                         </xsl:if>
                     </xsl:for-each>
-            
                 </xsl:if>
             </div>
         </div>
-
-        
-
-        
-        
-        <xsl:if test="pn:isHasTime()=1">
-            <xsl:if test="@timeprepqty">
-                <xsl:text>Vorbereitungszeit: </xsl:text>
-                <xsl:value-of select="@timeprepqty"/>
-                <xsl:text>min &#x9;</xsl:text>
-            </xsl:if>
-        
-            <xsl:if test="@timecookqty">
-                <xsl:text>Arbeitszeit: </xsl:text>
-                <xsl:value-of select="@timecookqty"/>
-                <xsl:text>min &#x9;</xsl:text>
-                <br/>
-            </xsl:if>
-        
-            <xsl:if test="@timeallqty">
-                <xsl:text>Gesamtzeit: </xsl:text>
-                <xsl:value-of select="@timeallqty"/>
-                <xsl:text>min &#x9;</xsl:text>
-                <br/>
-            </xsl:if>
-            <br/>
-        </xsl:if>
         
         <xsl:if test="pn:isHasPic()=1">
             <xsl:apply-templates select="picture"/>
@@ -204,7 +188,7 @@
     </xsl:template>
 
     <xsl:template match="picture">
-        <img>
+        <img width="50%" >
             <xsl:attribute name="src">
                 <xsl:value-of select="@file"/>
             </xsl:attribute>

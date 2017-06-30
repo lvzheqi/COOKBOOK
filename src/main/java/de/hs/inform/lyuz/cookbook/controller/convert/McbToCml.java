@@ -8,6 +8,8 @@ import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
 import de.hs.inform.lyuz.cookbook.model.mycookbook.Cookbook;
 import java.io.File;
 import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
 // TODO: when more than a categroy fehler
@@ -33,6 +35,7 @@ public class McbToCml {
             try {
                 setRecipe(recipe);
             } catch (Exception ex) {
+                Logger.getLogger(McbToCml.class.getName()).log(Level.SEVERE, null, ex);
                 throw new ConvertErrorException("Fehler beim Konvertierung von MCB");
             }
         }
@@ -47,7 +50,7 @@ public class McbToCml {
         } else {
             headakt.setTitle(recipe.getTitle());
         }
-        
+
         // TODO: when more than a categroy fehler
         if (recipe.getCategory() != null) {
             headakt.getCat().add(recipe.getCategory());
@@ -62,54 +65,74 @@ public class McbToCml {
         // ingredient
         Recipe.Part partakt = new Recipe.Part();
         recipe.getIngredient().getContent().forEach((l) -> {
-            partakt.getIngredient().add(FormatHelper.formatIngredient(l.getValue().trim().split(" ")));
+            if (!l.getValue().equals("")) {
+                partakt.getIngredient().add(FormatHelper.formatIngredient(l.getValue().trim()));
+            }
         });
         recakt.getHeadAndCustomAndPart().add(partakt);
 
         // main content
         Preparation prepakt = new Preparation();
         if (recipe.getRecipetext() != null && recipe.getRecipetext().getContent() != null) {
-
             recipe.getRecipetext().getContent().forEach((l) -> {
-                prepakt.getText().add(l.getValue());
+                if (!l.getValue().equals("")) {
+                    prepakt.getText().add(l.getValue());
+                }
             });
         }
         if (recipe.getDescription() != null && recipe.getDescription().getContent() != null) {
             recipe.getDescription().getContent().forEach((l) -> {
-                prepakt.getText().add(l.getValue());
+                if (!l.getValue().equals("")) {
+                    prepakt.getText().add(l.getValue());
+                }
             });
         }
 
         if (recipe.getQuantity() != null) {
-            String[] tmp = recipe.getQuantity().trim().split(" ");
-            if (tmp.length == 2) {
-                headakt.setServingqty(tmp[0]);
-                headakt.setServingtype(tmp[1]);
-            } else {
-                headakt.setServingtype(recipe.getQuantity().trim());
+            String[] tmp = FormatHelper.reformatLine(recipe.getQuantity()).split(" ");
+            switch (tmp.length) {
+                case 2:
+                    headakt.setServingqty(tmp[0]);
+                    headakt.setServingtype(tmp[1]);
+                    break;
+                case 1:
+                    try{
+                        int n = Integer.parseInt(tmp[0]);
+                        headakt.setServingqty(tmp[0]);
+                        if(n>1){
+                            headakt.setServingtype("Protionen");
+                        }else {
+                            headakt.setServingtype("Protion");
+                        }
+                    } catch(Exception e){
+                        headakt.setServingtype(recipe.getQuantity().trim());
+                    }   break;
+                default:
+                    headakt.setServingtype(recipe.getQuantity().trim());
+                    break;
             }
         }
 
         BigInteger time = FormatHelper.setCookTime(recipe.getPreptime());
         if (time != null) {
             headakt.setTimeprepqty(time);
-        } else if (recipe.getPreptime() != null) {
-            prepakt.getText().add("Vorbereitungszeit: " + recipe.getPreptime());
+        } else if (recipe.getPreptime() != null && !recipe.getPreptime().trim().equals("")) {
+            prepakt.getText().add("\nVorbereitungszeit: " + recipe.getPreptime());
         }
 
         time = FormatHelper.setCookTime(recipe.getCooktime());
         if (time != null) {
             headakt.setTimecookqty(time);
-        } else if (recipe.getCooktime() != null) {
-            prepakt.getText().add("Zubereitungszeit: " + recipe.getCooktime());
+        } else if (recipe.getCooktime() != null && !recipe.getCooktime().trim().equals("")) {
+            prepakt.getText().add("\nZubereitungszeit: " + recipe.getCooktime());
 
         }
 
         time = FormatHelper.setCookTime(recipe.getTotaltime());
         if (time != null) {
             headakt.setTimeallqty(time);
-        } else if (recipe.getTotaltime() != null) {
-            prepakt.getText().add("Arbeitzeit: " + recipe.getTotaltime());
+        } else if (recipe.getTotaltime() != null && !recipe.getTotaltime().trim().equals("")) {
+            prepakt.getText().add("\nArbeitzeit: " + recipe.getTotaltime());
 
         }
         recakt.getHeadAndCustomAndPart().add(prepakt);
@@ -118,6 +141,7 @@ public class McbToCml {
         Remark remakt = new Remark();
         if (recipe.getComments() != null && recipe.getComments().getContent() != null) {
             recipe.getComments().getContent().forEach((l) -> {
+
                 remakt.getLine().add(l.getValue());
             });
         }
@@ -127,7 +151,6 @@ public class McbToCml {
             headakt.getSourceline().add(recipe.getUrl());
         }
         if (recipe.getSource() != null && recipe.getSource().getContent() != null) {
-
             recipe.getSource().getContent().forEach((l) -> {
                 headakt.getSourceline().add(l.getValue());
             });
@@ -138,7 +161,9 @@ public class McbToCml {
         if (recipe.getNutrition() != null && recipe.getNutrition().getContent() != null) {
             nutrition = recipe.getNutrition().getContent().stream().map((l) -> l.getValue() + ", ")
                     .reduce(nutrition, String::concat);
-            remakt.getLine().add(nutrition.substring(0, nutrition.length() - 2));
+            if (!nutrition.equals("")) {
+                remakt.getLine().add(nutrition.substring(0, nutrition.length() - 2));
+            }
         }
 
         // image;

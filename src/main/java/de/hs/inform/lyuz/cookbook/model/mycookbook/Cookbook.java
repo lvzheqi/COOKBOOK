@@ -163,6 +163,9 @@ public class Cookbook {
         }
 
         public Cookbook.Recipe.Ingredient getIngredient() {
+            if(ingredient==null){
+                ingredient = new Ingredient();
+            }
             return ingredient;
         }
 
@@ -171,6 +174,9 @@ public class Cookbook {
         }
 
         public Cookbook.Recipe.Recipetext getRecipetext() {
+            if(recipetext == null){
+                recipetext = new Recipetext();
+            }
             return recipetext;
         }
 
@@ -179,6 +185,9 @@ public class Cookbook {
         }
 
         public Cookbook.Recipe.Nutrition getNutrition() {
+            if(nutrition == null){
+                nutrition = new Nutrition();
+            }
             return nutrition;
         }
 
@@ -187,6 +196,9 @@ public class Cookbook {
         }
 
         public Cookbook.Recipe.Comments getComments() {
+            if(comments == null){
+                comments = new Comments();
+            }
             return comments;
         }
 
@@ -195,6 +207,9 @@ public class Cookbook {
         }
 
         public Description getDescription() {
+            if(description == null){
+                description = new Description();
+            }
             return description;
         }
 
@@ -203,6 +218,9 @@ public class Cookbook {
         }
 
         public Source getSource() {
+            if(source == null){
+                source = new Source();
+            }
             return source;
         }
 
@@ -221,6 +239,9 @@ public class Cookbook {
             private List<Li> content;
 
             public List<Li> getContent() {
+                if(content==null){
+                    content = new ArrayList<Li>();
+                }
                 return content;
             }
 
@@ -241,6 +262,9 @@ public class Cookbook {
             private List<Li> content;
 
             public List<Li> getContent() {
+                if(content==null){
+                    content = new ArrayList<Li>();
+                }
                 return content;
             }
 
@@ -260,6 +284,9 @@ public class Cookbook {
             private List<Li> content;
 
             public List<Li> getContent() {
+                if(content==null){
+                    content = new ArrayList<Li>();
+                }
                 return content;
             }
 
@@ -280,6 +307,9 @@ public class Cookbook {
             private List<Li> content;
 
             public List<Li> getContent() {
+                if(content==null){
+                    content = new ArrayList<Li>();
+                }
                 return content;
             }
 
@@ -299,6 +329,9 @@ public class Cookbook {
             private List<Li> content;
 
             public List<Li> getContent() {
+                if(content==null){
+                    content = new ArrayList<Li>();
+                }
                 return content;
             }
 
@@ -318,6 +351,9 @@ public class Cookbook {
             private List<Li> content;
 
             public List<Li> getContent() {
+                if(content==null){
+                    content = new ArrayList<Li>();
+                }
                 return content;
             }
 

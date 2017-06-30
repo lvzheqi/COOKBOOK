@@ -52,6 +52,9 @@ public class EpubOpf {
         metadata.addContent(new Element("meta", ns1)
                 .setAttribute("property", "dcterms:modified")
                 .addContent(date));
+        metadata.addContent(new Element("meta", ns1)
+                .setAttribute("name", "cover")
+                .setAttribute("content", "cover-image"));
         metadata.addContent(new Element("language", ns2).addContent("DE"));
 
         metadata.addContent(new Element("contributor", ns2).addContent(firstname + " " + lastname));
@@ -87,12 +90,12 @@ public class EpubOpf {
         manifest.addContent(new Element("item", manifest.getNamespace())
                 .setAttribute("id", "icon-star")
                 .setAttribute("href", "icons/star.jpg")
-                .setAttribute("media-type", "image/png"));
+                .setAttribute("media-type", "image/jpeg"));
         
         manifest.addContent(new Element("item", manifest.getNamespace())
                 .setAttribute("id", "icon-star-board")
                 .setAttribute("href", "icons/star_board.jpg")
-                .setAttribute("media-type", "image/png"));
+                .setAttribute("media-type", "image/jpeg"));
 
         elements.forEach((e) -> {
             manifest.addContent(e.setNamespace(manifest.getNamespace()));

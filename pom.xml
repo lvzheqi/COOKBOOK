@@ -20,24 +20,8 @@
                 </configuration>
             </plugin>
             
-<!--            
-          
-            <plugin>  
-                <artifactId>maven-assembly-plugin</artifactId>  
-                <configuration>  
-                    <archive>  
-                        <manifest>  
-                            <mainClass>de.hs.inform.lyuz.cookbook.Application</mainClass>  
-                        </manifest>  
-                    </archive>  
-                    <descriptorRefs>  
-                        <descriptorRef>jar-with-dependencies</descriptorRef>  
-                    </descriptorRefs>  
-                </configuration>  
-            </plugin>  -->
-              
             
-            <plugin>
+<!--            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.0.2</version>
@@ -67,7 +51,53 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
+<!--            <plugin>
+                
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>de.hs.inform.lyuz.cookbook.Application</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>-->
+            
+            <plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-assembly-plugin</artifactId>
+			<version>2.5.5</version>
+			<configuration>
+				<archive>
+					<manifest>
+						<mainClass>de.hs.inform.lyuz.cookbook.Application</mainClass>
+					</manifest>
+				</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+			</configuration>
+                        <executions>
+				<execution>
+					<id>make-assembly</id>
+					<phase>package</phase>
+					<goals>
+						<goal>single</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
         </plugins>
         
     </build>
@@ -112,7 +142,11 @@
             <version>3.1</version>
         </dependency>
         
-
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.0.6</version>
+        </dependency>
     </dependencies>
     <name>COOKBOOK</name>
 </project>

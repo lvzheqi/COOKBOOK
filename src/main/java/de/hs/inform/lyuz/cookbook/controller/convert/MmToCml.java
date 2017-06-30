@@ -66,15 +66,29 @@ public class MmToCml {
         headakt.getCat().addAll(Arrays.asList(setCat(getNextLine().trim())));
 
         String serving = setHeadAndQty(getNextLine().trim());
-        String yield[] = serving.trim().split(" ");
-        if (yield.length == 2) {
-            headakt.setServingqty(yield[0]);
-            headakt.setServingtype(yield[1]);
-        } else {
-            headakt.setServingtype(serving);
+        String yield[] = FormatHelper.reformatLine(serving).split(" ");
+        switch (yield.length) {
+            case 2:
+                headakt.setServingqty(yield[0]);
+                headakt.setServingtype(yield[1]);
+                break;
+            case 1:
+                try {
+                    int n = Integer.parseInt(yield[0]);
+                    headakt.setServingqty(yield[0]);
+                    if (n > 1) {
+                        headakt.setServingtype("Protionen");
+                    } else {
+                        headakt.setServingtype("Protion");
+                    }
+                } catch (Exception e) {
+                    headakt.setServingtype(serving);
+                }   break;
+            default:
+                headakt.setServingtype(serving);
+                break;
         }
 
-        
         String line;
         do {
             line = getNextLine();
@@ -299,8 +313,8 @@ public class MmToCml {
     }
 
     private Ingredient setIngredient(String line) {
-        line = reformatLine(line).trim();
-        Ingredient ingredient = FormatHelper.formatIngredient(line.split(" "));
+        line = FormatHelper.reformatLine(line).trim();
+        Ingredient ingredient = FormatHelper.formatIngredient(line);
 
         return ingredient;
     }
@@ -345,7 +359,7 @@ public class MmToCml {
             line = scanner.nextLine();
         }
         if (line.startsWith(":") || nextLine.startsWith("*", 0)) {
-            line = reformatLine(line).trim();
+            line = FormatHelper.reformatLine(line).trim();
         }
 
         while (scanner.hasNextLine()) {
@@ -359,7 +373,7 @@ public class MmToCml {
                     && !nextLine.startsWith(":", 0)) {
                 line += " " + nextLine;
             } else if (nextLine.startsWith(":", 0) || nextLine.startsWith("*", 0)) {
-                nextLine = reformatLine(nextLine).trim();
+                nextLine = FormatHelper.reformatLine(nextLine).trim();
                 switch (nextLine.split(" ")[1].toUpperCase()) {
                     case "PRO":
                     case "QUELLE":
@@ -413,17 +427,6 @@ public class MmToCml {
             }
         }
         return line;
-    }
-
-    private String reformatLine(String line) {
-        List<String> words = new ArrayList<>();
-        for (String l : line.split(" ")) {
-            if (!l.equals("")) {
-                words.add(l);
-            }
-        }
-        line = "";
-        return words.stream().map((w) -> w + " ").reduce(line, String::concat);
     }
 
     private String formatMM(String recipe) {

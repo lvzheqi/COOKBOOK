@@ -95,6 +95,10 @@ public class EpubCreater {
         try {
             book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "css" + File.separator + "epub-spec.css")),
                     "css/epub-spec.css"));
+            book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.jpg")),
+                    "icons/star.jpg"));
+            book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.jpg")),
+                    "icons/star_board.jpg"));
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Fehler beim css Config.sys Information -- EPUB2");

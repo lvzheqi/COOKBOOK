@@ -35,6 +35,15 @@ public class CmlToLatex {
     private int anzpics = 0;
 
     public String getTex() {
+        String vorspann = "\\begin{document}\n\n";
+        if (exportInfo.isHasCover()) {
+            File f = new File(filepath + "cover.pdf");
+            if (f.exists()) {
+                vorspann += "\\includepdf[fitpaper]{cover.pdf}\n\n";
+            }
+        }
+        tex = vorspann + "\\author{" + exportInfo.getFirstName() + " " + exportInfo.getLastName() + "}\n\\title{" + exportInfo.getBookname()
+                + "}\n\\maketitle\n" + tex;
         return tex;
     }
 
@@ -68,7 +77,9 @@ public class CmlToLatex {
     // Sectionueberschriften sind die Kategorien
     private String cat2Tex(String cat) {
         String cattex = "";
-        cattex += "\\pagebreak \n \n";
+        if (exportInfo.isHasCat()) {
+            cattex += "\\tableofcontents\\pagebreak \n \n";
+        }
         cattex += "%----------------------------------------------------\n";
         cattex += "\\nopagebreak{ \n";
         cattex += "\\" + "section{" + FormatHelper.outputCategories(cat) + "} \n\n";
@@ -86,7 +97,7 @@ public class CmlToLatex {
 
         String titletex = "";								// Titel
         String indextex = "";								// Indexeintraege
-        String parttex = "}{\n\\" + "begin{multicols}{2}";		// Zutaten
+        String parttex = "\n\\begin{multicols}{2}";		// Zutaten
         String preptex = "\n" + "\\" + "end{multicols}\n\n";		// Zubereitung
         String remarktex = "";								// Bemerkungen
         String sourcetex = "";								// Quellenangaben
@@ -94,7 +105,7 @@ public class CmlToLatex {
         String servetex = "";								// Portionen
         String conttex = "";									// pro Portion
         String pictex = "";									// Bilder
-
+        String pointtex = "";
         for (Object objakt : recipe.getHeadAndCustomAndPart()) {
             switch (objakt.getClass().getCanonicalName()) {
                 case "de.hs.inform.lyuz.cookbook.model.cookml.Head":
@@ -113,6 +124,9 @@ public class CmlToLatex {
                     conttex = content2tex(headakt);
                     if (exportInfo.isHasPic()) {
                         pictex = pic2tex(headakt);
+                    }
+                    if (exportInfo.isHasDiffculty()) {
+                        pointtex = point2tex(headakt);
                     }
                     break;
                 case "de.hs.inform.lyuz.cookbook.model.cookml.Remark":
@@ -140,7 +154,7 @@ public class CmlToLatex {
             }
         }
 
-        rectex += titletex + texString(indextex + parttex + pictex + preptex
+        rectex += titletex + texString(indextex + "\n }{" + pointtex + parttex + pictex + preptex
                 + remarktex + servetex + conttex + timetex + sourcetex);
         rectex += "} \n\n";
 
@@ -191,73 +205,6 @@ public class CmlToLatex {
 
     // Inhalt
     private String content2tex(Head head) {
-//        String contex = "";
-//        int anz = 1;
-//        Integer qty = 1;
-//        if (head.getServingqty() != null) {
-//            qty = Integer.valueOf(head.getServingqty());
-//        }
-//
-//        Float kalorien = -1.0f;
-//        Float be = -1.0f;
-//
-//        for (Head.Content cont : head.getContent()) {
-//            String unit = cont.getType();
-//            String[] numbers = cont.getValue().split(",");
-//            Float unitvalue;
-//            String contunit = "";
-//            if (numbers.length == 2) {
-//                int nlength = numbers[1].length();
-//                unitvalue = Float.parseFloat(numbers[1]) / (float) Math.pow(10.0, nlength);
-//                unitvalue = (unitvalue + Float.parseFloat(numbers[0])) / (float) qty;
-//            } else {
-//                unitvalue = Float.parseFloat(numbers[0]) / (float) qty;
-//            }
-//            if (unit.equals("GCAL")) {
-//                kalorien = unitvalue;
-//                anz--;
-//            } else {
-//                if (unit.equals("GKB")) {
-//                    be = unitvalue;
-//                } else {
-//                    if (unit.equals("GJ")) {
-//                        contunit = String.valueOf(unitvalue.intValue()) + "~kJ";
-//                    } else {
-//                        unitvalue = unitvalue / 1000.0f;
-//                        if (unit.equals("ZE")) {
-//                            contunit = String.valueOf(unitvalue.intValue()) + "~g Eiweiß";
-//                        } else {
-//                            if (unit.equals("ZF")) {
-//                                contunit = String.valueOf(unitvalue.intValue()) + "~g Fett";
-//                            } else {
-//                                if (unit.equals("ZK")) {
-//                                    contunit = String.valueOf(unitvalue.intValue()) + "~g Kohlenhydrate";
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            if ((anz > 1) && !(contunit.equals(""))) {
-//                contex += ", ";
-//            }
-//            anz++;
-//            contex += contunit;
-//        }
-//        if (kalorien > 0) {
-//            if (anz > 3) {
-//                contex += ", " + String.valueOf(kalorien.intValue()) + "~kcal";
-//            }
-//        }
-//        if (be > 0) {
-//            if (anz > 3) {
-//                be = be * 100.0f;
-//                int intvalue = be.intValue();
-//                be = intvalue / 100.0f;
-//                contex += ", " + be.toString() + "~BE";
-//            }
-//        }
 
         String contex = FormatHelper.outputContent(head);
         if (!contex.equals("")) {
@@ -438,12 +385,29 @@ public class CmlToLatex {
                     }
                     texstring = anfang + "" + line.substring(pos + 1);
                     setoff--;
-                    break;
-
+                    break;     
             }
+            
         }
 
         return texstring;
+    }
+
+    private String point2tex(Head headakt) {
+        String pointtex = "";
+        if (headakt.getWwpoints() != null) {
+            int p;
+            try {
+                p = headakt.getWwpoints().intValue();
+                pointtex = "\\icons{" + filepath + "images" + File.separator + "star.jpg}"
+                        + "{" + filepath + "images" + File.separator + "star_board.jpg}{" + p + "}";
+            } catch (Exception e) {
+                Logger.getLogger(CmlToLatex.class.getName()).log(Level.SEVERE, null, e);
+                System.err.println("Fehler beim Konvert wwpoints");
+            }
+
+        }
+        return pointtex;
     }
 
 }

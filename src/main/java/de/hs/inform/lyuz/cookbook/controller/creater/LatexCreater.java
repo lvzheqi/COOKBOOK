@@ -30,13 +30,10 @@ public class LatexCreater {
 
     public void write() throws ConvertErrorException {
 
-        String vorspann = "\\author{" + exportInfo.getFirstName() + " " + exportInfo.getLastName() + "}\n\\title{" + exportInfo.getBookname()
-                + "}\n\\begin{document}\n\\maketitle\n\\tableofcontents";
-
         String rahmen = "\\input{kochbuchkopf.tex}\n\\input{" + exportInfo.getBookname() + "_input.tex}\n\\input{kochbuchfuss.tex}";
 
         try {
-            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + "_input.tex"), vorspann + tex, "UTF-8");
+            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + "_input.tex"), tex, "UTF-8");
             FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + ".tex"), rahmen, "UTF-8");
 
         } catch (Exception ex) {
@@ -61,20 +58,38 @@ public class LatexCreater {
             filepath = file.getAbsolutePath() + File.separator;
             File imagFiles = new File(filepath + "images");
             imagFiles.mkdir();
-            copyLatexHeadAndFoot(filepath);
+            copyRessource(filepath);
+            if (exportInfo.isHasCover()) {
+                setImgPdf(filepath);
+            }
         }
     }
 
-    private void copyLatexHeadAndFoot(String path) throws SystemErrorException {
+    private void copyRessource(String path) throws SystemErrorException {
         try {
-            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHFUSS_LEX), new File(path + "kochbuchfuss.tex"));
             FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHKOPF_LEX), new File(path + "kochbuchkopf.tex"));
-
+            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHFUSS_LEX), new File(path + "kochbuchfuss.tex"));
         } catch (Exception ex) {
             Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, ex);
             throw new SystemErrorException("Fehler beim Lesen Config.sys Information");
         }
+        try {
+            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(path + "images" + File.separator + "star.jpg"));
+            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(path + "images" + File.separator + "star_board.jpg"));
+
+        } catch (Exception ex) {
+            Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Fehler beim Lesen icons");
+        }
 
     }
 
+    private void setImgPdf(String filepath) {
+        try {
+            FilesUtils.changeImgToPdf(exportInfo.getCoverPath(), filepath + "cover.pdf");
+        } catch (Exception e) {
+            Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, e);
+            System.err.println("Fehler beim Erzeugen cover PDF ");
+        }
+    }
 }

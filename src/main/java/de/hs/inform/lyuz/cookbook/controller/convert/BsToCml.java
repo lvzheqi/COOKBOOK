@@ -216,7 +216,7 @@ public class BsToCml {
 
         String line = null;
         while (scanner.hasNextLine() && !(line = scanner.nextLine()).startsWith("#", 0)) {
-            partakt.getIngredient().add(FormatHelper.formatIngredient(line.split(" ")));
+            partakt.getIngredient().add(FormatHelper.formatIngredient(line));
         }
         recakt.getHeadAndCustomAndPart().add(partakt);
         return line;

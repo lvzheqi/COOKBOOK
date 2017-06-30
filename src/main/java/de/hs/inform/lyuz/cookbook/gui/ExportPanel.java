@@ -174,10 +174,10 @@ public class ExportPanel extends MyPanel {
         exportTippTA.setBackground(new java.awt.Color(238, 238, 238));
         exportTippTA.setColumns(2);
         exportTippTA.setRows(2);
-        exportTippTA.setText("Tip: select an export format.");
+        exportTippTA.setText("Tipp: Bitte wählen Sie ein Ausgabe-Format aus.");
         exportTippSP.setViewportView(exportTippTA);
 
-        exportBtn.setText("export");
+        exportBtn.setText("exportieren");
         exportBtn.setToolTipText("");
         exportBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -218,28 +218,27 @@ public class ExportPanel extends MyPanel {
                         .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(exportPanelLayout.createSequentialGroup()
+                        .addComponent(backBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(exportBtn)
+                        .addGap(123, 123, 123))
+                    .addGroup(exportPanelLayout.createSequentialGroup()
                         .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(exportPanelLayout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(20, 20, 20)
                                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(bookNameLabel, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(pathLabel, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(bookNameTF)
                                     .addGroup(exportPanelLayout.createSequentialGroup()
+                                        .addComponent(pathLabel)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(16, 16, 16))
-                            .addGroup(exportPanelLayout.createSequentialGroup()
-                                .addComponent(backBtn)
-                                .addGap(311, 311, 311)
-                                .addComponent(exportBtn)))
-                        .addGap(47, 47, 47))
-                    .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(exportPanelLayout.createSequentialGroup()
+                                        .addComponent(bookNameLabel)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(bookNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(113, Short.MAX_VALUE))))
         );
 
         exportPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, exportBtn});

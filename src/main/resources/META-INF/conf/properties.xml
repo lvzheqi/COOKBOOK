@@ -17,6 +17,7 @@
     <source value="false"/>
     <remark value="false"/>
     <time value="true"/>
+    <index value="false"/>
     <difficulty value="true"/>
     <cover value="false"/>
     <coverpath></coverpath>

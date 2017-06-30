@@ -66,16 +66,16 @@ public class CmlToEpubObject {
             }
             setEpubObjekt(this.myBook.getSortCmlMap().get(category), epubLink, filepath);
             this.myBook.getSortCmlMap().get(category).setType(category);
-            epub.getNavMap().put(epub.getIndex()+1, epubLink);
-            epub.setIndex(epub.getIndex()+1);
+            epub.getNavMap().put(epub.getIndex() + 1, epubLink);
+            epub.setIndex(epub.getIndex() + 1);
             epub.getCookmls().put(category, this.myBook.getSortCmlMap().get(category));
             setEpubOpf(category);
         }
 
         if (this.myBook.getExportInfo().isHasIndex()) {
             EpubLink epubLink = new EpubLink("index.xhtml", "Index");
-            epub.getNavMap().put(epub.getIndex()+1, epubLink);
-            epub.setIndex(epub.getIndex()+1);
+            epub.getNavMap().put(epub.getIndex() + 1, epubLink);
+            epub.setIndex(epub.getIndex() + 1);
             epub.setIndexMap(sortIndex(indexTreeMap));
             setEpubOpf("index");
         }
@@ -92,6 +92,7 @@ public class CmlToEpubObject {
 
 //                        setHeadQty(headakt);            // head qty
                         setHeadTitle(headakt);          //head title
+                        setSource(headakt);
                         setEpubPic(headakt, filepath);            //Epub Cover & Pic
                         EpubLink el = setEpubNav(headakt, epubLink);            //add EpubNav link
                         setIndexItem(headakt, el);          //Epub Index Hit
@@ -107,12 +108,13 @@ public class CmlToEpubObject {
 
                     case "de.hs.inform.lyuz.cookbook.model.cookml.Remark":
                         List<String> lines = new ArrayList<>();
-                        ((Remark) objakt).getLine().stream().filter((line) -> (!line.equals("")))
+                        ((Remark) objakt).getLine().stream().filter((line) -> (!line.trim().equals("")))
                                 .forEachOrdered((line) -> {
                                     lines.add(line);
                                 });
                         if (lines.size() == 0) {
                             ((Remark) objakt).setLine(null);
+
                         } else {
                             ((Remark) objakt).setLine(lines);
                         }
@@ -130,6 +132,9 @@ public class CmlToEpubObject {
 
 //    private void setHeadQty(Head headakt) {
 //        if (headakt.getServingqty() != null) {
+//            if (headakt.getServingqty().trim().equals("")) {
+//                headakt.setServingqty("1");
+//            }
 //            headakt.setServingqty(FormatHelper.formatQTY(Float.valueOf(headakt.getServingqty())));
 //        }
 //    }
@@ -377,5 +382,26 @@ public class CmlToEpubObject {
             }
         }
         return indexSort;
+    }
+
+    private void setSource(Head headakt) {
+        String souceText = "";
+        for (String sou : headakt.getSourceline()) {
+            if (sou != null && !sou.equals("")) {
+                if (!sou.endsWith("; ")) {
+                    souceText += sou + "; ";
+                } else {
+                    souceText += sou;
+                }
+
+            }
+        }
+        if (!souceText.equals("")) {
+            List<String> souList = new ArrayList<>();
+            souList.add(souceText);
+            headakt.setSourceline(souList);
+        } else {
+            headakt.setSourceline(null);
+        }
     }
 }

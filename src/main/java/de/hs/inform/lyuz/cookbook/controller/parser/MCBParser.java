@@ -7,10 +7,13 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import de.hs.inform.lyuz.cookbook.model.mycookbook.Cookbook;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.io.FileUtils;
 
@@ -53,7 +56,7 @@ public class MCBParser {
 
                 Unmarshaller u = jc.createUnmarshaller();
                 mcb = (Cookbook) u.unmarshal(xsr);
-            } catch (Exception ex) {
+            } catch (FileNotFoundException | IllegalArgumentException | JAXBException | XMLStreamException ex) {
                 Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex);
                 throw new ParserErrorExcepetion("Fehler beim MCB Parser");
             }
@@ -86,7 +89,7 @@ public class MCBParser {
         readAllFile(descDir);
     }
 
-    public void readAllFile(String descDir) {
+    private void readAllFile(String descDir) {
         files = (new File(descDir)).listFiles();
         for (File file : files) {
             if (file.isDirectory()) {

@@ -39,13 +39,14 @@ public class CookMainJFrame extends javax.swing.JFrame {
     }
 
     private void init() {
-
+        this.setTitle("Goes Epub");
+        this.setResizable(false);
         importPanel = new ImportPanel(this);
         categoryPanel = new CategoryPanel(this);
         exportPanel = new ExportPanel(this);
-        cookTabPane.addTab("Import Recpices", importPanel);
-        cookTabPane.addTab("Category", categoryPanel);
-        cookTabPane.addTab("Export", exportPanel);
+        cookTabPane.addTab("Importieren", importPanel);
+        cookTabPane.addTab("Kategorien", categoryPanel);
+        cookTabPane.addTab("Exportieren", exportPanel);
 
         previousTabIndex = cookTabPane.getSelectedIndex();
 

@@ -4,6 +4,9 @@ import de.hs.inform.lyuz.cookbook.controller.creater.CMLCreater;
 import de.hs.inform.lyuz.cookbook.model.cookml.Head;
 import de.hs.inform.lyuz.cookbook.model.cookml.Ingredient;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,37 +14,63 @@ public class FormatHelper {
 
     // Menge der Zutat
     public static String formatQTY(Float qty) {
-        String qtyString = "";
-        int nenner = 0;
-        double eps = 1.0e-6;
-        int zaehler = (int) qty.floatValue();
-        boolean isrational = false;
+//        String qtyString = "";
+//        int nenner = 0;
+//        double eps = 1.0e-6;
+//        int zaehler = (int) qty.floatValue();
+//        boolean isrational = false;
 
-        while (!isrational && (nenner++ < 9)) {
-            zaehler = (int) ((qty) * nenner);
-            isrational = (qty - ((float) zaehler / (float) nenner)) < eps;
+//        while (!isrational && (nenner++ < 9)) {
+//            zaehler = (int) ((qty) * nenner);
+//            isrational = (qty - ((float) zaehler / (float) nenner)) < eps;
+//        }
+//
+//        if ((zaehler / nenner > 0) && (nenner > 4)) {
+//            isrational = false;
+//        }
+//
+//        if (isrational) {
+//            if (nenner == 1) {
+//                qtyString = (new Integer(zaehler)).toString();
+//            } else {
+//                if (zaehler / nenner > 0) {
+//                    qtyString = (new Integer(zaehler / nenner)).toString() + " ";
+//                    zaehler = zaehler % nenner;
+//                }
+//                qtyString += (new Integer(zaehler)).toString() + "/" + (new Integer(nenner)).toString();
+//
+//            }
+//        } else {
+//            qtyString = qty.toString();
+//        }
+        int count = 0;
+        int base = 10;
+        float num = (float) (Math.round((qty - qty.intValue()) * 100) / 100.0);
+        if (num == 0) {
+            return qty.intValue() + "";
+        }
+        while (num != Math.floor(num)) {
+            num *= base;
+            count++;
         }
 
-        if ((zaehler / nenner > 0) && (nenner > 4)) {
-            isrational = false;
-        }
-
-        if (isrational) {
-            if (nenner == 1) {
-                qtyString = (new Integer(zaehler)).toString();
-            } else {
-                if (zaehler / nenner > 0) {
-                    qtyString = (new Integer(zaehler / nenner)).toString() + " ";
-                    zaehler = zaehler % nenner;
-                }
-                qtyString += (new Integer(zaehler)).toString() + "/" + (new Integer(nenner)).toString();
-
+        base = (int) Math.pow(base, count);
+        int nor = (int) num;
+        int gcd = findGCD(nor, base);
+        if ((nor / gcd) < 10 && (base / gcd) < 10) {
+            if (qty.intValue() > 0) {
+                return qty.intValue() + " " + String.valueOf(nor / gcd) + "/" + String.valueOf(base / gcd);
             }
-        } else {
-            qtyString = qty.toString();
+            return String.valueOf(nor / gcd) + "/" + String.valueOf(base / gcd);
         }
+        return qty.toString();
+    }
 
-        return qtyString;
+    private static int findGCD(int a, int b) {
+        if (a == 0) {
+            return b;
+        }
+        return findGCD(b % a, a);
     }
 
     // Mengeneinheiten
@@ -68,7 +97,8 @@ public class FormatHelper {
             case "tbl.":
             case "tbs.":
             case "tbsp.":
-                unitForm = "EL";
+            case "EL":
+                unitForm = "El";
                 break;
             case "fl":
             case "oz.fl.":
@@ -129,6 +159,8 @@ public class FormatHelper {
             case "lb":
             case "lb.":
             case "#":
+            case "Pf.":
+            case "pfd":
                 unitForm = "U.S.Pound";
                 break;
             case "sl":
@@ -160,7 +192,9 @@ public class FormatHelper {
             case "ts":
             case "tsp.":
             case "BL":
-                unitForm = "TL";
+            case "TL":
+            case "Teel":
+                unitForm = "Tl";
                 break;
             case "tc.":
                 unitForm = "Teetasse";
@@ -175,8 +209,7 @@ public class FormatHelper {
         return unitForm;
     }
 
-        public static String outputContent(Head head) {
-        String context = "";
+    public static String outputContent(Head head) {
         int qty = 1;
         if (head.getServingqty() != null) {
             try {
@@ -187,13 +220,22 @@ public class FormatHelper {
             }
         }
 
+        HashMap<String, String> content = new HashMap<>();
+        head.getContent().forEach((cont) -> {
+            content.put(cont.getType(), cont.getValue());
+        });
+
+        return outputContent(content, qty);
+    }
+
+    public static String outputContent(HashMap<String, String> content, int qty) {
+        String context = "";
         float kalorien = -1.0f;
 
-        for (Head.Content cont : head.getContent()) {
-            String unit = cont.getType();
+        for (String unit : content.keySet()) {
+            String value = content.get(unit);
             String contunit = "";
-            float unitvalue = Float.parseFloat(deNum2En(cont.getValue())) / qty;
-
+            float unitvalue = Float.parseFloat(deNum2En(value)) / qty;
             if (unit.equals("ZE")) {
                 if (unitvalue / 1000f > 1.0f) {
                     contunit = String.valueOf((int) (unitvalue / 1000.0)) + " g Eiweiß, ";
@@ -226,6 +268,7 @@ public class FormatHelper {
                 }
             } else if (unit.equals("FC")) {
                 if (unitvalue / 1000f > 1.0f) {
+
                     contunit = String.valueOf((int) (unitvalue / 1000.0)) + " g Cholesterin, ";
                 } else {
                     contunit = String.valueOf((int) (unitvalue)) + " mg Cholesterin, ";
@@ -248,6 +291,8 @@ public class FormatHelper {
                 contunit = String.valueOf((int) (unitvalue * 100 / 100)) + " BE, ";
             } else if (unit.equals("GJ")) {
                 contunit = String.valueOf((int) (unitvalue)) + " kJ, ";
+            } else {
+                contunit = String.valueOf((int) (unitvalue)) + " " + unit + ", ";
             }
 
             if (unit.equals("GCAL")) {
@@ -256,14 +301,14 @@ public class FormatHelper {
 
             context += contunit;
         }
-        if (kalorien > 0) {
+        if (kalorien >= 0) {
             context += String.valueOf((int) kalorien) + " kcal";
         } else if (!context.equals("")) {
             context = context.substring(0, context.length() - 2);
         }
         return context;
     }
-        
+
     public static String outputCategories(String cat) {
         String output = cat;
         if (cat.equals("SALAT")) {
@@ -297,9 +342,13 @@ public class FormatHelper {
     }
 
     public static String deNum2En(String n) {
-        String[] num = n.split(",");
+        String[] num = reformatLine(n).split(",");
         if (num.length == 2) {
             return num[0] + "." + num[1];
+        } else if (num.length == 1) {
+            if (n.contains(",")) {
+                return num[0];
+            }
         }
         return n;
     }
@@ -307,25 +356,35 @@ public class FormatHelper {
     public static BigInteger setCookTime(String line) {
 
         if (line != null) {
-            String time = null;
-            int index = 0;
-            for (String t : line.trim().split(" ")) {
+            String t[] = reformatLine(line).split(" ");
+            String time = "";
+            if (t.length == 1) {
+                for (int i = 0; i < t[0].length(); i++) {
+                    if (Character.isDigit(t[0].charAt(i))) {
+                        time += "";
+                    } else {
+                        break;
+                    }
+                }
+                if (!time.equals("")) {
+                    t[0] = time;
+                }
+            }
+            if (t.length == 1 || t.length == 2) {
                 try {
-                    Float.parseFloat(t);
-                    index++;
-                    time = t;
+                    Float.parseFloat(t[0]);
+                    return new BigInteger(t[0]);
                 } catch (Exception e) {
                     return null;
                 }
-            }
-            if (index == 1) {
-                return new BigInteger(time);
             }
         }
         return null;
     }
 
-    public static Ingredient formatIngredient(String[] words) {
+    public static Ingredient formatIngredient(String line) {
+        String[] words = reformatLine(line).split(" ");
+//        String[] words = new String[]{};
         Ingredient indakt = new Ingredient();
         int wordsstart = 0;
         String item = "";
@@ -339,41 +398,47 @@ public class FormatHelper {
 
         if (isDigitwithSymbol(words[0])) {
             String[] fto = words[0].split("-");
-            qty = checkNumber(fto[0]);
-            if (fto.length > 1) {
-                qty2 = checkNumber(fto[1]);
-            }
-
-            if (words.length > 1 && isDigitwithSymbol(words[1])) {
-                String[] fto2 = words[1].split("-");
-                if (fto.length == 1) {
-                    qty += checkNumber(fto2[0]);
-                } else {
-                    qty2 += checkNumber(fto2[0]);
+            if (fto != null && fto.length > 0) {
+                qty = checkNumber(fto[0]);
+                if (fto.length > 1) {
+                    qty2 = checkNumber(fto[1]);
                 }
-                if (fto2.length > 1) {
-                    if (fto.length == 1) {
-                        qty2 = checkNumber(fto2[1]);
+
+                if (words.length > 1 && isDigitwithSymbol(words[1])) {
+                    String[] fto2 = words[1].trim().split("-");
+                    if (fto2 != null && fto2.length > 0) {
+                        if (fto.length == 1) {
+                            qty += checkNumber(fto2[0]);
+                        } else {
+                            qty2 += checkNumber(fto2[0]);
+                        }
+                        if (fto2.length > 1) {
+                            if (fto.length == 1) {
+                                qty2 = checkNumber(fto2[1]);
+                            }
+                        }
+
+                        if (words.length > 2 && isDigitwithSymbol(words[2])) {
+                            qty2 += checkNumber(words[2]);
+                            wordsstart++;
+                        }
+                        wordsstart++;
                     }
                 }
-
-                if (words.length > 2 && isDigitwithSymbol(words[2])) {
-                    qty2 += checkNumber(words[2]);
-                    wordsstart++;
-                }
                 wordsstart++;
-            }
-            wordsstart++;
 
-            indakt.setQty(qty);
-            if (qty2 != null) {
-                item = "(bis " + formatQTY(qty2) + " ) ";
+                indakt.setQty(qty);
+                if (qty2 != null) {
+                    item = "(bis " + formatQTY(qty2) + " ) ";
+                }
             }
         }
 
         if (words[wordsstart].toUpperCase().equals("TBSP.")
                 || (words[wordsstart].length() <= 3 && !words[wordsstart].toUpperCase().equals("EI"))) {
-            if (words[wordsstart].equals("Pf.")) {
+            if (words[wordsstart].equals("Pf.") || words[wordsstart].equals("lb")
+                    || words[wordsstart].equals("lb.") || words[wordsstart].equals("pf")
+                    || words[wordsstart].equals("pfd")) {
                 if (qty >= 2) {
                     qty = qty / 2.0f;
                     indakt.setUnit("kg");
@@ -400,7 +465,7 @@ public class FormatHelper {
         int num = 0;
         for (int i = 0; i < word.length(); i++) {
             if (!Character.isDigit(word.charAt(i))
-                    && word.charAt(i) != '/' && word.charAt(i) != '-') {
+                    && word.charAt(i) != '/' && word.charAt(i) != '-' && word.charAt(i) != ',') {
                 return false;
             } else if (word.charAt(i) == '-') {
                 num++;
@@ -410,16 +475,31 @@ public class FormatHelper {
     }
 
     private static Float checkNumber(String n) {
-        String[] numbers = n.split("/");
-        for (int i = 0; i < numbers.length; i++) {
-            numbers[i] = deNum2En(numbers[i]);
-        }
-        if (numbers.length == 2) {
-            return Float.parseFloat(numbers[0]) / Float.parseFloat(numbers[1]);
+        if (n.contains("/")) {
+            String[] numbers = n.split("/");
+            for (int i = 0; i < numbers.length; i++) {
+                numbers[i] = deNum2En(numbers[i]);
+            }
+            if (numbers.length == 2) {
+                return Float.parseFloat(numbers[0]) / Float.parseFloat(numbers[1]);
+            } else {
+                return Float.parseFloat(numbers[0]);
+            }
         } else {
-            return Float.parseFloat(numbers[0]);
+            return Float.parseFloat(deNum2En(n));
         }
 
+    }
+
+    public static String reformatLine(String line) {
+        List<String> words = new ArrayList<>();
+        for (String l : line.split(" ")) {
+            if (!l.equals("")) {
+                words.add(l);
+            }
+        }
+        line = "";
+        return words.stream().map((w) -> w + " ").reduce(line, String::concat);
     }
 
 }

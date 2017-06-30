@@ -28,10 +28,10 @@ public class CMLCreater {
 
     public CMLCreater(MyBook myBook) {
         this.myBook = myBook;
-        formatWithExportInfo(myBook.getCookml());
+        cookml =formatWithExportInfo(myBook.getCookml());
     }
 
-    private void formatWithExportInfo(Cookml cookml) {
+    private Cookml formatWithExportInfo(Cookml cookml) {
         ExportInfo exportInfo = myBook.getExportInfo();
         cookml.setName(exportInfo.getTitle());
         cookml.setVersion("1.1.2");
@@ -45,7 +45,7 @@ public class CMLCreater {
                 switch (objakt.getClass().getCanonicalName()) {
                     case "de.hs.inform.lyuz.cookbook.model.cookml.Head":
                         Head headakt = (Head) objakt;
-                        headakt.setChangeuser(exportInfo.getFirstName() + " " + exportInfo.getLastName());
+//                        headakt.setChangeuser(exportInfo.getFirstName() + " " + exportInfo.getLastName());
                         headakt.setRid(setRidID());
 
                         try {
@@ -99,7 +99,7 @@ public class CMLCreater {
             }
 
         }
-//        return cookml;
+        return cookml;
     }
 
     public void write() throws ConvertErrorException {

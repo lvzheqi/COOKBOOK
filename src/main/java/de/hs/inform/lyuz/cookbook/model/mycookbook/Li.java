@@ -1,4 +1,3 @@
-
 package de.hs.inform.lyuz.cookbook.model.mycookbook;
 
 import javax.xml.bind.annotation.XmlAccessType;

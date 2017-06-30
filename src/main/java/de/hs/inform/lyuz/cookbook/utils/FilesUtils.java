@@ -1,5 +1,8 @@
 package de.hs.inform.lyuz.cookbook.utils;
 
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
@@ -15,7 +18,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
-import org.jdom2.Document;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.jdom2.transform.JDOMResult;
@@ -27,8 +29,8 @@ public class FilesUtils {
     public static String COOKML_XSL = "META-INF/epub/xsl/cookml.xsl";
     public static String CALALOGEPUB_XSL = "META-INF/epub/xsl/catalogEpub.xsl";
     public static String EPUB_SPEC_CSS = "META-INF/epub/css/epub-spec.css";
-    public static String STAR_PNG = "META-INF/epub/icons/star.png";
-    public static String STAR_BOARD_PNG = "META-INF/epub/icons/star_board.png";
+    public static String STAR_PNG = "META-INF/icons/star.png";
+    public static String STAR_BOARD_PNG = "META-INF/icons/star_board.png";
     public static String CONTAINER_XML = "META-INF/epub/container.xml";
     public static String COVER_XHTML = "META-INF/epub/cover.xhtml";
     public static String MIMETYPE = "META-INF/epub/mimetype";
@@ -124,7 +126,7 @@ public class FilesUtils {
 
     }
 
-    public static void writeDOMXML(Document document, FileOutputStream w) throws IOException {
+    public static void writeDOMXML(org.jdom2.Document document, FileOutputStream w) throws IOException {
         try {
             XMLOutputter o = new XMLOutputter();
             Format format = Format.getPrettyFormat();
@@ -142,7 +144,7 @@ public class FilesUtils {
 
     }
 
-    public static void writeDOMHTML(InputStream inputStream, Document document, String path) throws TransformerException, IOException {
+    public static void writeDOMHTML(InputStream inputStream, org.jdom2.Document document, String path) throws TransformerException, IOException {
         JDOMResult out = new JDOMResult();
         Transformer tf;
 
@@ -160,6 +162,20 @@ public class FilesUtils {
                     Logger.getLogger(FilesUtils.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }
+
+    }
+
+    public static void changeImgToPdf(String path, String desPath) throws Exception {
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document(PageSize.A4, 20, 20, 20, 20);
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(desPath));
+            document.open();
+            Image image = Image.getInstance(path);
+            document.add(image);
+            
+        } finally {
+            document.close();
         }
 
     }

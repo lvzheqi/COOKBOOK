@@ -140,7 +140,7 @@ public class CategoryPanel extends MyPanel {
         catTempLabel.setText("vorhandene Kategorien");
 
         catExtraLabel.setFont(new java.awt.Font("Lucida Grande", 1, 14)); // NOI18N
-        catExtraLabel.setText("extra kategoorien");
+        catExtraLabel.setText("extra Kategorien");
 
         catExtraList.setToolTipText("extra kategorien von importierten Dateien zeigen");
         catExtraSP.setViewportView(catExtraList);
@@ -161,7 +161,7 @@ public class CategoryPanel extends MyPanel {
             }
         });
 
-        downBtn.setText("nach unter");
+        downBtn.setText("nach unten");
         downBtn.setToolTipText("Bitte eine Kategorie aus linken Seite auswählen");
         downBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -169,14 +169,14 @@ public class CategoryPanel extends MyPanel {
             }
         });
 
-        toExpBtn.setText("nächst");
+        toExpBtn.setText("vor");
         toExpBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 toExpBtnActionPerformed(evt);
             }
         });
 
-        leftBtn.setText("nach rechts");
+        leftBtn.setText("nach links");
         leftBtn.setToolTipText("Bitte eine Kategorie aus rechte Seite auswählen");
         leftBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -225,7 +225,7 @@ public class CategoryPanel extends MyPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(toExpBtn))
+                        .addComponent(toExpBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(catTempLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -248,6 +248,8 @@ public class CategoryPanel extends MyPanel {
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, saveCatBtn, upBtn});
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, toExpBtn});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

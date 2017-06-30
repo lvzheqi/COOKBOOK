@@ -20,9 +20,9 @@
               <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="backBtn" min="-2" pref="77" max="-2" attributes="0"/>
+                      <Component id="backBtn" linkSize="7" min="-2" pref="77" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="toExpBtn" min="-2" max="-2" attributes="0"/>
+                      <Component id="toExpBtn" linkSize="7" min="-2" pref="87" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="catTempLabel" min="-2" max="-2" attributes="0"/>
@@ -131,7 +131,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Lucida Grande" size="14" style="1"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="extra kategoorien"/>
+        <Property name="text" type="java.lang.String" value="extra Kategorien"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="catExtraSP">
@@ -174,7 +174,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="downBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="nach unter"/>
+        <Property name="text" type="java.lang.String" value="nach unten"/>
         <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie aus linken Seite ausw&#xe4;hlen"/>
       </Properties>
       <Events>
@@ -183,7 +183,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="toExpBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="n&#xe4;chst"/>
+        <Property name="text" type="java.lang.String" value="vor"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="toExpBtnActionPerformed"/>
@@ -191,7 +191,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="leftBtn">
       <Properties>
-        <Property name="text" type="java.lang.String" value="nach rechts"/>
+        <Property name="text" type="java.lang.String" value="nach links"/>
         <Property name="toolTipText" type="java.lang.String" value="Bitte eine Kategorie aus rechte Seite ausw&#xe4;hlen"/>
       </Properties>
       <Events>

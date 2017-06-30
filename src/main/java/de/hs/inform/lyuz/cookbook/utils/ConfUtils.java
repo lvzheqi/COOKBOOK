@@ -83,6 +83,9 @@ public class ConfUtils {
                 case "time":
                     exportInfo.setHasTime(Boolean.valueOf(e.getAttributeValue("value")));
                     break;
+                case "index":
+                    exportInfo.setHasIndex(Boolean.valueOf(e.getAttributeValue("value")));
+                    break;
                 case "difficulty":
                     exportInfo.setHasDiffculty(Boolean.valueOf(e.getAttributeValue("value")));
                     break;
@@ -148,6 +151,10 @@ public class ConfUtils {
         Element time = new Element("time");
         time.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasTime())));
         root.addContent(time);
+        
+        Element index = new Element("index");
+        index.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasIndex())));
+        root.addContent(index);
 
         Element difficulty = new Element("difficulty");
         difficulty.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasDiffculty())));
