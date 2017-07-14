@@ -1,8 +1,6 @@
 package de.hs.inform.lyuz.cookbook.utils;
 
-import de.hs.inform.lyuz.cookbook.controller.convert.CmlToEpubObject;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;

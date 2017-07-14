@@ -1,6 +1,6 @@
 package de.hs.inform.lyuz.cookbook.gui;
 
-import de.hs.inform.lyuz.cookbook.controller.manager.ExportManager;
+import de.hs.inform.lyuz.cookbook.logic.manager.ExportManager;
 import javax.swing.JFileChooser;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import de.hs.inform.lyuz.cookbook.model.MyBook;

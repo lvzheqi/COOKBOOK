@@ -3,7 +3,7 @@ package de.hs.inform.lyuz.cookbook.gui;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
-import de.hs.inform.lyuz.cookbook.controller.parser.FileParser;
+import de.hs.inform.lyuz.cookbook.logic.parser.FileParser;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;

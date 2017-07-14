@@ -1,6 +1,6 @@
 package de.hs.inform.lyuz.cookbook.utils;
 
-import de.hs.inform.lyuz.cookbook.controller.creater.CMLCreater;
+import de.hs.inform.lyuz.cookbook.logic.creater.CMLCreater;
 import de.hs.inform.lyuz.cookbook.model.cookml.Head;
 import de.hs.inform.lyuz.cookbook.model.cookml.Ingredient;
 import java.math.BigInteger;
@@ -361,7 +361,7 @@ public class FormatHelper {
             if (t.length == 1) {
                 for (int i = 0; i < t[0].length(); i++) {
                     if (Character.isDigit(t[0].charAt(i))) {
-                        time += "";
+                        time += t[0].charAt(i);
                     } else {
                         break;
                     }

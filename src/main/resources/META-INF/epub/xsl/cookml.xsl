@@ -100,7 +100,7 @@
             </xsl:attribute>
             <xsl:value-of select="@title"/>
         </h2>
-        <div style="margin-bottom: 3em">
+        <div style="margin-bottom: 1em; padding:0.5em">
             <div style="display:inline; float:left; text-align: left;
     color: #005A9C;font: italic 105% sans-serif">
                 <xsl:value-of select="@servingqty"/>

@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import de.hs.inform.lyuz.cookbook.controller.manager.CategoryManager;
+import de.hs.inform.lyuz.cookbook.logic.manager.CategoryManager;
 import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
 import java.io.IOException;
 import java.util.logging.Level;
