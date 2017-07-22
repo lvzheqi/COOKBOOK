@@ -26,7 +26,7 @@ public class EpubCreater {
     private MyBook myBook;
     private String filepath = System.getProperty("user.dir");
 
-    private String errorMessage="";
+    private String errorMessage = "";
 
     public String getErrorMessage() {
         return errorMessage;
@@ -125,6 +125,18 @@ public class EpubCreater {
         //cover
         if (myBook.getExportInfo().isHasCover() && myBook.getExportInfo().getCoverPath() != null && !myBook.getExportInfo().getCoverPath().equals("")) {
             try {
+                FileUtils.copyToFile(EpubCreater.class.getClassLoader()
+                        .getResourceAsStream(FilesUtils.COVER_HTML), new File(filepath + "EPUB" + File.separator + "cover.html"));
+                book.addSection("cover", new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "cover.html")), "cover.html"));
+
+            } catch (Exception ex) {
+                Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println("Fehler beim Schreiben COVER.html -- EPUB2");
+                errorMessage += "Fehler beim Schreiben COVERxhtml\n";
+
+            }
+
+            try {
                 book.setCoverImage(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "images" + File.separator + "cover.jpg")),
                         "images/cover.jpg"));
             } catch (Exception ex) {
@@ -197,7 +209,7 @@ public class EpubCreater {
                         .getResourceAsStream(FilesUtils.COVER_XHTML), new File(filepath + "EPUB" + File.separator + "cover.xhtml"));
             } catch (Exception ex) {
                 Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
-                System.err.println("Fehler beim Schreiben COVER.xhtml -- EPUB2");
+                System.err.println("Fehler beim Schreiben COVER.xhtml -- EPUB3");
                 errorMessage += "Fehler beim Schreiben COVER.xhtml\n";
 
             }

@@ -238,9 +238,15 @@ public class ImportPanel extends MyPanel {
             String[] split = dlString.split(" ");
             String name = split[0];
             String path = split[2];
+            for(int i =3; i<split.length; i++){
+                path += " "+split[i];
+            }
             for (File f : files) {
+                System.out.println(f.getPath());
+                System.out.println(dlString);
                 if (f.getPath().equals(path) && f.getName().equals(name)) {
                     files.remove(f);
+                    
                     action = true;
                     break;
                 }

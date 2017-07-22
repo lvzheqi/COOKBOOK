@@ -56,7 +56,7 @@ public class EpubOpf {
                 .setAttribute("name", "cover")
                 .setAttribute("content", "cover-image"));
         metadata.addContent(new Element("language", ns2).addContent("DE"));
-
+        metadata.addContent(new Element("creator", ns2).addContent(firstname + " " + lastname));
         metadata.addContent(new Element("contributor", ns2).addContent(firstname + " " + lastname));
 
         return metadata;

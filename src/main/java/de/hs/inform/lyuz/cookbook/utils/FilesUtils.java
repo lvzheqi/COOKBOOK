@@ -34,6 +34,8 @@ public class FilesUtils {
     public static String STAR_BOARD_PNG = "META-INF/icons/star_board.png";
     public static String CONTAINER_XML = "META-INF/epub/container.xml";
     public static String COVER_XHTML = "META-INF/epub/cover.xhtml";
+        public static String COVER_HTML = "META-INF/epub/cover.html";
+
     public static String MIMETYPE = "META-INF/epub/mimetype";
 
     public static String CATEGORY_XML = "META-INF/conf/category.xml";
