@@ -14,7 +14,6 @@ import java.util.Scanner;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
-import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -236,13 +235,21 @@ public class MmToCml {
     private String cutMMMM(String line) {
         line = line.substring(5);
 
-        while (line.charAt(0) != '-') {
+        while (line.charAt(0) == '-') {
             line = line.substring(1);
         }
-        while (line.length() > 1 && line.charAt(line.length() - 1) != '-') {
+        while (line.length() > 1 && line.charAt(line.length() - 1) == '-') {
             int length = line.length() - 1;
             line = line.substring(0, length);
         }
+        
+//         while (!Character.isLetter(line.charAt(0))) {
+//            line = line.substring(1);
+//        }
+//        while (!Character.isLetter(line.charAt(line.length() - 1))) {
+//            int length = line.length() - 1;
+//            line = line.substring(0, length);
+//        }
         return line;
     }
 
