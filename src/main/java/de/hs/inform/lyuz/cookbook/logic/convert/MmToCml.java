@@ -38,9 +38,9 @@ public class MmToCml {
 
     public MmToCml(File f) throws ConvertErrorException {
 
-        LineIterator it = null;
+//        LineIterator it = null;
         try {
-            FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
+            String mm = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
 //            it = FileUtils.lineIterator(f, "ISO-8859-1");
             cookml = new Cookml();
             cookml.setName(f.getName());
@@ -57,12 +57,23 @@ public class MmToCml {
 //                    sb.append(EoL);
 //                }
 //            }
+            cookml = new Cookml();
+            cookml.setName(f.getName());
+            cookml.setProg("MealMaster");
+            cookml.setProgver("0.91");
+
+            for (String rez : mm.split("MMMMM----- ")) {
+                if (rez.trim().endsWith("MMMMM")) {
+                    setRecipe(formatMM(rez));
+                }
+            }
         } catch (Exception ex) {
             Logger.getLogger(MmToCml.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConvertErrorException("Fehler beim Lesen mm", ex.getClass().getName());
-        } finally {
-            LineIterator.closeQuietly(it);
-        }
+        } 
+//        finally {
+//            LineIterator.closeQuietly(it);
+//        }
     }
 
     private void setRecipe(String mm_rez) {
@@ -75,12 +86,12 @@ public class MmToCml {
         prepakt.setText("");
         Remark remakt = new Remark();
 
-        while (scanner.hasNextLine()) {
-            String li = scanner.nextLine();
-            if (li.startsWith("MMMMM-----")) {
-                break;
-            }
-        }
+//        while (scanner.hasNextLine()) {
+//            String li = scanner.nextLine();
+//            if (li.startsWith("MMMMM-----")) {
+//                break;
+//            }
+//        }
         scanner.nextLine();
 
         headakt.setTitle(setHeadAndQty(getNextLine().trim()).trim());
