@@ -1,6 +1,9 @@
 package de.hs.inform.lyuz.cookbook;
 
 import de.hs.inform.lyuz.cookbook.gui.CookMainJFrame;
+import de.hs.inform.lyuz.cookbook.model.cookml.Ingredient;
+import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
+import java.math.BigInteger;
 
 
 
@@ -27,6 +30,9 @@ public class Application {
         //</editor-fold>
         //</editor-fold>      
 
+//        Ingredient ingredient = FormatHelper.formatIngredient("1 3/4-2 kg Fleisch");
+//        System.out.println(ingredient.getQty() + "," + ingredient.getUnit()+","+ingredient.getItem());
+        
         //</editor-fold>
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {

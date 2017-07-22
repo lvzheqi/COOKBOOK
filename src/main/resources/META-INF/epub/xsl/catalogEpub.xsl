@@ -21,10 +21,10 @@
 
             <body>
         
-                <h1 class="title">
+                <h1>
                     <xsl:apply-templates select="title"/>
                 </h1>
-                <nav epub:type="toc" id="toc">
+                <nav epub:type="toc" id="toc" class="toc">
                     <h2>Inhaltsverzeichnis</h2>
                     <ol>
                         <xsl:apply-templates select="link"/>

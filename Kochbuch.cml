@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<cookml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.1.1" name="Kochbuch" prog="CgoesE" progver="1.1.1" xsi:schemaLocation="cookml.xsd">
+    <recipe lang="DE">
+        <head title="KNAX MANGO-DIPP" rid="760950821,1717626900" servingqty="1" servingtype="  6 -8 _ perso" changedate="">
+            <cat>Sauce</cat>
+            <cat>Sauce</cat>
+        </head>
+        <preparation>
+            <text>2 md Zwiebeln
+1    Walnussgro�es St�ck  frischer Ingwer
+2 tb Oliven�l
+200 g  Brauner Zucker
+125 ml Hengstenberg Apfelessig mit  Bl�tenhonig
+1    Mango, fest, nicht zu reif
+250 g  Hengstenberg Knax  Gew�rzgurken
+Einige Bl�tter frische  Pfefferminze oder  Zitronenmelisse
+MMMMM-----------------QUELLE----------------------
+-- http: //www.hengstenberg.  de - Rezept von Andreas  Miessmer  Die Zwiebeln und den  Ingwer sch�len und fein  schneiden. Das �l in  einem Topf erhitzen und  die Zwiebeln zusammen  mit dem Ingwer darin  glasig d�nsten. Den  Zucker zugeben,  unterr�hren und  schmelzen lassen. Den  Inhalt mit dem Essig und  1/8 l Wasser abl�schen  und 10 Minuten k�cheln  lassen.  In der Zwischenzeit die  Mango sch�len, das  Fruchtfleisch vom Stein  l�sen und in W�rfel  schneiden. Danach die  Gurken w�rfeln und  gemeinsam mit der Frucht  in den Topf geben. Den  Inhalt weitere 10  Minuten leise k�cheln  lassen und zur Seite  ziehen.  Nach dem Abk�hlen des  Chutney die Pfefferminze  in feine Streifen  schneiden und unter die  Masse heben. Das Chutney  zu gebratenem Fleisch,  Fisch oder Garnelen  servieren.  Erfasst *RK* 07.10.02 von  Peter Mess
+</text>
+        </preparation>
+        <remark/>
+    </recipe>
+</cookml>

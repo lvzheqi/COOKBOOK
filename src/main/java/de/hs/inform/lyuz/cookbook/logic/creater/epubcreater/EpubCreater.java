@@ -15,6 +15,7 @@ import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.epub.EpubObjekt;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
+import de.hs.inform.lyuz.cookbook.utils.XalanHelper;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +26,12 @@ public class EpubCreater {
     private MyBook myBook;
     private String filepath = System.getProperty("user.dir");
 
+    private String errorMessage="";
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
     public String getFilepath() {
         return filepath;
     }
@@ -34,7 +41,6 @@ public class EpubCreater {
         this.filepath = myBook.getExportInfo().getFilepath();
         creatEpubFiles(0);
         copyEpubFiles();
-
     }
 
     private void creatEpubFiles(int i) {
@@ -71,15 +77,24 @@ public class EpubCreater {
             FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.MIMETYPE), new File(filepath + "mimetype"));
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
-            throw new SystemErrorException("Fehler beim Lesen Config.sys Information");
+            throw new SystemErrorException("Fehler beim Lesen Config.sys Information", ex.getClass().getName());
         }
         try {
-            FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.jpg"));
-            FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.jpg"));
             FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.EPUB_SPEC_CSS), new File(filepath + "EPUB" + File.separator + "css" + File.separator + "epub-spec.css"));
+            if (myBook.getExportInfo().isIsColor()) {
+                FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.png"));
+                FileUtils.copyToFile(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.png"));
+
+            } else {
+                FilesUtils.changeImgeColor2BW(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.png"), "png");
+                FilesUtils.changeImgeColor2BW(EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.png"), "png");
+
+            }
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Fehler beim Laden Config.sys Information -- EPUB");
+            errorMessage += "Fehler beim Laden Config.sys Information\n";
+
         }
     }
 
@@ -88,6 +103,7 @@ public class EpubCreater {
         CmlToEpubObject cml2Epub = new CmlToEpubObject(myBook, filepath);
         EpubObjekt epub2 = cml2Epub.getEpub();
 
+        errorMessage += cml2Epub.getErrorMessage();
         Book book = new Book();
         // epub book
         book.getMetadata().addTitle(myBook.getExportInfo().getTitle());
@@ -95,13 +111,15 @@ public class EpubCreater {
         try {
             book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "css" + File.separator + "epub-spec.css")),
                     "css/epub-spec.css"));
-            book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.jpg")),
-                    "icons/star.jpg"));
-            book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.jpg")),
-                    "icons/star_board.jpg"));
+            book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star.png")),
+                    "icons/star.png"));
+            book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "icons" + File.separator + "star_board.png")),
+                    "icons/star_board.png"));
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Fehler beim css Config.sys Information -- EPUB2");
+            errorMessage += "Fehler beim Laden Config.sys Information\n";
+
         }
 
         //cover
@@ -112,19 +130,22 @@ public class EpubCreater {
             } catch (Exception ex) {
                 Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Fehler beim Cover-Schreiben -- EPUB2");
+                errorMessage += "Fehler beim Cover-Schreiben\n";
+
             }
         }
 
         // pic resources
         if (myBook.getExportInfo().isHasPic()) {
             for (String pic : epub2.getPicList()) {
-                String picname = pic.substring(pic.lastIndexOf(File.separator)+1);
+                String picname = pic.substring(pic.lastIndexOf(File.separator) + 1);
 //                String[] picname = pic.split(File.separator);
                 try {
                     book.getResources().add(new Resource(FileUtils.readFileToByteArray(new File(pic)), "images/" + picname));
                 } catch (Exception ex) {
                     Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
-                    System.err.println("Fehler beim Bild Geben -- EPUB2");
+                    System.err.println("Fehler beim Bild Hochladen -- EPUB2");
+                    errorMessage += "Fehler beim Bild Hochladen\n";
                 }
             }
         }
@@ -134,7 +155,7 @@ public class EpubCreater {
             if (myBook.getExportInfo().isHasCat()) {
                 InputStream inputStream = EpubCreater.class
                         .getClassLoader().getResourceAsStream(FilesUtils.CALALOGEPUB_XSL);
-                
+
                 FilesUtils.writeDOMHTML(inputStream, epub2.getNavDom(), filepath + "EPUB" + File.separator + "toc.html");
                 book.addSection("Inhaltsverzeichnis", new Resource(FileUtils.readFileToByteArray(new File(filepath + "EPUB" + File.separator + "toc.html")), "toc.html"));
             }
@@ -144,11 +165,12 @@ public class EpubCreater {
             for (String cat : epub2.getCookmls().keySet()) {
                 JAXBSource source = new JAXBSource(jc, epub2.getCookmls().get(cat));
                 String fname = filepath + "EPUB" + File.separator + cat + ".html";
+                XalanHelper.setCategory(cat);
                 Result result = new StreamResult(new File(fname));
                 tf.transform(source, result);
                 book.addSection(cat, new Resource(FileUtils.readFileToByteArray(new File(fname)), cat + ".html"));
             }
-            
+
             // index
             if (myBook.getExportInfo().isHasIndex()) {
                 InputStream inputStream = EpubCreater.class.getClassLoader().getResourceAsStream(FilesUtils.INDEX_XSL);
@@ -157,7 +179,7 @@ public class EpubCreater {
             }
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ConvertErrorException("Fehler beim Export HTML --EPUB2");
+            throw new ConvertErrorException("Fehler beim Export HTML --EPUB2", ex.getClass().getName());
         }
 
         return book;
@@ -167,6 +189,7 @@ public class EpubCreater {
 
         CmlToEpubObject cml2Epub = new CmlToEpubObject(myBook, filepath);
         EpubObjekt epub = cml2Epub.getEpub();
+        errorMessage += cml2Epub.getErrorMessage();
 
         if (myBook.getExportInfo().isHasCover()) {
             try {
@@ -174,7 +197,8 @@ public class EpubCreater {
                         .getResourceAsStream(FilesUtils.COVER_XHTML), new File(filepath + "EPUB" + File.separator + "cover.xhtml"));
             } catch (Exception ex) {
                 Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
-                System.err.println("Fehler beim COVER.xhtml Geben -- EPUB2");
+                System.err.println("Fehler beim Schreiben COVER.xhtml -- EPUB2");
+                errorMessage += "Fehler beim Schreiben COVER.xhtml\n";
 
             }
         }
@@ -199,6 +223,7 @@ public class EpubCreater {
                     .getClassLoader().getResourceAsStream(FilesUtils.COOKML_XSL)));
             for (String cat : epub.getCookmls().keySet()) {
                 JAXBSource source = new JAXBSource(jc, epub.getCookmls().get(cat));
+                XalanHelper.setCategory(cat);
                 Result result = new StreamResult(new File(filepath + "EPUB" + File.separator + cat + ".xhtml"));
                 tf.transform(source, result);
 
@@ -208,7 +233,7 @@ public class EpubCreater {
 
         } catch (Exception ex) {
             Logger.getLogger(EpubCreater.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ConvertErrorException("Fehler beim Export HTML oder OPF -- EPUB3");
+            throw new ConvertErrorException("Fehler beim Export HTML oder OPF -- EPUB3", ex.getClass().getName());
         }
     }
 

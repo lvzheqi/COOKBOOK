@@ -23,6 +23,20 @@ public class MyBook implements Serializable {
 
     private ExportInfo exportInfo;
 
+    private String errorMessage="";
+    
+    
+    
+    public MyBook(List<File> files, Cookml cookml, ArrayList<String> catTemplate, ArrayList<String> catExtra, LinkedHashMap<String, Cookml> sortCmlMap, ExportInfo exportInfo) {
+        this.files = files;
+        this.cookml = cookml;
+        this.catTemplate = catTemplate;
+        this.catExtra = catExtra;
+        this.sortCmlMap = sortCmlMap;
+        this.exportInfo = exportInfo;
+    }
+
+    
     public MyBook() {
         init();
     }
@@ -115,6 +129,14 @@ public class MyBook implements Serializable {
 
     public void setExportInfo(ExportInfo exportInfo) {
         this.exportInfo = exportInfo;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
 }

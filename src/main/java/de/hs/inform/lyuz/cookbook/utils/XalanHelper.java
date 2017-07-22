@@ -2,6 +2,7 @@ package de.hs.inform.lyuz.cookbook.utils;
 
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,7 +12,19 @@ public class XalanHelper {
     private static int servQty = 1;
     private static HashMap<String, String> content = new HashMap<>();
     public static HashMap<String, String> refTitle = new HashMap<>();
+    private static String category="";
+    private static int recipeNum = 1;
 
+    public static int getRecipeNum() {
+        return recipeNum;
+    }
+
+    public static void setRecipeNum(int recipeNum) {
+        XalanHelper.recipeNum = recipeNum;
+    }
+    
+    
+    
     public static String getRefTitle(String title) {
         for (String refKey : refTitle.keySet()) {
             if (refKey.equals(title)) {
@@ -53,8 +66,8 @@ public class XalanHelper {
 //        return 1;
     }
 
-    public static int isHasDiffculty() {
-        return ExportInfo.hasDiffculty ? 1 : 0;
+    public static int isHasQuality() {
+        return ExportInfo.hasQuality ? 1 : 0;
 //        return 1;
     }
 
@@ -103,6 +116,14 @@ public class XalanHelper {
             }
         }
         return text;
+    }
+
+    public static String getCategory() {
+        return XalanHelper.category;
+    }
+
+    public static void setCategory(String category) {
+        XalanHelper.category = category;
     }
 
 }

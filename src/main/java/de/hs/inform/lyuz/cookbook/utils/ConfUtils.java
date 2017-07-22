@@ -1,12 +1,19 @@
 package de.hs.inform.lyuz.cookbook.utils;
 
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
+import de.hs.inform.lyuz.cookbook.model.MyBook;
+import de.hs.inform.lyuz.cookbook.model.cookml.Recipe;
+import de.hs.inform.lyuz.cookbook.model.exception.ErrorException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.FileUtils;
 
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -15,6 +22,8 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 public class ConfUtils {
+
+    private static boolean overwrite = false;
 
     public static List<String> getCatTemplate() throws IOException, JDOMException {
         Document document = readConfXML(File.separator + "conf" + File.separator + "category.xml",
@@ -86,8 +95,8 @@ public class ConfUtils {
                 case "index":
                     exportInfo.setHasIndex(Boolean.valueOf(e.getAttributeValue("value")));
                     break;
-                case "difficulty":
-                    exportInfo.setHasDiffculty(Boolean.valueOf(e.getAttributeValue("value")));
+                case "quality":
+                    exportInfo.setHasQuality(Boolean.valueOf(e.getAttributeValue("value")));
                     break;
                 case "cover":
                     exportInfo.setHasCover(Boolean.valueOf(e.getAttributeValue("value")));
@@ -151,14 +160,14 @@ public class ConfUtils {
         Element time = new Element("time");
         time.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasTime())));
         root.addContent(time);
-        
+
         Element index = new Element("index");
         index.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasIndex())));
         root.addContent(index);
 
-        Element difficulty = new Element("difficulty");
-        difficulty.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasDiffculty())));
-        root.addContent(difficulty);
+        Element quality = new Element("quality");
+        quality.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasQuality())));
+        root.addContent(quality);
 
         Element cover = new Element("cover");
         cover.setAttribute(new Attribute("value", String.valueOf(exportInfo.isHasCover())));
@@ -197,4 +206,57 @@ public class ConfUtils {
         return document;
     }
 
+    public static void writeLog(MyBook myBook, ErrorException e) {
+
+        String path = System.getProperty("user.dir");
+        File file = new File(path + File.separator + "conf" + File.separator + "GoesEpub.log");
+        if (!file.exists()) {
+            file.getParentFile().mkdir();
+        }
+        String text = editLogHead(myBook);
+
+        if (!myBook.getErrorMessage().equals("")) {
+            text += "\n------------------------WARNUNG-------------------------\n";
+            text += myBook.getErrorMessage() + "\n";
+        }
+        if (e == null) {
+            text += "\n------------------------YO! OH!-------------------------\n";
+            text += "ERFOLGREICH ERSTELLT\n";
+
+        } else {
+            text += "\n-----------------------FEHLER---------------------------\n";
+            text += e.getMessage() + "\n";
+            text += e.getErrorClass() + "\n";
+        }
+        text += "\n==================================END================================\n\n\n";
+        try {
+            FileUtils.writeStringToFile(file, text, "UTF-8", overwrite);
+        } catch (IOException ex) {
+            Logger.getLogger(ConfUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        overwrite = true;
+    }
+
+    private static String editLogHead(MyBook mybook) {
+        String log = "============================Information==============================\n\n";
+        Date date = new Date(System.currentTimeMillis());
+        log += "Zeit: " + date.toString() + "\n";
+        if (mybook.getFiles().size() != 0) {
+            log += "Importierte Dateien:\n";
+            for (File f : mybook.getFiles()) {
+                log += "     " + f.getName() + "\n\n";
+            }
+//            log += "-------------------------------------------------------------------\n";
+        }
+        if (mybook.getCookml() != null) {
+            log += "Importierte Titel(" + mybook.getCookml().getRecipe().size() + "):\n";
+//            log += "-----------------Titel-------------------\n";
+
+            for (Recipe recipe : mybook.getCookml().getRecipe()) {
+                log += "     " + recipe.getHead().getTitle() + "\n";
+            }
+//            log += "-----------------Titel-------------------\n";
+        }
+        return log;
+    }
 }

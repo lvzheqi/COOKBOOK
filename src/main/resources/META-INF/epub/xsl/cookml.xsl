@@ -19,18 +19,20 @@
             <head>
                 <meta charset="utf-8" />
                 <title>
-                    
-                    <xsl:value-of select="@type"/>
+                    <xsl:value-of select="pn:getCategory()"/>
                 </title>
                 <link rel="stylesheet" type="text/css" href="css/epub-spec.css"/>
             </head>
 
             <body>
                 <h1>
-                    <xsl:value-of select="@type"/>
+                    <xsl:value-of select="pn:getCategory()"/>
                 </h1>
+                <xsl:value-of select="pn:setRecipeNum(1)" />
+
                 <xsl:apply-templates select="recipe"/>
             </body>
+            
         </html>
     </xsl:template>
 
@@ -46,40 +48,43 @@
             </xsl:attribute>
         </span>            
         
-        <table class="table">
-            <xsl:apply-templates select="part"/>
-        </table>
-        <xsl:apply-templates select="preparation"/>
-        <br />
-        
-        <xsl:if test="pn:isHasRemark()=1">
+        <div>
+            <table class="table">
+                <xsl:apply-templates select="part"/>
+            </table>
+            <xsl:apply-templates select="preparation"/>
+            <br />
+        </div>
+        <div>
+            <xsl:if test="pn:isHasRemark()=1">
             
-            <xsl:if test="pn:isHasTime()=1">
-                <xsl:if test="head/@timeprepqty or head/@timecookqty or head/@timeallqty">
+                <xsl:if test="pn:isHasTime()=1">
+                    <xsl:if test="head/@timeprepqty or head/@timecookqty or head/@timeallqty">
+                        <b>
+                            <xsl:text>Zeit: </xsl:text>
+                        </b>
+                        <xsl:value-of select="pn:getTime(head/@timecookqty,head/@timeprepqty,head/@timeallqty)"/> 
+                        <br/>
+                    </xsl:if>
+                </xsl:if>
+            
+                <xsl:if test="head/content">
                     <b>
-                        <xsl:text>Zeit: </xsl:text>
+                        <xsl:text>Gesamt:  </xsl:text>
                     </b>
-                    <xsl:value-of select="pn:getTime(head/@timecookqty,head/@timeprepqty,head/@timeallqty)"/> 
+                    <xsl:apply-templates select="head/content"/>
+                    <xsl:value-of select="pn:getContent()"/>
                     <br/>
                 </xsl:if>
+                <xsl:if test="remark and remark!='' "> 
+                    <xsl:apply-templates select="remark"/>
+                </xsl:if>
             </xsl:if>
-            
-            <xsl:if test="head/content">
-                <b>
-                    <xsl:text>Gesamt:  </xsl:text>
-                </b>
-                <xsl:apply-templates select="head/content"/>
-                <xsl:value-of select="pn:getContent()"/>
-                <br/>
-            </xsl:if>
-            <xsl:if test="remark and remark!='' "> 
-                <xsl:apply-templates select="remark"/>
-            </xsl:if>
-        </xsl:if>
         
-        <xsl:if test="pn:isHasSource()=1">
-            <xsl:apply-templates select="head/sourceline"/>
-        </xsl:if>
+            <xsl:if test="pn:isHasSource()=1">
+                <xsl:apply-templates select="head/sourceline"/>
+            </xsl:if>
+        </div>
     </xsl:template>
 
 
@@ -94,30 +99,41 @@
 
 
     <xsl:template match="head">
-        <h2 class="title">
-            <xsl:attribute name="id">
-                <xsl:value-of select="pn:getRefTitle(@title)"/>
-            </xsl:attribute>
-            <xsl:value-of select="@title"/>
-        </h2>
-        <div style="margin-bottom: 1em; padding:0.5em">
-            <div style="display:inline; float:left; text-align: left;
-    color: #005A9C;font: italic 105% sans-serif">
+        <xsl:if test="pn:getRecipeNum()=1">
+            <h2>
+                <xsl:attribute name="id">
+                    <xsl:value-of select="pn:getRefTitle(@title)"/>
+                </xsl:attribute>
+                <xsl:value-of select="@title"/>
+            </h2>
+        </xsl:if>
+        <xsl:if test="pn:getRecipeNum()&gt;1">
+            <h2 class="break">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="pn:getRefTitle(@title)"/>
+                </xsl:attribute>
+                <xsl:value-of select="@title"/>
+            </h2>
+        </xsl:if>
+        <xsl:value-of select="pn:setRecipeNum(pn:getRecipeNum()+1)" />
+
+        <div class="headBox">
+            <div class="servingBox">
                 <xsl:value-of select="@servingqty"/>
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="@servingtype"/>
                 <xsl:value-of select="pn:setServQty(@servingqty)"/>
             </div>
-            <div style="display:inline; float:right">
-                <xsl:if test="@wwpoints">
+            <div class="qualityBox">
+                <xsl:if test="@quality">
                     <xsl:variable name="count" select="5" />
-                    <xsl:variable name="difficult" select="@wwpoints" />
+                    <xsl:variable name="quality" select="@quality" />
                     <xsl:for-each select="(//*)[position()&lt;=$count]" >
-                        <xsl:if test="$difficult &gt;= position()">
-                            <img src="icons/star.jpg" width="20px" height="20px"/>
+                        <xsl:if test="$quality &gt;= position()">
+                            <img src="icons/star.png" width="20px" height="20px"/>
                         </xsl:if>
-                        <xsl:if test="$difficult &lt; position()">
-                            <img src="icons/star_board.jpg"  width="20px" height="20px"/>
+                        <xsl:if test="$quality &lt; position()">
+                            <img src="icons/star_board.png"  width="20px" height="20px"/>
                         </xsl:if>
                     </xsl:for-each>
                 </xsl:if>
@@ -131,11 +147,26 @@
 
 
     <xsl:template match="preparation">
-        <xsl:value-of select="."/>
-        <br/>
+        <!--<xsl:value-of select="."/>-->
+        <xsl:apply-templates select="step"/>
+        <br />
+        <xsl:apply-templates select="text"/>
         <br/>
     </xsl:template>
     
+    <xsl:template match="step">
+        <xsl:value-of select="text"/>
+        <br/>
+    </xsl:template>
+    
+    <xsl:template match="text">
+        <pre class="preparation">
+            <xsl:value-of select="."/>
+        </pre>
+        
+        <!--<xsl:value-of select="pn:getText(.)"/>-->
+        <br/>
+    </xsl:template>
     
     <xsl:template match="remark">
         <b>

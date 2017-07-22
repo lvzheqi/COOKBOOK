@@ -35,7 +35,7 @@ public class SettingDialog extends javax.swing.JDialog {
         hasSourceCB.setSelected(exportInfo.isHasSource());
         hasRemarkCB.setSelected(exportInfo.isHasRemark());
         hasTimeCB.setSelected(exportInfo.isHasTime());
-        hasDifficultyCB.setSelected(exportInfo.isHasDiffculty());
+        hasQualityCB.setSelected(exportInfo.isHasQuality());
 
         hasCover.setSelected(exportInfo.isHasCover());
         coverTF.setText(exportInfo.getCoverPath());
@@ -85,7 +85,7 @@ public class SettingDialog extends javax.swing.JDialog {
         hasCatCB = new javax.swing.JCheckBox();
         hasIndexCB = new javax.swing.JCheckBox();
         hasTimeCB = new javax.swing.JCheckBox();
-        hasDifficultyCB = new javax.swing.JCheckBox();
+        hasQualityCB = new javax.swing.JCheckBox();
         coverPanel = new javax.swing.JPanel();
         hasCover = new javax.swing.JCheckBox();
         coverTF = new javax.swing.JTextField();
@@ -173,8 +173,13 @@ public class SettingDialog extends javax.swing.JDialog {
         hasTimeCB.setText("Kochzeit");
         hasTimeCB.setToolTipText("");
 
-        hasDifficultyCB.setSelected(true);
-        hasDifficultyCB.setText("Schwerigkeit");
+        hasQualityCB.setSelected(true);
+        hasQualityCB.setText("Bewertung");
+        hasQualityCB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hasQualityCBActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
@@ -184,7 +189,7 @@ public class SettingDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(hasCatCB)
-                    .addComponent(hasDifficultyCB)
+                    .addComponent(hasQualityCB)
                     .addComponent(hasTimeCB))
                 .addGap(18, 18, 18)
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -206,7 +211,7 @@ public class SettingDialog extends javax.swing.JDialog {
                     .addComponent(hasSourceCB))
                 .addGap(18, 18, 18)
                 .addGroup(contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(hasDifficultyCB)
+                    .addComponent(hasQualityCB)
                     .addComponent(hasRemarkCB))
                 .addContainerGap(52, Short.MAX_VALUE))
         );
@@ -368,7 +373,7 @@ public class SettingDialog extends javax.swing.JDialog {
                     titleTF.getText(), hasPicCB.isSelected(), isColorCB.isSelected(),
                     hasCatCB.isSelected(), hasIndexCB.isSelected(),
                     hasSourceCB.isSelected(), hasRemarkCB.isSelected(),
-                    hasTimeCB.isSelected(), hasDifficultyCB.isSelected(),
+                    hasTimeCB.isSelected(), hasQualityCB.isSelected(),
                     hasCover.isSelected(), coverTF.getText());
             try {
                 ConfUtils.updateExportInfo(exportInfo);
@@ -424,6 +429,10 @@ public class SettingDialog extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_hasPicCBActionPerformed
 
+    private void hasQualityCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hasQualityCBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hasQualityCBActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel autorPanel;
@@ -436,10 +445,10 @@ public class SettingDialog extends javax.swing.JDialog {
     private javax.swing.JTextField firstNameTF;
     private javax.swing.JCheckBox hasCatCB;
     private javax.swing.JCheckBox hasCover;
-    private javax.swing.JCheckBox hasDifficultyCB;
     private javax.swing.JCheckBox hasIndexCB;
     private javax.swing.JCheckBox hasPicCB;
     private javax.swing.JPanel hasPicPanel;
+    private javax.swing.JCheckBox hasQualityCB;
     private javax.swing.JCheckBox hasRemarkCB;
     private javax.swing.JCheckBox hasSourceCB;
     private javax.swing.JCheckBox hasTimeCB;

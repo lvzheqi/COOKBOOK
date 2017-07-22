@@ -7,6 +7,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -475,20 +476,23 @@ public class FormatHelper {
     }
 
     private static Float checkNumber(String n) {
-        if (n.contains("/")) {
-            String[] numbers = n.split("/");
-            for (int i = 0; i < numbers.length; i++) {
-                numbers[i] = deNum2En(numbers[i]);
-            }
-            if (numbers.length == 2) {
-                return Float.parseFloat(numbers[0]) / Float.parseFloat(numbers[1]);
+        if (n != null && !n.trim().equals("")) {
+            if (n.contains("/")) {
+                String[] numbers = n.split("/");
+                for (int i = 0; i < numbers.length; i++) {
+                    numbers[i] = deNum2En(numbers[i]);
+                }
+                if (numbers.length == 2) {
+                    return Float.parseFloat(numbers[0]) / Float.parseFloat(numbers[1]);
+                } else {
+                    return Float.parseFloat(numbers[0]);
+                }
             } else {
-                return Float.parseFloat(numbers[0]);
+                return Float.parseFloat(deNum2En(n));
             }
         } else {
-            return Float.parseFloat(deNum2En(n));
+            return Float.parseFloat("0");
         }
-
     }
 
     public static String reformatLine(String line) {
@@ -502,4 +506,16 @@ public class FormatHelper {
         return words.stream().map((w) -> w + " ").reduce(line, String::concat);
     }
 
+    
+        public static String setText(String text){
+        String output ="";
+        Scanner scanner = new Scanner(text);
+        while(scanner.hasNextLine()){
+            String line = scanner.nextLine().trim(); 
+            if(!line.equals("")){
+                output +=line+"\n";
+            }       
+        }
+        return output;
+    }
 }

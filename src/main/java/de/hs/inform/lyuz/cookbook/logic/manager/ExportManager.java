@@ -1,6 +1,6 @@
 package de.hs.inform.lyuz.cookbook.logic.manager;
 
-import de.hs.inform.lyuz.cookbook.logic.creater.LatexCreater;
+import de.hs.inform.lyuz.cookbook.logic.creater.TexCreater;
 import de.hs.inform.lyuz.cookbook.logic.creater.CMLCreater;
 import de.hs.inform.lyuz.cookbook.logic.creater.epubcreater.EPUB3Writer;
 import de.hs.inform.lyuz.cookbook.logic.creater.epubcreater.EpubCreater;
@@ -14,31 +14,36 @@ import java.util.logging.Logger;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.epub.EpubWriter;
 
-
-
 public class ExportManager {
 
     private MyBook myBook;
 
-    public ExportManager(MyBook myBook) {
-        this.myBook = new SortManager(myBook).sortBook();
+    private String errorMessage="";
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
-    
-    
+    public ExportManager(MyBook myBook) {
+        this.myBook = new SortManager(myBook).sortBook();
+
+    }
+
     public void texExport() throws SystemErrorException, ConvertErrorException {
 
-        LatexCreater latexCreater = new LatexCreater(myBook);
+        TexCreater latexCreater = new TexCreater(myBook);
         latexCreater.write();
 
+        errorMessage += latexCreater.getErrorMessage();
         System.out.println("Fertig!");
     }
 
     public void cmlExport() throws ConvertErrorException {
-        
+
         CMLCreater cmlCreater = new CMLCreater(myBook);
         cmlCreater.write();
-        
+
+        errorMessage += cmlCreater.getErrorMessage();
         System.out.println("Fertig!");
 
     }
@@ -53,9 +58,10 @@ public class ExportManager {
                     new FileOutputStream(myBook.getExportInfo().getFilepath() + myBook.getExportInfo().getBookname() + ".epub"));
         } catch (Exception ex) {
             Logger.getLogger(ExportManager.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ConvertErrorException("Fehler beim Export EPUB2");
+            throw new ConvertErrorException("Fehler beim Export EPUB2", ex.getClass().getName());
         }
 
+        errorMessage += epubCreater.getErrorMessage();
         System.out.println("Fertig!");
     }
 
@@ -67,6 +73,8 @@ public class ExportManager {
         epub3Writer.write(epubCreater.getFilepath(),
                 new File(myBook.getExportInfo().getFilepath() + myBook.getExportInfo().getBookname() + ".epub"));
 
+        
+        errorMessage += epubCreater.getErrorMessage();
         System.out.println("Fertig!");
     }
 

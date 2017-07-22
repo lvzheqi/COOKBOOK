@@ -1,26 +1,25 @@
 package de.hs.inform.lyuz.cookbook.logic.convert;
 
+import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
+import de.hs.inform.lyuz.cookbook.model.cookml.Head;
+import de.hs.inform.lyuz.cookbook.model.cookml.Ingredient;
+import de.hs.inform.lyuz.cookbook.model.cookml.Preparation;
+import de.hs.inform.lyuz.cookbook.model.cookml.Recipe;
+import de.hs.inform.lyuz.cookbook.model.cookml.Remark;
 import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import java.io.File;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-import de.hs.inform.lyuz.cookbook.model.cookml.*;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
-import java.nio.charset.StandardCharsets;
+import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 
-/**
- * 测试能否执行
- *
- * @author xuer
- */
 public class MmToCml {
 
     private Cookml cookml;
@@ -29,24 +28,39 @@ public class MmToCml {
 
     private Scanner scanner;
     private String nextLine = "";
+    final String EoL = System.getProperty("line.separator");
+    private String errorMessage = "";
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
     public MmToCml(File f) throws ConvertErrorException {
-        String mm;
-        try {
 
-            mm = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
+        LineIterator it = null;
+        try {
+            it = FileUtils.lineIterator(f, FilesUtils.ENCODING);
             cookml = new Cookml();
             cookml.setName(f.getName());
-            cookml.setProg("MealMaster");
-            cookml.setProgver("0.91");
-
-            for (String rez : mm.split("MMMMM----- ")) {
-                if (rez.trim().endsWith("MMMMM")) {
-                    setRecipe(formatMM(rez));
+//            cookml.setProg("MealMaster");
+//            cookml.setProgver("0.91");
+            StringBuilder sb = new StringBuilder();
+            while (it.hasNext()) {
+                String line = it.nextLine();
+                sb.append(line);
+                if (line.trim().equals("MMMMM")) {
+                    setRecipe(formatMM(sb.substring(0)));
+                    sb = new StringBuilder();
+                } else {
+                    sb.append(EoL);
                 }
+
             }
         } catch (Exception ex) {
-            throw new ConvertErrorException("Error during convet mm to cml");
+            Logger.getLogger(MmToCml.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ConvertErrorException("Fehler beim Lesen mm", ex.getClass().getName());
+        } finally {
+            LineIterator.closeQuietly(it);
         }
     }
 
@@ -57,12 +71,20 @@ public class MmToCml {
         recakt = new Recipe();
         headakt = new Head();
         Preparation prepakt = new Preparation();
+        prepakt.setText("");
         Remark remakt = new Remark();
 
+        while (scanner.hasNextLine()) {
+            String li = scanner.nextLine();
+            if (li.startsWith("MMMMM-----")) {
+                break;
+            }
+        }
         scanner.nextLine();
 
         headakt.setTitle(setHeadAndQty(getNextLine().trim()).trim());
 
+        System.out.println(headakt.getTitle());
         headakt.getCat().addAll(Arrays.asList(setCat(getNextLine().trim())));
 
         String serving = setHeadAndQty(getNextLine().trim());
@@ -77,13 +99,14 @@ public class MmToCml {
                     int n = Integer.parseInt(yield[0]);
                     headakt.setServingqty(yield[0]);
                     if (n > 1) {
-                        headakt.setServingtype("Protionen");
+                        headakt.setServingtype("Portionen");
                     } else {
-                        headakt.setServingtype("Protion");
+                        headakt.setServingtype("Portion");
                     }
                 } catch (Exception e) {
                     headakt.setServingtype(serving);
-                }   break;
+                }
+                break;
             default:
                 headakt.setServingtype(serving);
                 break;
@@ -93,27 +116,25 @@ public class MmToCml {
         do {
             line = getNextLine();
             if (line.startsWith("MMMMM-", 0)) {
-                switch (cutMMMM(line)) {
-                    case "QUELLE":
-                        setSource("QUELLE");
-                        break;
-                    default:
-                        if (nextLine.trim().startsWith("--")) {
-                            headakt.setCreateuser(getNextLine().trim().substring(3));
-                            headakt.setChangeuser(getNextLine().trim().substring(3));
-                        } else {
-                            setPart(line);
-                        }
-                        break;
+                if (cutMMMM(line).equals("QUELLE") || line.contains("QUELLE")) {
+                    setSource("QUELLE");
+                } else {
+                    if (nextLine.trim().startsWith("--")) {
+                        headakt.setCreateuser(getNextLine().trim().substring(3));
+                        headakt.setChangeuser(getNextLine().trim().substring(3));
+                    } else {
+                        setPart(line);
+                    }
+                    break;
                 }
-            } else if (line.startsWith(" ", 0)) {
+            } else if (line.startsWith(" ", 0) && !line.trim().equals("")) {
                 setPart(line);
             } else {
                 break;
             }
         } while (!nextLine.trim().equals("MMMMM"));
 
-        do {
+        while (!line.trim().equals("MMMMM") && scanner.hasNextLine()) {
             if ((line.startsWith(":", 0) || line.startsWith("*", 0)) && line.length() > 1) {
                 String[] tmp = line.split(":");
                 String lineCut = tmp[tmp.length - 1];
@@ -126,19 +147,19 @@ public class MmToCml {
                     case "DATUM:":
                     case "DATUM":
                         if (setDate(lineCut)) {
-                            prepakt.getText().add(line.substring(2));
+                            prepakt.setText(prepakt.getText() + line.substring(2) + "\n");
                         }
                         break;
                     case "VORBEREITUNGSZEIT:":
                     case "VORBEREITUNGSZEIT":
                         if (!setTime(lineCut, 0)) {
-                            prepakt.getText().add(line.substring(2));
+                            prepakt.setText(prepakt.getText() + line.substring(2) + "\n");
                         }
                         break;
                     case "ZUBEREITUNGSZEIT:":
                     case "ZUBEREITUNGSZEIT":
                         if (!setTime(lineCut, 1)) {
-                            prepakt.getText().add(line.substring(2));
+                            prepakt.setText(prepakt.getText() + line.substring(2) + "\n");
                         }
                         break;
                     case "STICHWORTE":
@@ -157,7 +178,7 @@ public class MmToCml {
                     case "ENERGIE":
                     case "ENERGIE:":
                         if (!setContent(lineCut)) {
-                            prepakt.getText().add(line.substring(2));
+                            prepakt.setText(prepakt.getText() + line.substring(2) + "\n");
                         }
                         break;
                     case "FINGERPRINT":
@@ -175,29 +196,38 @@ public class MmToCml {
 
                             remakt.getLine().add(line);
                         } else {
-                            prepakt.getText().add(line.substring(2));
+                            prepakt.setText(prepakt.getText() + line.substring(2) + "\n");
                         }
                         break;
                 }
             } else {
-                prepakt.getText().add(line);
+                prepakt.setText(prepakt.getText() + line + "\n");
             }
 
             line = getNextLine();
-        } while (!line.trim().equals("MMMMM"));
+        }
 
-        recakt.getHeadAndCustomAndPart().add(remakt);
-        recakt.getHeadAndCustomAndPart().add(prepakt);
-        recakt.getHeadAndCustomAndPart().add(headakt);
-        cookml.getRecipe().add(recakt);
+        recakt.getRemark().add(remakt);
+        if (prepakt.getText().equals("")) {
+            prepakt.setText(null);
+        }
+        recakt.getPreparation().add(prepakt);
+        recakt.getPreparation().forEach((p) -> {
+            if (p.getText() != null) {
+                p.setText(FormatHelper.setText(p.getText()));
+            }
+        });
+        recakt.setHead(headakt);
+        cookml.getContent().add(recakt);
     }
 
     private String cutMMMM(String line) {
         line = line.substring(5);
-        while (!Character.isLetter(line.charAt(0))) {
+
+        while (line.charAt(0) != '-') {
             line = line.substring(1);
         }
-        while (!Character.isLetter(line.charAt(line.length() - 1))) {
+        while (line.length() > 1 && line.charAt(line.length() - 1) != '-') {
             int length = line.length() - 1;
             line = line.substring(0, length);
         }
@@ -290,10 +320,12 @@ public class MmToCml {
 
             } catch (Exception ex) {
                 Logger.getLogger(MmToCml.class.getName()).log(Level.SEVERE, null, ex);
+                System.err.println("Fehler beim Konvertierung auf MM-Datum");
+                errorMessage += "Fehler beim Konvertierung auf MM-Datum: \n "
+                        + "Rezept: " + headakt.getTitle() + ", line: " + line + "\n";
             }
             return true;
         }
-//            headakt.setChangedate(d);
         return false;
     }
 
@@ -309,7 +341,7 @@ public class MmToCml {
         while (!nextLine.replace(" ", "").equals("") && nextLine.startsWith(" ")) {
             partakt.getIngredient().add(setIngredient(getNextLine().trim()));
         }
-        recakt.getHeadAndCustomAndPart().add(partakt);
+        recakt.getPart().add(partakt);
     }
 
     private Ingredient setIngredient(String line) {

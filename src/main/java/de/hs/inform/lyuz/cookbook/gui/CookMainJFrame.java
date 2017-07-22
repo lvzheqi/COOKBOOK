@@ -7,9 +7,9 @@ import de.hs.inform.lyuz.cookbook.logic.parser.FileParser;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
-import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
-
+import de.hs.inform.lyuz.cookbook.utils.ConfUtils;
 
 public class CookMainJFrame extends javax.swing.JFrame {
 
@@ -50,45 +50,48 @@ public class CookMainJFrame extends javax.swing.JFrame {
 
         previousTabIndex = cookTabPane.getSelectedIndex();
 
-        cookTabPane.addChangeListener(
-                (ChangeEvent e) -> {
+        cookTabPane.addChangeListener((ChangeEvent e) -> {
 
-                    MyPanel myPanel = (MyPanel) cookTabPane.getComponentAt(previousTabIndex);
-                    this.myBook = myPanel.getMyBook();
+            MyPanel myPanel = (MyPanel) cookTabPane.getComponentAt(previousTabIndex);
+            this.myBook = myPanel.getMyBook();
 
-                    JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
-                    int selectedIndex = tabbedPane.getSelectedIndex();
-                    switch (selectedIndex) {
-                        case 0:
-                            importPanel.update(this);
-                            previousTabIndex = 0;
-                            break;
-                        case 1:
+            JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
+            int selectedIndex = tabbedPane.getSelectedIndex();
+            switch (selectedIndex) {
+                case 0:
+                    importPanel.update(this);
+                    previousTabIndex = 0;
+                    break;
+                case 1:
 
-                            if (!fileParser.getMyBook().getFiles().isEmpty() && ImportPanel.action) {
-                                JOptionPane.showMessageDialog(null, "Die Kategorien werden wieder importiert", "Warnung", JOptionPane.WARNING_MESSAGE);
-                            }
-                            if (ImportPanel.action) {
-                                try {
-                                    fileParser.reloadFiles(importPanel.getFiles());
-                                } catch (ParserErrorExcepetion | ConvertErrorException ex) {
-                                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-                                } finally {
-                                    ExportInfo exportInfo = myBook.getExportInfo();
-                                    myBook = fileParser.getMyBook();
-                                    myBook.setExportInfo(exportInfo);
-                                    ImportPanel.action = false;
-                                }
-                            }
-                            categoryPanel.update(this);
-                            previousTabIndex = 1;
-                            break;
-                        case 2:
-                            exportPanel.update(this);
-                            previousTabIndex = 2;
-                            break;
+                    if (!fileParser.getMyBook().getFiles().isEmpty() && ImportPanel.action) {
+                        JOptionPane.showMessageDialog(null, "Die Kategorien werden wieder importiert", "Warnung", JOptionPane.WARNING_MESSAGE);
                     }
-                }
+                    if (ImportPanel.action) {
+                        try {
+                            fileParser.reloadFiles(importPanel.getFiles());
+                            ExportInfo exportInfo = myBook.getExportInfo();
+                            myBook = fileParser.getMyBook();
+                            myBook.setExportInfo(exportInfo);
+                        } catch (ParserErrorException | ConvertErrorException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+                            ExportInfo exportInfo = myBook.getExportInfo();
+                            myBook = fileParser.getMyBook();
+                            myBook.setExportInfo(exportInfo);
+                            ConfUtils.writeLog(myBook, ex);
+                        } finally {
+                            ImportPanel.action = false;
+                        }
+                    }
+                    categoryPanel.update(this);
+                    previousTabIndex = 1;
+                    break;
+                case 2:
+                    exportPanel.update(this);
+                    previousTabIndex = 2;
+                    break;
+            }
+        }
         );
 
     }

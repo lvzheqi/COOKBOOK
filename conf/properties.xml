@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export>
+	<firstname>Coook</firstname>
+	<lastname>Coook</lastname>
+	<title>Kochbuch</title>
+	<bookname>Kochbuch</bookname>
+	<type>EPUB2</type>
+	<filepath>/Users/xuer/NetBeansProjects/COOKBOOK//</filepath>
+	<pic value="true" />
+	<color value="true" />
+	<cat value="true" />
+	<source value="true" />
+	<remark value="true" />
+	<time value="true" />
+	<index value="true" />
+	<quality value="true" />
+	<cover value="false" />
+	<coverpath />
+</export>

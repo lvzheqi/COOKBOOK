@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <export>
-    
     <firstname>Cooker</firstname>
     <lastname>Cooker</lastname>
-    
     <title>KochBuch</title>
     
     <bookname>KochBuch</bookname>
@@ -18,9 +16,7 @@
     <remark value="false"/>
     <time value="true"/>
     <index value="false"/>
-    <difficulty value="true"/>
+    <quality value="true"/>
     <cover value="false"/>
     <coverpath></coverpath>
-    
-    
 </export>

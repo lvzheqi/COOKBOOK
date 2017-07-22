@@ -8,11 +8,15 @@ import java.io.File;
 import java.util.*;
 import de.hs.inform.lyuz.cookbook.utils.XalanHelper;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
-import de.hs.inform.lyuz.cookbook.model.cookml.*;
 import de.hs.inform.lyuz.cookbook.model.epub.EpubObjekt;
 import de.hs.inform.lyuz.cookbook.logic.creater.epubcreater.EpubIndex;
 import de.hs.inform.lyuz.cookbook.logic.creater.epubcreater.EpubNav;
 import de.hs.inform.lyuz.cookbook.logic.creater.epubcreater.EpubOpf;
+import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
+import de.hs.inform.lyuz.cookbook.model.cookml.Head;
+import de.hs.inform.lyuz.cookbook.model.cookml.Picbin;
+import de.hs.inform.lyuz.cookbook.model.cookml.Picture;
+import de.hs.inform.lyuz.cookbook.model.cookml.Recipe;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +36,12 @@ public class CmlToEpubObject {
     private int pageNum = 1;
 
     private EpubObjekt epub;
+
+    private String errorMessage = "";
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
     public EpubObjekt getEpub() {
         epub.setNavDom(new EpubNav(myBook.getExportInfo().getTitle(), epub.getNavMap()).getDoc());
@@ -65,7 +75,8 @@ public class CmlToEpubObject {
                 epubLink = new EpubLink(category + ".html", category);
             }
             setEpubObjekt(this.myBook.getSortCmlMap().get(category), epubLink, filepath);
-            this.myBook.getSortCmlMap().get(category).setType(category);
+            //epub cat uper-lowercase
+//            this.myBook.getSortCmlMap().get(category).setType(category);
             epub.getNavMap().put(epub.getIndex() + 1, epubLink);
             epub.setIndex(epub.getIndex() + 1);
             epub.getCookmls().put(category, this.myBook.getSortCmlMap().get(category));
@@ -73,7 +84,12 @@ public class CmlToEpubObject {
         }
 
         if (this.myBook.getExportInfo().isHasIndex()) {
-            EpubLink epubLink = new EpubLink("index.xhtml", "Index");
+            EpubLink epubLink;
+            if (this.myBook.getExportInfo().getExportType().equals("EPUB3")) {
+                epubLink = new EpubLink("index.xhtml", "Index");
+            } else {
+                epubLink = new EpubLink("index.html", "Index");
+            }
             epub.getNavMap().put(epub.getIndex() + 1, epubLink);
             epub.setIndex(epub.getIndex() + 1);
             epub.setIndexMap(sortIndex(indexTreeMap));
@@ -84,60 +100,44 @@ public class CmlToEpubObject {
 
     private void setEpubObjekt(Cookml cookml, EpubLink epubLink, String filepath) {
 
-        for (Recipe recipe : cookml.getRecipe()) {
-            for (Object objakt : recipe.getHeadAndCustomAndPart()) {
-                switch (objakt.getClass().getCanonicalName()) {
-                    case "de.hs.inform.lyuz.cookbook.model.cookml.Head":
-                        Head headakt = (Head) objakt;
+        for (Object object : cookml.getContent()) {
+            if (object.getClass().getCanonicalName().equals("de.hs.inform.lyuz.cookbook.model.cookml.Recipe")) {
+                Recipe recipe = (Recipe) object;
+
+                Head headakt = recipe.getHead();
 
 //                        setHeadQty(headakt);            // head qty
-                        setHeadTitle(headakt);          //head title
-                        setSource(headakt);
-                        setEpubPic(headakt, filepath);            //Epub Cover & Pic
-                        EpubLink el = setEpubNav(headakt, epubLink);            //add EpubNav link
-                        setIndexItem(headakt, el);          //Epub Index Hit
-                        pageNum++;                      //Epub pagenum 
-                        break;
+                setHeadTitle(headakt);          //head title
+                setSource(headakt);
+                setEpubPic(headakt, filepath);            //Epub Cover & Pic
+                EpubLink el = setEpubNav(headakt, epubLink);            //add EpubNav link
+                setIndexItem(headakt, el);          //Epub Index Hit
+                pageNum++;                      //Epub pagenum 
 
-                    case "de.hs.inform.lyuz.cookbook.model.cookml.Recipe.Part":
-                        List<Ingredient> ingredients = ((Recipe.Part) objakt).getIngredient();
-                        ingredients.forEach((ingredient) -> {
-                            ingredient.setUnit(FormatHelper.formatUnitDE(ingredient.getUnit()));
-                        });
-                        break;
+                recipe.getPart().stream().map((part) -> part.getIngredient()).forEachOrdered((ingredients) -> {
+                    ingredients.forEach((ingredient) -> {
+                        ingredient.setUnit(FormatHelper.formatUnitDE(ingredient.getUnit()));
+                    });
+                });
 
-                    case "de.hs.inform.lyuz.cookbook.model.cookml.Remark":
-                        List<String> lines = new ArrayList<>();
-                        ((Remark) objakt).getLine().stream().filter((line) -> (!line.trim().equals("")))
-                                .forEachOrdered((line) -> {
-                                    lines.add(line);
-                                });
-                        if (lines.size() == 0) {
-                            ((Remark) objakt).setLine(null);
+                recipe.getRemark().forEach((remark) -> {
+                    List<String> lines = new ArrayList<>();
+                    remark.getLine().stream().filter((line) -> (!line.trim().equals("")))
+                            .forEachOrdered((line) -> {
+                                lines.add(line);
+                            });
+                    if (lines.size() == 0) {
+                        remark.setLine(null);
 
-                        } else {
-                            ((Remark) objakt).setLine(lines);
-                        }
-                        break;
-
-                    default:
-                        break;
-
-                }
+                    } else {
+                        remark.setLine(lines);
+                    }
+                });
             }
-
         }
-//        return cookml;
+
     }
 
-//    private void setHeadQty(Head headakt) {
-//        if (headakt.getServingqty() != null) {
-//            if (headakt.getServingqty().trim().equals("")) {
-//                headakt.setServingqty("1");
-//            }
-//            headakt.setServingqty(FormatHelper.formatQTY(Float.valueOf(headakt.getServingqty())));
-//        }
-//    }
     private void setHeadTitle(Head headakt) {
         String ht = checkRepeatHead(headakt.getTitle());
         headakt.setTitle(ht);
@@ -156,17 +156,21 @@ public class CmlToEpubObject {
                 inputStream = FileUtils.openInputStream(new File(this.myBook.getExportInfo().getCoverPath()));
 
                 if (!this.myBook.getExportInfo().isIsColor()) {
-                    FilesUtils.changeImgeColor2BW(inputStream, file);
+                    FilesUtils.changeImgeColor2BW(inputStream, file, "jpg");
                 } else {
-                    FileUtils.copyInputStreamToFile(inputStream, file);
+//                    FileUtils.copyInputStreamToFile(inputStream, file);
+                    FilesUtils.changeImgToJPG(inputStream, file);
+
                 }
             } catch (Exception ex) {
                 Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
+                errorMessage += "Fehler beim Schreiben CML Bild für Rezept:" + headakt.getTitle() + "\n";
                 System.err.println("Fehler beim Schreiben Bild -- EPUB");
             } finally {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
+
                     } catch (IOException ex) {
                         Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -186,7 +190,7 @@ public class CmlToEpubObject {
                 inputStream = new ByteArrayInputStream(pic.getValue());
 
                 if (!this.myBook.getExportInfo().isIsColor()) {
-                    FilesUtils.changeImgeColor2BW(inputStream, file);
+                    FilesUtils.changeImgeColor2BW(inputStream, file, pic.getFormat().toLowerCase(Locale.getDefault()));
                 } else {
                     FileUtils.copyInputStreamToFile(inputStream, file);
                 }
@@ -196,13 +200,20 @@ public class CmlToEpubObject {
 
                 //pic-List for epub2
                 epub.getPicList().add(path);
+                EpubItem item;
+                if (pic.getFormat().toUpperCase().equals("PNG")) {
+                    item = new EpubItem("images/" + filename, "image/png", false);
 
-                EpubItem item = new EpubItem("images/" + filename, "image/jpeg", false);
+                } else {
+                    item = new EpubItem("images/" + filename, "image/jpeg", false);
+
+                }
                 addItem2OPF(item);
 
             } catch (Exception ex) {
                 Logger.getLogger(CmlToEpubObject.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Fehler beim Schreiben Bild -- EPUB");
+                errorMessage += "Fehler beim Schreiben CML Bild für Rezept: " + headakt.getTitle() + "\n";
             } finally {
                 if (inputStream != null) {
                     try {
@@ -216,6 +227,19 @@ public class CmlToEpubObject {
     }
 
     private void setIndexItem(Head headakt, EpubLink epubLink) {
+
+        if (headakt.getCat().size() > 1) {
+            for (int i = 1; i < headakt.getCat().size(); i++) {
+                String hit = headakt.getCat().get(i);
+                if (indexTreeMap.keySet().contains(hit)) {
+                    indexTreeMap.get(hit).put(epubLink, pageNum);
+                } else {
+                    TreeMap<EpubLink, Integer> subindex = new TreeMap<>();
+                    subindex.put(epubLink, pageNum);
+                    indexTreeMap.put(hit, subindex);
+                }
+            }
+        }
         headakt.getHint().forEach((hit) -> {
             if (indexTreeMap.keySet().contains(hit)) {
                 indexTreeMap.get(hit).put(epubLink, pageNum);
@@ -286,93 +310,7 @@ public class CmlToEpubObject {
 
         String index;
         for (String hit : indexMap.keySet()) {
-            switch (hit.toUpperCase().charAt(0)) {
-                case 'A':
-                case 'Ä':
-                    index = "A";
-                    break;
-                case 'B':
-                    index = "B";
-                    break;
-                case 'C':
-                    index = "C";
-                    break;
-                case 'D':
-                    index = "D";
-                    break;
-                case 'E':
-                    index = "E";
-                    break;
-                case 'F':
-                    index = "F";
-                    break;
-                case 'G':
-                    index = "G";
-                    break;
-                case 'H':
-                    index = "H";
-                    break;
-                case 'I':
-                    index = "I";
-                    break;
-                case 'J':
-                    index = "J";
-                    break;
-                case 'K':
-                    index = "K";
-                    break;
-                case 'L':
-                    index = "L";
-                    break;
-                case 'M':
-                    index = "M";
-                    break;
-                case 'N':
-                    index = "N";
-                    break;
-                case 'O':
-                case 'Ö':
-                    index = "O";
-                    break;
-                case 'P':
-                    index = "P";
-                    break;
-                case 'Q':
-                    index = "Q";
-                    break;
-                case 'R':
-                    index = "R";
-                    break;
-                case 'S':
-                    index = "S";
-                    break;
-                case 'T':
-                    index = "T";
-                    break;
-                case 'U':
-                case 'Ü':
-                    index = "U";
-                    break;
-                case 'V':
-                    index = "V";
-                    break;
-                case 'W':
-                    index = "W";
-                    break;
-                case 'X':
-                    index = "X";
-                    break;
-                case 'Y':
-                    index = "Y";
-                    break;
-                case 'Z':
-                    index = "Z";
-                    break;
-                default:
-                    index = "#";
-                    break;
-            }
-
+            index = getHitIndex(hit);
             if (indexSort.keySet().contains(index)) {
                 indexSort.get(index).put(hit, indexMap.get(hit));
             } else {
@@ -398,10 +336,102 @@ public class CmlToEpubObject {
         }
         if (!souceText.equals("")) {
             List<String> souList = new ArrayList<>();
-            souList.add(souceText);
+            souList.add(souceText.substring(0, souceText.length() - 2));
             headakt.setSourceline(souList);
         } else {
             headakt.setSourceline(null);
         }
+    }
+
+    private String getHitIndex(String hit) {
+        String index;
+        switch (hit.toUpperCase().charAt(0)) {
+            case 'A':
+            case 'Ä':
+                index = "A";
+                break;
+            case 'B':
+                index = "B";
+                break;
+            case 'C':
+                index = "C";
+                break;
+            case 'D':
+                index = "D";
+                break;
+            case 'E':
+                index = "E";
+                break;
+            case 'F':
+                index = "F";
+                break;
+            case 'G':
+                index = "G";
+                break;
+            case 'H':
+                index = "H";
+                break;
+            case 'I':
+                index = "I";
+                break;
+            case 'J':
+                index = "J";
+                break;
+            case 'K':
+                index = "K";
+                break;
+            case 'L':
+                index = "L";
+                break;
+            case 'M':
+                index = "M";
+                break;
+            case 'N':
+                index = "N";
+                break;
+            case 'O':
+            case 'Ö':
+                index = "O";
+                break;
+            case 'P':
+                index = "P";
+                break;
+            case 'Q':
+                index = "Q";
+                break;
+            case 'R':
+                index = "R";
+                break;
+            case 'S':
+                index = "S";
+                break;
+            case 'T':
+                index = "T";
+                break;
+            case 'U':
+            case 'Ü':
+                index = "U";
+                break;
+            case 'V':
+                index = "V";
+                break;
+            case 'W':
+                index = "W";
+                break;
+            case 'X':
+                index = "X";
+                break;
+            case 'Y':
+                index = "Y";
+                break;
+            case 'Z':
+                index = "Z";
+                break;
+            default:
+                index = "#";
+                break;
+        }
+
+        return index;
     }
 }

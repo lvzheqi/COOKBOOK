@@ -1,6 +1,6 @@
 package de.hs.inform.lyuz.cookbook.logic.parser;
 
-import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorException;
 import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import java.io.File;
 import javax.xml.bind.JAXBContext;
@@ -27,7 +27,7 @@ public class MCBParser {
 
     private String path = "";
 
-    public MCBParser(File zipFile) throws ParserErrorExcepetion {
+    public MCBParser(File zipFile) throws ParserErrorException {
 
         try {
             path = System.getProperty("user.dir") + File.separator;
@@ -41,7 +41,7 @@ public class MCBParser {
                 System.err.println("Fehler beim Löschen Dateien");
             }
             Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ParserErrorExcepetion("Fehler beim MCB Parser");
+            throw new ParserErrorException("Fehler beim MCB Parser",ex.getClass().getName());
         }
 
         if (xml != null) {
@@ -58,10 +58,10 @@ public class MCBParser {
                 mcb = (Cookbook) u.unmarshal(xsr);
             } catch (FileNotFoundException | IllegalArgumentException | JAXBException | XMLStreamException ex) {
                 Logger.getLogger(MCBParser.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ParserErrorExcepetion("Fehler beim MCB Parser");
+                throw new ParserErrorException("Fehler beim MCB Parser", ex.getClass().getName());
             }
         } else {
-            throw new ParserErrorExcepetion("Fehler beim MCB Parser");
+            throw new ParserErrorException("Fehler beim MCB Parser", "keine XML");
         }
     }
 
