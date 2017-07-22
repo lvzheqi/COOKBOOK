@@ -15,6 +15,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -39,23 +40,23 @@ public class MmToCml {
 
         LineIterator it = null;
         try {
-            it = FileUtils.lineIterator(f, FilesUtils.ENCODING);
+            FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
+//            it = FileUtils.lineIterator(f, "ISO-8859-1");
             cookml = new Cookml();
             cookml.setName(f.getName());
 //            cookml.setProg("MealMaster");
 //            cookml.setProgver("0.91");
-            StringBuilder sb = new StringBuilder();
-            while (it.hasNext()) {
-                String line = it.nextLine();
-                sb.append(line);
-                if (line.trim().equals("MMMMM")) {
-                    setRecipe(formatMM(sb.substring(0)));
-                    sb = new StringBuilder();
-                } else {
-                    sb.append(EoL);
-                }
-
-            }
+//            StringBuilder sb = new StringBuilder();
+//            while (it.hasNext()) {
+//                String line = it.nextLine();
+//                sb.append(line);
+//                if (line.trim().equals("MMMMM")) {
+//                    setRecipe(formatMM(sb.substring(0)));
+//                    sb = new StringBuilder();
+//                } else {
+//                    sb.append(EoL);
+//                }
+//            }
         } catch (Exception ex) {
             Logger.getLogger(MmToCml.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConvertErrorException("Fehler beim Lesen mm", ex.getClass().getName());
