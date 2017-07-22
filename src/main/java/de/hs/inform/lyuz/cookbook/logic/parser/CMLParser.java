@@ -1,27 +1,35 @@
 package de.hs.inform.lyuz.cookbook.logic.parser;
 
+import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
 import java.io.File;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
-import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorException;
+import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.LineIterator;
 
 public class CMLParser {
 
     private Cookml cookml;
+    final String EoL = System.getProperty("line.separator");
 
-    public CMLParser(File f) throws ParserErrorExcepetion {
+    private String errorMessage = "";
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public CMLParser(File f) throws ParserErrorException {
         JAXBContext jc;
         try {
             InputStream inputStream = checkCML(f);
@@ -30,47 +38,65 @@ public class CMLParser {
             //ignore DTD check
             XMLInputFactory xif = XMLInputFactory.newFactory();
             xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream,"UTF-8");
+            XMLStreamReader xsr = xif.createXMLStreamReader(inputStream, FilesUtils.ENCODING);
 
             Unmarshaller u = jc.createUnmarshaller();
             cookml = (Cookml) u.unmarshal(xsr);
+            formatCml();
         } catch (Exception ex) {
             Logger.getLogger(CMLParser.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ParserErrorExcepetion("Fehler Beim CML Parser");
+            throw new ParserErrorException("Fehler Beim CML Parser", ex.getClass().getName());
         }
     }
 
     public Cookml getCookml() {
+        
         return cookml;
     }
 
-    private InputStream checkCML(File file) throws ParserErrorExcepetion, UnsupportedEncodingException {
-        String owText = "";
+    private void formatCml() {
+        cookml.getRecipe().forEach((recakt)-> {
+            recakt.getPreparation().forEach((p) -> {
+                p.setText(FormatHelper.setText(p.getText()));
+            });
+        });
+    }
+
+    private InputStream checkCML(File file) throws ParserErrorException, UnsupportedEncodingException {
+//        String owText = "";
+        StringBuilder owText = new StringBuilder();
+        int index = 0;
+        LineIterator it = null;
         try {
-            String cmlText = FileUtils.readFileToString(file, "UTF-8");
-            Scanner scanner = new Scanner(cmlText);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+//            String cmlText = FileUtils.readFileToString(file, FilesUtils.ENCODING);
+//            Scanner scanner = new Scanner(cmlText);
 
-                line = checkValue(line, "timeallqty", 0);
-                line = checkValue(line, "timeprepqty", 0);
-                line = checkValue(line, "timecookqty", 0);
-                line = checkValue(line, "wwwpoints", 2);
-                line = checkValue(line, "qty", 2);
-                line = checkValue(line, "shop", 1);
-                line = checkValue(line, "gram", 0);
+            it = FileUtils.lineIterator(file, FilesUtils.ENCODING);
 
-                owText += line;
+            while (it.hasNext()) {
+                String line = it.nextLine();
+                index++;
+                line = checkValue(line, "timeallqty", 0, index);
+                line = checkValue(line, "timeprepqty", 0, index);
+                line = checkValue(line, "timecookqty", 0, index);
+                line = checkValue(line, "quality", 0, index);
+                line = checkValue(line, "difficulty", 0, index);
+                line = checkValue(line, "qty", 2, index);
+                line = checkValue(line, "shop", 1, index);
+                line = checkValue(line, "gram", 0, index);
+                owText.append(line).append(EoL);
             }
         } catch (IOException ex) {
             Logger.getLogger(CMLParser.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ParserErrorExcepetion("Fehler beim CML File Read");
+            throw new ParserErrorException("Fehler beim CML File Read", ex.getClass().getName());
+        } finally {
+            LineIterator.closeQuietly(it);
         }
 
-        return new ByteArrayInputStream(owText.getBytes("UTF-8"));
+        return new ByteArrayInputStream(owText.toString().getBytes(FilesUtils.ENCODING));
     }
 
-    private String checkValue(String line, String name, int typ) {
+    private String checkValue(String line, String name, int typ, int index) {
         String[] strings = line.replace(" ", "").split(name);
         String value = line;
         String start = "=\"";
@@ -81,7 +107,8 @@ public class CMLParser {
                     try {
                         Integer.parseInt(values[1]);
                     } catch (Exception e) {
-                        System.err.println("Prüfen CML: type: " + name + ",value = " + values[1]);
+                        System.err.println("Prüfen CML: Zeile:" + index + ", type: " + name + ", value = " + values[1]);
+                        errorMessage += "Prüfen CML: Zeile:" + index + ", type: " + name + ",value = \"" + values[1] + "\"";
                         value = correctLine(line, name);
                     }
                     break;
@@ -90,13 +117,15 @@ public class CMLParser {
                         Boolean.parseBoolean(values[1]);
                         try {
                             Float.parseFloat(values[1]);
-                            System.err.println("Prüfen CML: type: " + name + ",value = " + values[1]);
+                            System.err.println("Prüfen CML: Zeile:" + index + ", type: " + name + ", value = " + values[1]);
+                            errorMessage += "Prüfen CML: Zeile:" + index + ", type: " + name + ", value = \"" + values[1] + "\"";
                             value = correctLine(line, name);
                         } catch (Exception e) {
                             break;
                         }
                     } catch (Exception e) {
-                        System.err.println("Prüfen CML: type: " + name + ",value = " + values[1]);
+                        System.err.println("Prüfen CML: Zeile:" + index + ", type: " + name + ",value = " + values[1]);
+                        errorMessage += "Prüfen CML: Zeile:" + index + ", type: " + name + ", value = \"" + values[1] + "\"";
                         value = correctLine(line, name);
                     }
                     break;
@@ -110,7 +139,8 @@ public class CMLParser {
                             value = line.replace(values[1], s);
                         }
                     } catch (Exception e) {
-                        System.err.println("Prüfen CML: type: " + name + ",value = " + values[1]);
+                        System.err.println("Prüfen CML: Zeile:" + index + ", type: " + name + ",value = " + values[1]);
+                        errorMessage += "Prüfen CML: Zeile:" + index + ", type: " + name + ", value = \"" + values[1] + "\"";
                         value = correctLine(line, name);
                     }
                     break;

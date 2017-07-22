@@ -196,7 +196,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="hasCatCB" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="hasDifficultyCB" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="hasQualityCB" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="hasTimeCB" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -224,7 +224,7 @@
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="hasDifficultyCB" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="hasQualityCB" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="hasRemarkCB" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="52" max="32767" attributes="0"/>
@@ -264,11 +264,14 @@
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="hasDifficultyCB">
+        <Component class="javax.swing.JCheckBox" name="hasQualityCB">
           <Properties>
             <Property name="selected" type="boolean" value="true"/>
-            <Property name="text" type="java.lang.String" value="Schwerigkeit"/>
+            <Property name="text" type="java.lang.String" value="Bewertung"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hasQualityCBActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

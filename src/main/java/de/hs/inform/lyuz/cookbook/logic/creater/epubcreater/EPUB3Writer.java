@@ -44,7 +44,7 @@ public class EPUB3Writer {
 
         } catch (Exception e) {
             Logger.getLogger(EPUB3Writer.class.getName()).log(Level.SEVERE, null, e);
-            throw new ConvertErrorException("Fehler beim Export EPUB3");
+            throw new ConvertErrorException("Fehler beim Export EPUB3", e.getClass().getName());
         } finally {
             IOUtils.closeQuietly(resultStream);
         }

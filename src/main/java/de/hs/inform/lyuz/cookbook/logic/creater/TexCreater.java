@@ -1,6 +1,6 @@
 package de.hs.inform.lyuz.cookbook.logic.creater;
 
-import de.hs.inform.lyuz.cookbook.logic.convert.CmlToLatex;
+import de.hs.inform.lyuz.cookbook.logic.convert.CmlToTex;
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import de.hs.inform.lyuz.cookbook.model.MyBook;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
@@ -11,21 +11,29 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
-public class LatexCreater {
+public class TexCreater {
 
     private ExportInfo exportInfo;
 
     private String tex;
     private String filepath;
+    private String errorMessage="";
 
-    public LatexCreater(MyBook myBook) throws SystemErrorException {
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    
+    
+    public TexCreater(MyBook myBook) throws SystemErrorException {
 
         this.exportInfo = myBook.getExportInfo();
         this.filepath = exportInfo.getFilepath();
         creatLatexFiles(0);
 
-        CmlToLatex cmlToLatex = new CmlToLatex(myBook, filepath);
+        CmlToTex cmlToLatex = new CmlToTex(myBook, filepath);
         tex = cmlToLatex.getTex();
+        errorMessage += cmlToLatex.getErrorMessage();
     }
 
     public void write() throws ConvertErrorException {
@@ -37,8 +45,8 @@ public class LatexCreater {
             FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + ".tex"), rahmen, "UTF-8");
 
         } catch (Exception ex) {
-            Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, ex);
-            throw new ConvertErrorException("Fehler beim Export Latex");
+            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
+            throw new ConvertErrorException("Fehler beim Export Latex", ex.getClass().getName());
         }
     }
 
@@ -66,19 +74,21 @@ public class LatexCreater {
 
     private void copyRessource(String path) throws SystemErrorException {
         try {
-            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHKOPF_LEX), new File(path + "kochbuchkopf.tex"));
-            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHFUSS_LEX), new File(path + "kochbuchfuss.tex"));
+            FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHKOPF_LEX), new File(path + "kochbuchkopf.tex"));
+            FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHFUSS_LEX), new File(path + "kochbuchfuss.tex"));
         } catch (Exception ex) {
-            Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, ex);
-            throw new SystemErrorException("Fehler beim Lesen Config.sys Information");
+            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SystemErrorException("Fehler beim Lesen Config.sys Information", ex.getClass().getName());
         }
         try {
-            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(path + "images" + File.separator + "star.jpg"));
-            FileUtils.copyToFile(LatexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(path + "images" + File.separator + "star_board.jpg"));
+            FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(path + "images" + File.separator + "star.png"));
+            FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(path + "images" + File.separator + "star_board.png"));
 
         } catch (Exception ex) {
-            Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Fehler beim Lesen icons");
+            errorMessage += "Fehler beim Lesen icons \n";
+
         }
 
     }
@@ -87,8 +97,10 @@ public class LatexCreater {
         try {
             FilesUtils.changeImgToPdf(exportInfo.getCoverPath(), filepath + "cover.pdf");
         } catch (Exception e) {
-            Logger.getLogger(LatexCreater.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, e);
             System.err.println("Fehler beim Erzeugen cover PDF ");
+            errorMessage += "Fehler beim Erzeugen cover PDF -- Tex \n";
+
         }
     }
 }

@@ -49,7 +49,7 @@ public class ExportPanel extends MyPanel {
         try {
             ConfUtils.updateExportInfo(this.myBook.getExportInfo());
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(null, "Fehler beim Export", "Fehler", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Fehler beim Speichern ExportInfor", "Fehler", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         MyBook mybook = this.myBook.myclone();
@@ -65,8 +65,13 @@ public class ExportPanel extends MyPanel {
             } else if (texRBtn.isSelected()) {
                 exportManager.texExport();
             }
+            mybook.setErrorMessage(mybook.getErrorMessage() + exportManager.getErrorMessage());
+            ConfUtils.writeLog(mybook, null);
         } catch (ConvertErrorException | SystemErrorException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+            
+            mybook.setErrorMessage(mybook.getErrorMessage() + exportManager.getErrorMessage());
+            ConfUtils.writeLog(mybook, ex);
             return false;
         }
 
@@ -319,7 +324,7 @@ public class ExportPanel extends MyPanel {
             JOptionPane.showMessageDialog(null, "Bitte wählen Sie ein Export-Format aus", "Warnung", JOptionPane.WARNING_MESSAGE);
         } else if (myBook.getFiles().isEmpty()) {
             JOptionPane.showMessageDialog(null, "Bitte importieren Sie eine Datei", "Warnung", JOptionPane.WARNING_MESSAGE);
-        } else if (myBook.getCatTemplate().size()==0) {
+        } else if (myBook.getCatTemplate().size() == 0) {
             JOptionPane.showMessageDialog(null, "Keine Kategorien sind vorhanden", "Warnung", JOptionPane.WARNING_MESSAGE);
         } else {
             f = new File(path + bookNameTF.getText() + suffix);

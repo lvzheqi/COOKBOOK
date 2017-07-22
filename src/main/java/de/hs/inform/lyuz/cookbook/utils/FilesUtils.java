@@ -3,6 +3,7 @@ package de.hs.inform.lyuz.cookbook.utils;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Color;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
@@ -44,14 +45,16 @@ public class FilesUtils {
     public static String COOKML_XSD = "META-INF/cml/cookml.xsd";
     public static String COOKML_DTD = "META-INF/cml/cookml.dtd";
 
-    public static void changeImgeColor2BW(InputStream img, File desFile) throws IOException {
+    public static String ENCODING = "UTF-8";
+
+    public static void changeImgeColor2BW(InputStream img, File desFile, String format) throws IOException {
         BufferedImage bufferedImage = null;
         try {
             bufferedImage = ImageIO.read(img);
             ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
             ColorConvertOp op = new ColorConvertOp(cs, null);
             bufferedImage = op.filter(bufferedImage, null);
-            ImageIO.write(bufferedImage, "jpg", desFile);
+            ImageIO.write(bufferedImage, format, desFile);
         } finally {
             if (bufferedImage != null) {
                 bufferedImage.flush();
@@ -173,11 +176,34 @@ public class FilesUtils {
             document.open();
             Image image = Image.getInstance(path);
             document.add(image);
-            
+
         } finally {
             document.close();
         }
 
+    }
+
+    public static void changeImgToJPG(InputStream img, File desFile) {
+        BufferedImage bufferedImage;
+
+        try {
+
+            //read image file
+            bufferedImage = ImageIO.read(img);
+
+            // create a blank, RGB, same width and height, and a white background
+            BufferedImage newBufferedImage = new BufferedImage(bufferedImage.getWidth(),
+                    bufferedImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            newBufferedImage.createGraphics().drawImage(bufferedImage, 0, 0, Color.WHITE, null);
+
+            // write to jpeg file
+            ImageIO.write(bufferedImage, "jpg", desFile);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
     }
 
 }

@@ -2,11 +2,18 @@ package de.hs.inform.lyuz.cookbook.logic.convert;
 
 import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import de.hs.inform.lyuz.cookbook.logic.parser.MCBParser;
-import de.hs.inform.lyuz.cookbook.model.cookml.*;
+import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
+import de.hs.inform.lyuz.cookbook.model.cookml.Head;
+import de.hs.inform.lyuz.cookbook.model.cookml.Picbin;
+import de.hs.inform.lyuz.cookbook.model.cookml.Preparation;
+import de.hs.inform.lyuz.cookbook.model.cookml.Recipe;
+import de.hs.inform.lyuz.cookbook.model.cookml.Remark;
+import de.hs.inform.lyuz.cookbook.model.cookml.Step;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
-import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorExcepetion;
+import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorException;
 import de.hs.inform.lyuz.cookbook.model.mycookbook.Cookbook;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,27 +28,32 @@ public class McbToCml {
     private Cookml cookml;
     private MCBParser mcbParser;
 
-    public McbToCml(File f) throws ParserErrorExcepetion, ConvertErrorException {
+    private String errorMessage = "";
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public McbToCml(File f) throws ParserErrorException, ConvertErrorException {
 
         cookml = new Cookml();
         mcbParser = new MCBParser(f);
 
         Cookbook mcb = mcbParser.getMcb();
 
-        cookml.setProg("MYCOOKBOOK");
-        cookml.setProgver(mcb.getVersion());
-
+//        cookml.setProg("MYCOOKBOOK");
+//        cookml.setProgver(mcb.getVersion());
         for (Cookbook.Recipe recipe : mcb.getRecipe()) {
             try {
                 setRecipe(recipe);
             } catch (Exception ex) {
                 Logger.getLogger(McbToCml.class.getName()).log(Level.SEVERE, null, ex);
-                throw new ConvertErrorException("Fehler beim Konvertierung von MCB");
+                throw new ConvertErrorException("Fehler beim Konvertierung von MCB", ex.getClass().getName());
             }
         }
     }
 
-    private void setRecipe(Cookbook.Recipe recipe) throws Exception {
+    private void setRecipe(Cookbook.Recipe recipe) {
         Recipe recakt = new Recipe();
         Head headakt = new Head();
 
@@ -59,7 +71,7 @@ public class McbToCml {
         }
 
         if (recipe.getRating() != null) {
-            headakt.setWwpoints(Float.parseFloat(recipe.getRating()));
+            headakt.setQuality(Short.parseShort(recipe.getRating()));
         }
 
         // ingredient
@@ -69,62 +81,47 @@ public class McbToCml {
                 partakt.getIngredient().add(FormatHelper.formatIngredient(l.getValue().trim()));
             }
         });
-        recakt.getHeadAndCustomAndPart().add(partakt);
+        recakt.getPart().add(partakt);
 
         // main content
         Preparation prepakt = new Preparation();
+        prepakt.setText("");
         if (recipe.getRecipetext() != null && recipe.getRecipetext().getContent() != null) {
             recipe.getRecipetext().getContent().forEach((l) -> {
                 if (!l.getValue().equals("")) {
-                    prepakt.getText().add(l.getValue());
+                    Step step = new Step();
+                    step.setText(l.getValue());
+                    prepakt.getStep().add(step);
+
                 }
             });
         }
         if (recipe.getDescription() != null && recipe.getDescription().getContent() != null) {
             recipe.getDescription().getContent().forEach((l) -> {
                 if (!l.getValue().equals("")) {
-                    prepakt.getText().add(l.getValue());
+                    prepakt.setText(prepakt.getText() + "\n" + l.getValue());
                 }
             });
         }
 
         if (recipe.getQuantity() != null) {
-            String[] tmp = FormatHelper.reformatLine(recipe.getQuantity()).split(" ");
-            switch (tmp.length) {
-                case 2:
-                    headakt.setServingqty(tmp[0]);
-                    headakt.setServingtype(tmp[1]);
-                    break;
-                case 1:
-                    try{
-                        int n = Integer.parseInt(tmp[0]);
-                        headakt.setServingqty(tmp[0]);
-                        if(n>1){
-                            headakt.setServingtype("Protionen");
-                        }else {
-                            headakt.setServingtype("Protion");
-                        }
-                    } catch(Exception e){
-                        headakt.setServingtype(recipe.getQuantity().trim());
-                    }   break;
-                default:
-                    headakt.setServingtype(recipe.getQuantity().trim());
-                    break;
-            }
+            String[] tmp = FormatHelper.setServing(FormatHelper.reformatLine(recipe.getQuantity()));
+            headakt.setServingqty(tmp[0]);
+            headakt.setServingtype(tmp[1]);
         }
 
         BigInteger time = FormatHelper.setCookTime(recipe.getPreptime());
         if (time != null) {
             headakt.setTimeprepqty(time);
         } else if (recipe.getPreptime() != null && !recipe.getPreptime().trim().equals("")) {
-            prepakt.getText().add("\nVorbereitungszeit: " + recipe.getPreptime());
+            prepakt.setText(prepakt.getText() + "\n" + "Vorbereitungszeit: " + recipe.getPreptime());
         }
 
         time = FormatHelper.setCookTime(recipe.getCooktime());
         if (time != null) {
             headakt.setTimecookqty(time);
         } else if (recipe.getCooktime() != null && !recipe.getCooktime().trim().equals("")) {
-            prepakt.getText().add("\nZubereitungszeit: " + recipe.getCooktime());
+            prepakt.setText(prepakt.getText() + "\n" + "Zubereitungszeit: " + recipe.getCooktime());
 
         }
 
@@ -132,10 +129,13 @@ public class McbToCml {
         if (time != null) {
             headakt.setTimeallqty(time);
         } else if (recipe.getTotaltime() != null && !recipe.getTotaltime().trim().equals("")) {
-            prepakt.getText().add("\nArbeitzeit: " + recipe.getTotaltime());
+            prepakt.setText(prepakt.getText() + "\n" + "Arbeitzeit: " + recipe.getTotaltime());
 
         }
-        recakt.getHeadAndCustomAndPart().add(prepakt);
+        if (prepakt.getText().equals("")) {
+            prepakt.setText(null);
+        }
+        recakt.getPreparation().add(prepakt);
 
         // remark
         Remark remakt = new Remark();
@@ -172,8 +172,16 @@ public class McbToCml {
             for (File f : mcbParser.getFiles()) {
                 if (f.getName().equals(picpath[picpath.length - 1])) {
                     Picbin picbin = new Picbin();
-                    picbin.setFormat("JPG");
-                    picbin.setValue(FileUtils.readFileToByteArray(f));
+//                    picbin.setFormat("JPG");
+                    picbin.setFormat(f.getName().substring(f.getName().lastIndexOf(".") + 1));
+                    try {
+                        picbin.setValue(FileUtils.readFileToByteArray(f));
+                    } catch (IOException ex) {
+                        Logger.getLogger(McbToCml.class.getName()).log(Level.SEVERE, null, ex);
+                        System.err.println("Fehler beim Schreiben Bilder --Mcb");
+                        errorMessage += "Fehler beim Schreiben CML Bild beim Rezept " + recipe.getTitle() + "\n";
+
+                    }
                     headakt.getPicbin().add(picbin);
                     break;
                 }
@@ -181,10 +189,16 @@ public class McbToCml {
         }
 
         if (!remakt.getLine().isEmpty()) {
-            recakt.getHeadAndCustomAndPart().add(remakt);
+            recakt.getRemark().add(remakt);
         }
-        recakt.getHeadAndCustomAndPart().add(headakt);
-        cookml.getRecipe().add(recakt);
+        recakt.getPreparation().forEach((p) -> {
+            if (p.getText() != null) {
+                p.setText(FormatHelper.setText(p.getText()));
+            }
+        });
+
+        recakt.setHead(headakt);
+        cookml.getContent().add(recakt);
     }
 
     public Cookml getCookml() {

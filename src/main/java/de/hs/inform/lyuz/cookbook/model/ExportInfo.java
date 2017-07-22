@@ -16,7 +16,7 @@ public class ExportInfo implements Serializable{
     public static boolean hasSource;
     public static boolean hasRemark;
     public static boolean hasTime;
-    public static boolean hasDiffculty;
+    public static boolean hasQuality;
 
     private boolean hasCover;
     private String coverPath;
@@ -108,12 +108,12 @@ public class ExportInfo implements Serializable{
         this.hasTime = hasTime;
     }
 
-    public boolean isHasDiffculty() {
-        return hasDiffculty;
+    public boolean isHasQuality() {
+        return hasQuality;
     }
 
-    public void setHasDiffculty(boolean hasDiffculty) {
-        this.hasDiffculty = hasDiffculty;
+    public void setHasQuality(boolean hasQuality) {
+        this.hasQuality = hasQuality;
     }
 
     public boolean isHasCover() {
@@ -159,7 +159,7 @@ public class ExportInfo implements Serializable{
 
     public void updateBookInfo(String firstName, String lastName, String title, boolean hasPic, boolean isColor,
             boolean hasCat, boolean hasIndex, boolean hasSource, boolean hasRemark, boolean hasTime,
-            boolean hasDiffculty, boolean hasCover, String coverPath) {
+            boolean hasQuality, boolean hasCover, String coverPath) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.title = title;
@@ -172,7 +172,7 @@ public class ExportInfo implements Serializable{
         this.hasSource = hasSource;
         this.hasRemark = hasRemark;
         this.hasTime = hasTime;
-        this.hasDiffculty = hasDiffculty;
+        this.hasQuality = hasQuality;
 
         this.hasCover = hasCover;
         this.coverPath = coverPath;

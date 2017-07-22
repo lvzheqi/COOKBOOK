@@ -49,7 +49,7 @@ public class CategoryPanel extends MyPanel {
 
     private void init() {
 
-        //TODO: 点击空白处,取消所选选项
+        //TODO:....
         catTempList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -300,6 +300,7 @@ public class CategoryPanel extends MyPanel {
         }
         int index = catTempList.getSelectedIndex();
         switchListModel(catTempListModel, index, false);
+        categoryManager.upDownCategory(myBook, catTempListModel);
 
         if (index != catTempListModel.size() - 1) {
             catTempList.setSelectedIndex(index + 1);
@@ -331,6 +332,7 @@ public class CategoryPanel extends MyPanel {
         }
         int index = catTempList.getSelectedIndex();
         switchListModel(catTempListModel, index, true);
+        categoryManager.upDownCategory(myBook, catTempListModel);
 
         if (index != 0) {
             catTempList.setSelectedIndex(index - 1);

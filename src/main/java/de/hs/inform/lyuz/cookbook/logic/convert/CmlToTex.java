@@ -9,6 +9,7 @@ import de.hs.inform.lyuz.cookbook.model.cookml.Picbin;
 import de.hs.inform.lyuz.cookbook.model.cookml.Preparation;
 import de.hs.inform.lyuz.cookbook.model.cookml.Recipe;
 import de.hs.inform.lyuz.cookbook.model.cookml.Remark;
+import de.hs.inform.lyuz.cookbook.model.cookml.Step;
 import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import java.io.ByteArrayInputStream;
@@ -23,7 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
-public class CmlToLatex {
+public class CmlToTex {
 
     private LinkedHashMap<String, Cookml> cmlSort;
     private ExportInfo exportInfo;
@@ -34,6 +35,13 @@ public class CmlToLatex {
 
     private int anzpics = 0;
 
+    private String errorMessage ="";
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    
     public String getTex() {
         String vorspann = "\\begin{document}\n\n";
         if (exportInfo.isHasCover()) {
@@ -47,7 +55,7 @@ public class CmlToLatex {
         return tex;
     }
 
-    public CmlToLatex(MyBook myBook, String filepath) {
+    public CmlToTex(MyBook myBook, String filepath) {
         this.cmlSort = myBook.getSortCmlMap();
         this.exportInfo = myBook.getExportInfo();
 
@@ -106,54 +114,51 @@ public class CmlToLatex {
         String conttex = "";									// pro Portion
         String pictex = "";									// Bilder
         String pointtex = "";
-        for (Object objakt : recipe.getHeadAndCustomAndPart()) {
-            switch (objakt.getClass().getCanonicalName()) {
-                case "de.hs.inform.lyuz.cookbook.model.cookml.Head":
-                    Head headakt = (Head) objakt;
-                    titletex += texString(headakt.getTitle()) + "}\n\n";
-                    if (exportInfo.isHasTime()) {
-                        timetex = time2tex(headakt);
-                    }
-                    if (exportInfo.isHasSource()) {
-                        sourcetex = source2tex(headakt);
-                    }
-                    servetex = serve2tex(headakt);
-                    if (exportInfo.isHasIndex()) {
-                        indextex = index2tex(headakt);
-                    }
-                    conttex = content2tex(headakt);
-                    if (exportInfo.isHasPic()) {
-                        pictex = pic2tex(headakt);
-                    }
-                    if (exportInfo.isHasDiffculty()) {
-                        pointtex = point2tex(headakt);
-                    }
-                    break;
-                case "de.hs.inform.lyuz.cookbook.model.cookml.Remark":
-                    if (exportInfo.isHasRemark()) {
-                        Remark remark = (Remark) objakt;
-                        remarktex += remark2tex(remark);
-                    }
-                    break;
-                case "de.hs.inform.lyuz.cookbook.model.cookml.Preparation":
-                    Preparation prep = (Preparation) objakt;
-                    preptex += prep2tex(prep);
-                    break;
-                case "de.hs.inform.lyuz.cookbook.model.cookml.Recipe.Part":
-                    Recipe.Part part = (Recipe.Part) objakt;
-                    String title = part.getTitle();
-                    parttex += "\n\n";
-                    if (title != null) {
-                        parttex += "\\" + "textit{" + title + "}\n\n";
-                    }
-                    parttex = ((Recipe.Part) objakt).getIngredient().stream().map((ingit)
-                            -> ing2tex(ingit)).map((ingtex) -> "\n\n" + ingtex).reduce(parttex, String::concat);
-                    break;
-                default:
-                    break;
+
+        //head
+        Head headakt = recipe.getHead();
+        titletex += texString(headakt.getTitle()) + "}\n\n";
+        if (exportInfo.isHasTime()) {
+            timetex = time2tex(headakt);
+        }
+        if (exportInfo.isHasSource()) {
+            sourcetex = source2tex(headakt);
+        }
+        servetex = serve2tex(headakt);
+        if (exportInfo.isHasIndex()) {
+            indextex = index2tex(headakt);
+        }
+        conttex = content2tex(headakt);
+        if (exportInfo.isHasPic()) {
+            pictex = pic2tex(headakt);
+        }
+        if (exportInfo.isHasQuality()) {
+            pointtex = point2tex(headakt);
+        }
+
+        //remark
+        if (exportInfo.isHasRemark()) {
+            for (Remark remark : recipe.getRemark()) {
+                remarktex += remark2tex(remark);
             }
         }
 
+        //Preparation
+        for (Preparation prep : recipe.getPreparation()) {
+            preptex += prep2tex(prep);
+        }
+
+        //Part
+        for (Recipe.Part part : recipe.getPart()) {
+            String title = part.getTitle();
+            parttex += "\n\n";
+            if (title != null) {
+                parttex += "\\" + "textit{" + title + "}\n\n";
+            }
+            parttex = part.getIngredient().stream().map((ingit)
+                    -> ing2tex(ingit)).map((ingtex) -> "\n\n" + ingtex).reduce(parttex, String::concat);
+
+        }
         rectex += titletex + texString(indextex + "\n }{" + pointtex + parttex + pictex + preptex
                 + remarktex + servetex + conttex + timetex + sourcetex);
         rectex += "} \n\n";
@@ -234,14 +239,11 @@ public class CmlToLatex {
     // Schritte der Zubereitung
     private String prep2tex(Preparation prep) {
         String preptex = "";
-        List<String> steps = prep.getStep();
-        List<String> texts = prep.getText();
-        for (Iterator<String> stit = steps.iterator(); stit.hasNext();) {
-            preptex += stit.next() + "\n\n";
+        for (Step step : prep.getStep()) {
+            preptex += step.getText() + "\n";
         }
-        for (Iterator<String> stit = texts.iterator(); stit.hasNext();) {
-            preptex += stit.next() + "\n\n";
-        }
+        preptex += prep.getText() + "\n\n";
+
         return preptex;
     }
 
@@ -287,19 +289,21 @@ public class CmlToLatex {
         String pictex = "\n\n";
         for (Picbin pic : head.getPicbin()) {
             String picName = exportInfo.getBookname() + "_" + anzpics++
-                    + "." + pic.getFormat().toLowerCase(Locale.getDefault());;
+                    + "." + pic.getFormat().toLowerCase(Locale.getDefault());
             String path = filepath + "images" + File.separator + picName;
             try {
                 File file = new File(path);
                 InputStream inputStream = new ByteArrayInputStream(pic.getValue());
                 if (!exportInfo.isIsColor()) {
-                    FilesUtils.changeImgeColor2BW(inputStream, file);
+                    FilesUtils.changeImgeColor2BW(inputStream, file, pic.getFormat().toLowerCase(Locale.getDefault()));
                 } else {
                     FileUtils.copyInputStreamToFile(inputStream, file);
                 }
                 pictex += "\\bild{images/" + picName + "}\n\n";
+
             } catch (Exception ex) {
-                Logger.getLogger(CmlToLatex.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(CmlToTex.class.getName()).log(Level.SEVERE, null, ex);
+                errorMessage += "Fehler beim Schreiben CML Bild beim Rezept "+ head.getTitle()+"\n";
                 System.err.println("Fehler beim Lesen Bild -- Latex");
             }
         }
@@ -385,9 +389,9 @@ public class CmlToLatex {
                     }
                     texstring = anfang + "" + line.substring(pos + 1);
                     setoff--;
-                    break;     
+                    break;
             }
-            
+
         }
 
         return texstring;
@@ -395,17 +399,11 @@ public class CmlToLatex {
 
     private String point2tex(Head headakt) {
         String pointtex = "";
-        if (headakt.getWwpoints() != null) {
+        if (headakt.getQuality() != null) {
             int p;
-            try {
-                p = headakt.getWwpoints().intValue();
-                pointtex = "\\icons{images/star.jpg}"
-                        + "{images/star_board.jpg}{" + p + "}";
-            } catch (Exception e) {
-                Logger.getLogger(CmlToLatex.class.getName()).log(Level.SEVERE, null, e);
-                System.err.println("Fehler beim Konvert wwpoints");
-            }
-
+                p = headakt.getQuality();
+                pointtex = "\\icons{images/star.png}"
+                        + "{images/star_board.png}{" + p + "}";
         }
         return pointtex;
     }

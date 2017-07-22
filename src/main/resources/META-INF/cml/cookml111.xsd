@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--W3C Schema created by R. Kürbitz www.nachtfrosch.de-->
+<!--W3C Schema modified for version 1.1.1 by F. Sprengel-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:element name="card" type="xs:string"/>
+	<xs:element name="cat" type="xs:string"/>
+	<xs:element name="cookml">
+		<xs:complexType mixed="true">
+			<xs:sequence>
+				<xs:element ref="recipe" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="menu" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="version" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string" use="optional"/>
+			<xs:attribute name="prog" type="xs:string" use="required"/>
+			<xs:attribute name="progver" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="datatype" type="xs:string" use="required"/>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="desc" type="xs:string"/>
+	<xs:element name="mcustom">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="datatype" type="xs:string" use="required"/>
+			<xs:attribute name="value" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="five">
+		<xs:restriction base="xs:unsignedByte">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="head">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cat" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="hint" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="sourceline" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="card" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="content" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:attribute name="type" type="xs:string" use="required"/>
+						<xs:attribute name="value" type="xs:string" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="picture" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="picbin" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="custom" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="title" type="xs:string" use="required"/>
+			<xs:attribute name="rid" type="xs:string" use="required"/>
+			<xs:attribute name="servingqty" type="xs:string" use="required"/>
+			<xs:attribute name="servingtype" type="xs:string" use="required"/>
+			<xs:attribute name="createdate" type="xs:dateTime" use="optional"/>
+			<xs:attribute name="createuser" type="xs:string" use="optional"/>
+			<xs:attribute name="createemail" type="xs:string" use="optional"/>
+			<xs:attribute name="changedate" type="xs:dateTime" use="optional"/>
+			<xs:attribute name="changeuser" type="xs:string" use="optional"/>
+			<xs:attribute name="changeemail" type="xs:string" use="optional"/>
+			<xs:attribute name="timeallqty" type="xs:unsignedLong" use="optional"/>
+			<xs:attribute name="timeprepqty" type="xs:unsignedLong" use="optional"/>
+			<xs:attribute name="timecookqty" type="xs:unsignedLong" use="optional"/>
+			<xs:attribute name="costs" type="xs:string" use="optional"/>
+			<xs:attribute name="wwpoints" type="xs:float" use="optional"/>
+			<xs:attribute name="quality" type="five" use="optional"/>
+			<xs:attribute name="difficulty" type="five" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="hint" type="xs:string"/>
+	<xs:element name="ingredient">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="inote" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="qty" type="xs:float" use="optional"/>
+			<xs:attribute name="unit" type="xs:string" use="optional"/>
+			<xs:attribute name="item" type="xs:string" use="required"/>
+			<xs:attribute name="bls" type="xs:string" use="optional"/>
+			<xs:attribute name="gram" type="xs:unsignedLong" use="optional"/>
+			<xs:attribute name="shop" type="xs:boolean" use="optional" default="true"/>
+			<xs:attribute name="calc" type="xs:boolean" use="optional"/>
+			<xs:attribute name="ridlink" type="xs:string" use="optional"/>
+			<xs:attribute name="preparation" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="menu">
+		<xs:complexType>
+			<xs:sequence minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="mcustom" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="mrecipe" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="title" type="xs:string" use="optional"/>
+			<xs:attribute name="persons" type="xs:unsignedLong" use="optional"/>
+			<xs:attribute name="desc" type="xs:string" use="optional"/>
+			<xs:attribute name="card" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mrecipe">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="desc" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="rid" type="xs:string" use="required"/>
+			<xs:attribute name="title" type="xs:string" use="required"/>
+			<xs:attribute name="servingqty" type="xs:string" use="optional"/>
+			<xs:attribute name="servingtype" type="xs:string" use="optional"/>
+			<xs:attribute name="persons" type="xs:long" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="picbin">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:base64Binary">
+					<xs:attribute name="format" type="xs:string" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="picture">
+		<xs:complexType>
+			<xs:attribute name="file" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="preparation">
+		<xs:complexType>
+			<xs:choice>
+				<xs:element ref="text"/>
+				<xs:sequence>
+					<xs:element ref="step" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="recipe">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="head"/>
+				<xs:element ref="custom" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="part" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="ingredient" minOccurs="0" maxOccurs="unbounded"/>
+						</xs:sequence>
+						<xs:attribute name="title" type="xs:string" use="optional"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="preparation" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="remark" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="lang" type="xs:language" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="remark">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="line" type="xs:string" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="user" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sourceline" type="xs:string"/>
+	<xs:element name="text" type="xs:string"/>
+	<xs:element name="step">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="text" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="picbin" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>			
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

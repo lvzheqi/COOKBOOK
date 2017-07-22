@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <category>
-	<name>SALAT</name>
-	<name>SUPPE</name>
-	<name>NACHTISCH</name>
-	<name>BEILAGE</name>
-	<name>SAUCE</name>
-	<name>FISCH</name>
-	<name>PASTA</name>
-	<name>GEMÜSE</name>
-	<name>FLEISCH</name>
-	<name>SONSTIGE</name>
-	<name>VEGETARISCH</name>
-	<name>DRINK</name>
+    <name>SALAT</name>
+    <name>SUPPE</name>
+    <name>NACHTISCH</name>
+    <name>BEILAGE</name>
+    <name>SAUCE</name>
+    <name>FISCH</name>
+    <name>PASTA</name>
+    <name>GEMÜSE</name>
+    <name>FLEISCH</name>
+    <name>SONSTIGE</name>
+    <name>VEGETARISCH</name>
+    <name>DRINK</name>
 </category>

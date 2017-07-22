@@ -89,13 +89,13 @@ public class EpubOpf {
 
         manifest.addContent(new Element("item", manifest.getNamespace())
                 .setAttribute("id", "icon-star")
-                .setAttribute("href", "icons/star.jpg")
-                .setAttribute("media-type", "image/jpeg"));
+                .setAttribute("href", "icons/star.png")
+                .setAttribute("media-type", "image/png"));
         
         manifest.addContent(new Element("item", manifest.getNamespace())
                 .setAttribute("id", "icon-star-board")
-                .setAttribute("href", "icons/star_board.jpg")
-                .setAttribute("media-type", "image/jpeg"));
+                .setAttribute("href", "icons/star_board.png")
+                .setAttribute("media-type", "image/png"));
 
         elements.forEach((e) -> {
             manifest.addContent(e.setNamespace(manifest.getNamespace()));
