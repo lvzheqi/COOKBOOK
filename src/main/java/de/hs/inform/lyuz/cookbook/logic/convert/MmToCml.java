@@ -138,7 +138,7 @@ public class MmToCml {
                     }
                     break;
                 }
-            } else if (line.startsWith(" ", 0) && !line.trim().equals("")) {
+            } else if (line.startsWith(" ", 0)) {
                 setPart(line);
             } else {
                 break;
@@ -359,6 +359,7 @@ public class MmToCml {
 
         while (!nextLine.replace(" ", "").equals("") && nextLine.startsWith(" ")) {
             partakt.getIngredient().add(setIngredient(getNextLine().trim()));
+            System.out.println(nextLine);
         }
         recakt.getPart().add(partakt);
     }

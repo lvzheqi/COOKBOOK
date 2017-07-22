@@ -1,14 +1,19 @@
 ============================Information==============================
 
-Zeit: Sat Jul 22 12:14:43 CEST 2017
+Zeit: Sat Jul 22 13:14:00 CEST 2017
 Importierte Dateien:
-     Chefkoch-Menue.mm
+     Marmelade.mm
 
-Importierte Titel(0):
+Importierte Titel(1):
+     MARINADE Fï¿½R GEGRILLTE FORELLE
 
------------------------FEHLER---------------------------
-Fehler beim Lesen mm
-java.lang.ArrayIndexOutOfBoundsException
+------------------------WARNUNG-------------------------
+Fehler beim Laden Config.sys Information
+Fehler beim Laden Config.sys Information
+
+
+------------------------YO! OH!-------------------------
+ERFOLGREICH ERSTELLT
 
 ==================================END================================
 
