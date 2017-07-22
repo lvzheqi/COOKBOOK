@@ -355,33 +355,139 @@ public class FormatHelper {
     }
 
     public static BigInteger setCookTime(String line) {
-
         if (line != null) {
-            String t[] = reformatLine(line).split(" ");
-            String time = "";
-            if (t.length == 1) {
-                for (int i = 0; i < t[0].length(); i++) {
-                    if (Character.isDigit(t[0].charAt(i))) {
-                        time += t[0].charAt(i);
-                    } else {
-                        break;
+            int time = 0;
+            String time1 = "";
+            String time2 = "";
+            boolean hour = false;
+            int i = 0;
+            char c = line.trim().charAt(i);
+            try {
+                while (!Character.isDigit(c) && i < line.trim().length() - 1) {
+                    i++;
+                    c = line.trim().charAt(i);
+                }
+                while (Character.isDigit(c) && i < line.trim().length() - 1) {
+                    time1 += c;
+                    i++;
+                    c = line.trim().charAt(i);
+                }
+
+                while (c == ' ' && i < line.trim().length() - 1) {
+                    i++;
+                    c = line.trim().charAt(i);
+                }
+                if (c == 'h' || c == 'H') {
+                    time = Integer.parseInt(time1) * 60;
+                    hour = true;
+                } else if (c == 'm' || c == 'M') {
+                    time = Integer.parseInt(time1);
+                }
+                while (!Character.isDigit(c) && i < line.trim().length() - 1) {
+                    i++;
+                    c = line.trim().charAt(i);
+                }
+                while (Character.isDigit(c) && i < line.trim().length() - 1) {
+                    time2 += c;
+                    i++;
+                    c = line.trim().charAt(i);
+                }
+                while (c == ' ' && i < line.trim().length() - 1) {
+                    i++;
+                    c = line.trim().charAt(i);
+                }
+                if (c == 'm' || c == 'M') {
+                    if (hour) {
+                        time += Integer.parseInt(time2);
                     }
                 }
-                if (!time.equals("")) {
-                    t[0] = time;
-                }
+            } catch (Exception e) {
+                System.err.println("Fehler beim Zugriff auf Kochzeit: " + line);
+                return null;
             }
-            if (t.length == 1 || t.length == 2) {
-                try {
-                    Float.parseFloat(t[0]);
-                    return new BigInteger(t[0]);
-                } catch (Exception e) {
-                    return null;
-                }
+
+            if (time == 0 && !time1.equals("")) {
+                time = Integer.parseInt(time1);
+                System.out.println(time);
+                return new BigInteger(time + "");
+            } else if (time != 0) {
+                System.out.println(time);
+                return new BigInteger(time + "");
             }
         }
+
         return null;
     }
+
+    public static String[] setServing(String line) {
+        String[] serving = new String[2];
+        String yield[] = FormatHelper.reformatLine(line).split(" ");
+        if (yield.length == 2) {
+            try {
+                Integer.parseInt(yield[0]);
+                serving[0] = yield[0];
+                serving[1] = yield[1];
+                return serving;
+            } catch (Exception e) {
+
+            }
+        }
+        char c = line.trim().charAt(0);
+        String qty = "";
+        int i = 0;
+        while (!Character.isDigit(c) && i < line.trim().length() - 1) {
+            i++;
+            c = line.trim().charAt(i);
+        }
+        while (Character.isDigit(c) && i < line.trim().length() - 1) {
+            qty += c;
+            i++;
+            c = line.trim().charAt(i);
+        }
+
+        int qty_int =1;
+        try {
+            qty_int = Integer.parseInt(qty);
+        } catch (Exception e) {
+            qty_int = 1;
+        }
+        if (qty_int != 1) {
+            serving[1] = "Portionen";
+        } else {
+            serving[1] = "Portion";
+        }
+        serving[0] = qty_int+"";
+        return serving;
+    }
+    
+    //    public static BigInteger setCookTime(String line) {
+    //
+    //        if (line != null) {
+    //            String t[] = reformatLine(line).split(" ");
+    //            String time = "";
+    //            if (t.length == 1) {
+    //                for (int i = 0; i < t[0].length(); i++) {
+    //                    if (Character.isDigit(t[0].charAt(i))) {
+    //                        time += t[0].charAt(i);
+    //                    } else {
+    //                        break;
+    //                    }
+    //                }
+    //                if (!time.equals("")) {
+    //                    t[0] = time;
+    //                }
+    //            }
+    //            if (t.length == 1 || t.length == 2) {
+    //                try {
+    //                    Float.parseFloat(t[0]);
+    //                    return new BigInteger(t[0]);
+    //                } catch (Exception e) {
+    //                    return null;
+    //                }
+    //            }
+    //        }
+    //        return null;
+    //    }
 
     public static Ingredient formatIngredient(String line) {
         String[] words = reformatLine(line).split(" ");
@@ -506,15 +612,14 @@ public class FormatHelper {
         return words.stream().map((w) -> w + " ").reduce(line, String::concat);
     }
 
-    
-        public static String setText(String text){
-        String output ="";
+    public static String setText(String text) {
+        String output = "";
         Scanner scanner = new Scanner(text);
-        while(scanner.hasNextLine()){
-            String line = scanner.nextLine().trim(); 
-            if(!line.equals("")){
-                output +=line+"\n";
-            }       
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine().trim();
+            if (!line.equals("")) {
+                output += line + "\n";
+            }
         }
         return output;
     }

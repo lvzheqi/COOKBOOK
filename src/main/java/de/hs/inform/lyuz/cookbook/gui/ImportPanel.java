@@ -255,7 +255,7 @@ public class ImportPanel extends MyPanel {
                 FilesUtils.ENCODING = "UTF-8";
                 break;
             case "ISO-8859-1":
-                FilesUtils.ENCODING = "ISO_8859_1";
+                FilesUtils.ENCODING = "ISO-8859-1";
                 break;
         }
     }//GEN-LAST:event_codeCBActionPerformed

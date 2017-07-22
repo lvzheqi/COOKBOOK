@@ -14,7 +14,7 @@ import java.util.Scanner;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
-import java.nio.charset.StandardCharsets;
+import de.hs.inform.lyuz.cookbook.utils.FilesUtils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -37,42 +37,41 @@ public class MmToCml {
 
     public MmToCml(File f) throws ConvertErrorException {
 
-//        LineIterator it = null;
+        LineIterator it = null;
         try {
-            String mm = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
-//            it = FileUtils.lineIterator(f, "ISO-8859-1");
-            cookml = new Cookml();
-            cookml.setName(f.getName());
-//            cookml.setProg("MealMaster");
-//            cookml.setProgver("0.91");
-//            StringBuilder sb = new StringBuilder();
-//            while (it.hasNext()) {
-//                String line = it.nextLine();
-//                sb.append(line);
-//                if (line.trim().equals("MMMMM")) {
-//                    setRecipe(formatMM(sb.substring(0)));
-//                    sb = new StringBuilder();
-//                } else {
-//                    sb.append(EoL);
-//                }
-//            }
+//            String mm = FileUtils.readFileToString(f, StandardCharsets.ISO_8859_1);
+            it = FileUtils.lineIterator(f, FilesUtils.ENCODING);
             cookml = new Cookml();
             cookml.setName(f.getName());
             cookml.setProg("MealMaster");
             cookml.setProgver("0.91");
-
-            for (String rez : mm.split("MMMMM----- ")) {
-                if (rez.trim().endsWith("MMMMM")) {
-                    setRecipe(formatMM(rez));
+            StringBuilder sb = new StringBuilder();
+            while (it.hasNext()) {
+                String line = it.nextLine();
+                sb.append(line);
+                if (line.trim().equals("MMMMM")) {
+                    setRecipe(formatMM(sb.substring(0)));
+                    sb = new StringBuilder();
+                } else {
+                    sb.append(EoL);
                 }
             }
+//            cookml = new Cookml();
+//            cookml.setName(f.getName());
+//            cookml.setProg("MealMaster");
+//            cookml.setProgver("0.91");
+//
+//            for (String rez : mm.split("MMMMM----- ")) {
+//                if (rez.trim().endsWith("MMMMM")) {
+//                    setRecipe(formatMM(rez));
+//                }
+//            }
         } catch (Exception ex) {
             Logger.getLogger(MmToCml.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConvertErrorException("Fehler beim Lesen mm", ex.getClass().getName());
-        } 
-//        finally {
-//            LineIterator.closeQuietly(it);
-//        }
+        } finally {
+            LineIterator.closeQuietly(it);
+        }
     }
 
     private void setRecipe(String mm_rez) {
@@ -85,43 +84,22 @@ public class MmToCml {
         prepakt.setText("");
         Remark remakt = new Remark();
 
-//        while (scanner.hasNextLine()) {
-//            String li = scanner.nextLine();
-//            if (li.startsWith("MMMMM-----")) {
-//                break;
-//            }
-//        }
+        while (scanner.hasNextLine()) {
+            String li = scanner.nextLine();
+            if (li.startsWith("MMMMM-----")) {
+                break;
+            }
+        }
         scanner.nextLine();
 
         headakt.setTitle(setHeadAndQty(getNextLine().trim()).trim());
 
-        System.out.println(headakt.getTitle());
         headakt.getCat().addAll(Arrays.asList(setCat(getNextLine().trim())));
 
         String serving = setHeadAndQty(getNextLine().trim());
-        String yield[] = FormatHelper.reformatLine(serving).split(" ");
-        switch (yield.length) {
-            case 2:
-                headakt.setServingqty(yield[0]);
-                headakt.setServingtype(yield[1]);
-                break;
-            case 1:
-                try {
-                    int n = Integer.parseInt(yield[0]);
-                    headakt.setServingqty(yield[0]);
-                    if (n > 1) {
-                        headakt.setServingtype("Portionen");
-                    } else {
-                        headakt.setServingtype("Portion");
-                    }
-                } catch (Exception e) {
-                    headakt.setServingtype(serving);
-                }
-                break;
-            default:
-                headakt.setServingtype(serving);
-                break;
-        }
+        String yield[] = FormatHelper.setServing(FormatHelper.reformatLine(serving));
+        headakt.setServingqty(yield[0]);
+        headakt.setServingtype(yield[1]);
 
         String line;
         do {
@@ -136,7 +114,6 @@ public class MmToCml {
                     } else {
                         setPart(line);
                     }
-                    break;
                 }
             } else if (line.startsWith(" ", 0)) {
                 setPart(line);
@@ -145,7 +122,7 @@ public class MmToCml {
             }
         } while (!nextLine.trim().equals("MMMMM"));
 
-        while (!line.trim().equals("MMMMM") && scanner.hasNextLine()) {
+        while (!line.trim().equals("MMMMM")) {
             if ((line.startsWith(":", 0) || line.startsWith("*", 0)) && line.length() > 1) {
                 String[] tmp = line.split(":");
                 String lineCut = tmp[tmp.length - 1];
@@ -242,7 +219,7 @@ public class MmToCml {
             int length = line.length() - 1;
             line = line.substring(0, length);
         }
-        
+
 //         while (!Character.isLetter(line.charAt(0))) {
 //            line = line.substring(1);
 //        }
@@ -266,47 +243,24 @@ public class MmToCml {
     }
 
     private boolean setTime(String line, int type) {
-        String[] tmp = line.split(" ");
-        String time = "";
-        BigInteger min = null;
-        if (tmp.length == 3) {
-            for (String t : tmp) {
-                if (!t.contains("ca.")) {
-                    time += t + " ";
-                }
+        BigInteger bi;
+        if ((bi = FormatHelper.setCookTime(line)) != null) {
+            switch (type) {
+                case 0:
+                    headakt.setTimeprepqty(bi);
+                    break;
+                case 1:
+                    headakt.setTimecookqty(bi);
+                    break;
+                case 2:
+                    headakt.setTimeallqty(bi);
+                    break;
+                default:
+                    return false;
             }
+            return true;
         }
-        if (time.trim().split(" ").length == 2) {
-            int isDigit = 0;
-            for (String t : time.trim().split(" ")) {
-                int index = 0;
-                for (int i = 0; i < t.length(); i++) {
-                    if (Character.isDigit(t.charAt(i))) {
-                        index++;
-                    }
-                }
-                if (index == t.length()) {
-                    isDigit++;
-                    min = BigInteger.valueOf(Long.parseLong(t));
-                }
-            }
-            if (isDigit == 1) {
-                switch (type) {
-                    case 0:
-                        headakt.setTimeprepqty(min);
-                        break;
-                    case 1:
-                        headakt.setTimecookqty(min);
-                        break;
-                    case 2:
-                        headakt.setTimeallqty(min);
-                        break;
-                    default:
-                        return false;
-                }
-                return true;
-            }
-        }
+
         return false;
     }
 

@@ -275,7 +275,8 @@ public class BsToCml {
         String line = null;
         String rectext = "";
         while (scanner.hasNextLine() && !(line = scanner.nextLine()).startsWith("#", 0)) {
-            if (line.length() > 2 && line.startsWith("  ")) {
+            if ((line.length() > 2 && line.startsWith("  "))
+                    || (line.trim().equals("") && scanner.hasNextLine() && !(line = scanner.nextLine()).startsWith("#", 0))) {
                 if (!rectext.equals("")) {
                     Step step = new Step();
                     step.setText(rectext);
@@ -285,6 +286,11 @@ public class BsToCml {
             } else {
                 rectext += line.trim();
             }
+        }
+        if (!rectext.equals("")) {
+            Step step = new Step();
+            step.setText(rectext);
+            prepakt.getStep().add(step);
         }
 
 //        while (scanner.hasNextLine() && !(line = scanner.nextLine()).startsWith("#", 0)) {

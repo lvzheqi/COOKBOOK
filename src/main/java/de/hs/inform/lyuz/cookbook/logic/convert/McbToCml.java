@@ -105,29 +105,9 @@ public class McbToCml {
         }
 
         if (recipe.getQuantity() != null) {
-            String[] tmp = FormatHelper.reformatLine(recipe.getQuantity()).split(" ");
-            switch (tmp.length) {
-                case 2:
-                    headakt.setServingqty(tmp[0]);
-                    headakt.setServingtype(tmp[1]);
-                    break;
-                case 1:
-                    try {
-                        int n = Integer.parseInt(tmp[0]);
-                        headakt.setServingqty(tmp[0]);
-                        if (n > 1) {
-                            headakt.setServingtype("Portionen");
-                        } else {
-                            headakt.setServingtype("Portion");
-                        }
-                    } catch (Exception e) {
-                        headakt.setServingtype(recipe.getQuantity().trim());
-                    }
-                    break;
-                default:
-                    headakt.setServingtype(recipe.getQuantity().trim());
-                    break;
-            }
+            String[] tmp = FormatHelper.setServing(FormatHelper.reformatLine(recipe.getQuantity()));
+            headakt.setServingqty(tmp[0]);
+            headakt.setServingtype(tmp[1]);
         }
 
         BigInteger time = FormatHelper.setCookTime(recipe.getPreptime());
@@ -152,7 +132,7 @@ public class McbToCml {
             prepakt.setText(prepakt.getText() + "\n" + "Arbeitzeit: " + recipe.getTotaltime());
 
         }
-        if(prepakt.getText().equals("")){
+        if (prepakt.getText().equals("")) {
             prepakt.setText(null);
         }
         recakt.getPreparation().add(prepakt);

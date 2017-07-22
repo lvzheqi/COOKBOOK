@@ -25,12 +25,13 @@
             </head>
 
             <body>
-                <h1>
-                    <xsl:value-of select="pn:getCategory()"/>
-                </h1>
-                <xsl:value-of select="pn:setRecipeNum(1)" />
-
-                <xsl:apply-templates select="recipe"/>
+                <div class="recipe">
+                    <h1>
+                        <xsl:value-of select="pn:getCategory()"/>
+                    </h1>
+                    <xsl:value-of select="pn:setRecipeNum(1)" />
+                    <xsl:apply-templates select="recipe"/>
+                </div>
             </body>
             
         </html>
@@ -52,29 +53,36 @@
             <table class="table">
                 <xsl:apply-templates select="part"/>
             </table>
-            <xsl:apply-templates select="preparation"/>
-            <br />
         </div>
+        
+        <xsl:apply-templates select="preparation"/>
+        
         <div>
             <xsl:if test="pn:isHasRemark()=1">
             
                 <xsl:if test="pn:isHasTime()=1">
                     <xsl:if test="head/@timeprepqty or head/@timecookqty or head/@timeallqty">
-                        <b>
-                            <xsl:text>Zeit: </xsl:text>
-                        </b>
-                        <xsl:value-of select="pn:getTime(head/@timecookqty,head/@timeprepqty,head/@timeallqty)"/> 
-                        <br/>
+                        <div>
+                            <span class="box">
+                                <b>
+                                    <xsl:text>Zeit: </xsl:text>
+                                </b>
+                                <xsl:value-of select="pn:getTime(head/@timecookqty,head/@timeprepqty,head/@timeallqty)"/> 
+                            </span>
+                        </div>
                     </xsl:if>
                 </xsl:if>
             
                 <xsl:if test="head/content">
-                    <b>
-                        <xsl:text>Gesamt:  </xsl:text>
-                    </b>
-                    <xsl:apply-templates select="head/content"/>
-                    <xsl:value-of select="pn:getContent()"/>
-                    <br/>
+                    <div>
+                        <span class="box">
+                            <b>
+                                <xsl:text>Gesamt:  </xsl:text>
+                            </b>
+                            <xsl:apply-templates select="head/content"/>
+                            <xsl:value-of select="pn:getContent()"/>
+                        </span>
+                    </div>
                 </xsl:if>
                 <xsl:if test="remark and remark!='' "> 
                     <xsl:apply-templates select="remark"/>
@@ -130,10 +138,14 @@
                     <xsl:variable name="quality" select="@quality" />
                     <xsl:for-each select="(//*)[position()&lt;=$count]" >
                         <xsl:if test="$quality &gt;= position()">
-                            <img src="icons/star.png" width="20px" height="20px"/>
+                            <div class="icon">
+                                <img src="icons/star.png" width="20px" height="20px"/>
+                            </div>
                         </xsl:if>
                         <xsl:if test="$quality &lt; position()">
-                            <img src="icons/star_board.png"  width="20px" height="20px"/>
+                            <div class="icon">
+                                <img src="icons/star_board.png"  width="20px" height="20px"/>
+                            </div>
                         </xsl:if>
                     </xsl:for-each>
                 </xsl:if>
@@ -148,32 +160,34 @@
 
     <xsl:template match="preparation">
         <!--<xsl:value-of select="."/>-->
-        <xsl:apply-templates select="step"/>
-        <br />
-        <xsl:apply-templates select="text"/>
-        <br/>
+        <div class="preparation">
+            <xsl:apply-templates select="step"/>
+            <xsl:apply-templates select="text"/>
+            <br/>
+        </div>
     </xsl:template>
     
     <xsl:template match="step">
-        <xsl:value-of select="text"/>
-        <br/>
+        <div class="step">
+            <xsl:value-of select="text"/>
+        </div>
     </xsl:template>
     
     <xsl:template match="text">
-        <pre class="preparation">
+        <pre class="text">
             <xsl:value-of select="."/>
         </pre>
-        
-        <!--<xsl:value-of select="pn:getText(.)"/>-->
-        <br/>
     </xsl:template>
     
-    <xsl:template match="remark">
-        <b>
-            <xsl:text>Bemerkung:  </xsl:text>
-        </b>
-        <xsl:value-of select="."/>
-        <br/>
+    <xsl:template match="remark">        
+        <div>
+            <span lass="box">
+                <b>
+                    <xsl:text>Bemerkung:  </xsl:text>
+                </b>
+                <xsl:value-of select="."/>
+            </span>
+        </div>
     </xsl:template>
 
     <xsl:template match="head/content">
@@ -181,11 +195,14 @@
     </xsl:template>
 
     <xsl:template match="head/sourceline">
-        <b>
-            <xsl:text>Quelle:  </xsl:text>
-        </b>
-        <xsl:value-of select="."/>
-        <br/>
+        <div>
+            <span class="box">
+                <b>
+                    <xsl:text>Quelle:  </xsl:text>
+                </b>
+                <xsl:value-of select="."/>
+            </span>
+        </div>
     </xsl:template>
 
     <xsl:template match="ingredient">
@@ -200,15 +217,15 @@
             </td>
             <td class="td">
                 <xsl:value-of select="@item"/>
-                <xsl:value-of select="@title"/>
             </td>
         </tr>
 
         <xsl:if test="inote">
             <tr class="tr">
                 <td colspan="3">
-                    <xsl:text>note:  </xsl:text>
-                    <xsl:apply-templates select="inote"/>
+                    <span class="inote">
+                        <xsl:apply-templates select="inote"/>
+                    </span>
                 </td>
             </tr>
         </xsl:if>
@@ -219,11 +236,13 @@
     </xsl:template>
 
     <xsl:template match="picture">
-        <img width="50%" >
-            <xsl:attribute name="src">
-                <xsl:value-of select="@file"/>
-            </xsl:attribute>
-        </img>
+        <div class="image">
+            <img width="50%" >
+                <xsl:attribute name="src">
+                    <xsl:value-of select="@file"/>
+                </xsl:attribute>
+            </img>
+        </div>
     </xsl:template>
     
    
