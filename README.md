@@ -6,6 +6,6 @@
 only for .cml, .mcb, .mm and .bs format
 
 # export
-epub2, epub3, .cml and .tex
+epub2, epub3, .cml and .tex 
 
 
