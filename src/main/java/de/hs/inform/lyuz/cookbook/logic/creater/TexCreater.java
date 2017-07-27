@@ -10,6 +10,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 public class TexCreater {
 
@@ -17,14 +18,12 @@ public class TexCreater {
 
     private String tex;
     private String filepath;
-    private String errorMessage="";
+    private String errorMessage = "";
 
     public String getErrorMessage() {
         return errorMessage;
     }
 
-    
-    
     public TexCreater(MyBook myBook) throws SystemErrorException {
 
         this.exportInfo = myBook.getExportInfo();
@@ -36,17 +35,29 @@ public class TexCreater {
         errorMessage += cmlToLatex.getErrorMessage();
     }
 
-    public void write() throws ConvertErrorException {
-
-        String rahmen = "\\input{kochbuchkopf.tex}\n\\input{" + exportInfo.getBookname() + "_input.tex}\n\\input{kochbuchfuss.tex}";
+    public void write() throws ConvertErrorException, SystemErrorException {
 
         try {
-            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + "_input.tex"), tex, "UTF-8");
-            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + ".tex"), rahmen, "UTF-8");
+            String head = IOUtils.toString(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHKOPF_LEX), "UTF-8");
+            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + ".tex"), head, "UTF-8");
+        } catch (Exception ex) {
+            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SystemErrorException("Fehler beim Lesen Config.sys Information", ex.getClass().getName());
+        }
 
+        try {
+            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + ".tex"), tex, "UTF-8", true);
         } catch (Exception ex) {
             Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConvertErrorException("Fehler beim Export Latex", ex.getClass().getName());
+        }
+        
+        try {
+            String head = IOUtils.toString(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHFUSS_LEX), "UTF-8");
+            FileUtils.writeStringToFile(new File(filepath + exportInfo.getBookname() + ".tex"), head, "UTF-8",true);
+        } catch (Exception ex) {
+            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SystemErrorException("Fehler beim Lesen Config.sys Information", ex.getClass().getName());
         }
     }
 
@@ -73,13 +84,7 @@ public class TexCreater {
     }
 
     private void copyRessource(String path) throws SystemErrorException {
-        try {
-            FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHKOPF_LEX), new File(path + "kochbuchkopf.tex"));
-            FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.KOCHBUCHFUSS_LEX), new File(path + "kochbuchfuss.tex"));
-        } catch (Exception ex) {
-            Logger.getLogger(TexCreater.class.getName()).log(Level.SEVERE, null, ex);
-            throw new SystemErrorException("Fehler beim Lesen Config.sys Information", ex.getClass().getName());
-        }
+
         try {
             FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_PNG), new File(path + "images" + File.separator + "star.png"));
             FileUtils.copyToFile(TexCreater.class.getClassLoader().getResourceAsStream(FilesUtils.STAR_BOARD_PNG), new File(path + "images" + File.separator + "star_board.png"));

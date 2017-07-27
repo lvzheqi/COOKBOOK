@@ -43,7 +43,11 @@ public class ExportPanel extends MyPanel {
 
     private boolean exportFile() {
         ExportInfo exportInfo = myBook.getExportInfo();
-        exportInfo.updateExportInfo(bookNameTF.getText(), pathTF.getText() + File.separator, type);
+        String p = pathTF.getText();
+        if(p.charAt(p.length()-1)!=File.separatorChar){
+            p = pathTF.getText() + File.separator;
+        }
+        exportInfo.updateExportInfo(bookNameTF.getText(), p, type);
         myBook.setExportInfo(exportInfo);
 
         try {
@@ -69,7 +73,7 @@ public class ExportPanel extends MyPanel {
             ConfUtils.writeLog(mybook, null);
         } catch (ConvertErrorException | SystemErrorException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
-            
+
             mybook.setErrorMessage(mybook.getErrorMessage() + exportManager.getErrorMessage());
             ConfUtils.writeLog(mybook, ex);
             return false;
@@ -105,6 +109,7 @@ public class ExportPanel extends MyPanel {
         pathLabel = new javax.swing.JLabel();
         pathTF = new javax.swing.JTextField();
         bookPathBtn = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setPreferredSize(new java.awt.Dimension(560, 370));
 
@@ -138,7 +143,7 @@ public class ExportPanel extends MyPanel {
             }
         });
 
-        setBtn.setText("...");
+        setBtn.setText("Einstellung");
         setBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 setBtnActionPerformed(evt);
@@ -152,21 +157,26 @@ public class ExportPanel extends MyPanel {
             .addGroup(exportRadioPanelLayout.createSequentialGroup()
                 .addGap(53, 53, 53)
                 .addGroup(exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(epub2RBtn)
-                    .addComponent(epub3RBtn)
-                    .addComponent(texRBtn)
-                    .addComponent(cmlRBtn))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 297, Short.MAX_VALUE)
-                .addComponent(setBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(20, 20, 20))
+                    .addGroup(exportRadioPanelLayout.createSequentialGroup()
+                        .addComponent(epub2RBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 219, Short.MAX_VALUE)
+                        .addComponent(setBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(35, 35, 35))
+                    .addGroup(exportRadioPanelLayout.createSequentialGroup()
+                        .addGroup(exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(texRBtn)
+                            .addComponent(cmlRBtn)
+                            .addComponent(epub3RBtn))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         exportRadioPanelLayout.setVerticalGroup(
             exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(exportRadioPanelLayout.createSequentialGroup()
-                .addContainerGap(7, Short.MAX_VALUE)
-                .addGroup(exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(epub2RBtn)
-                    .addComponent(setBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(exportRadioPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(exportRadioPanelLayout.createSequentialGroup()
+                        .addContainerGap(11, Short.MAX_VALUE)
+                        .addComponent(epub2RBtn))
+                    .addComponent(setBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(epub3RBtn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -198,12 +208,17 @@ public class ExportPanel extends MyPanel {
         });
 
         bookNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        bookNameLabel.setText("Datei Name");
+        bookNameLabel.setText("Dateiname");
 
         bookNameTF.setText("CookBook");
+        bookNameTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bookNameTFActionPerformed(evt);
+            }
+        });
 
         pathLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        pathLabel.setText("Speichern als");
+        pathLabel.setText("Verzeichnis");
 
         bookPathBtn.setText("...");
         bookPathBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -212,38 +227,42 @@ public class ExportPanel extends MyPanel {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jLabel1.setText("ohne Endung");
+
         javax.swing.GroupLayout exportPanelLayout = new javax.swing.GroupLayout(exportPanel);
         exportPanel.setLayout(exportPanelLayout);
         exportPanelLayout.setHorizontalGroup(
             exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(exportPanelLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(16, 16, 16)
                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addComponent(backBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(exportBtn)
-                        .addGap(123, 123, 123))
-                    .addGroup(exportPanelLayout.createSequentialGroup()
-                        .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(exportPanelLayout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(exportPanelLayout.createSequentialGroup()
+                        .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, exportPanelLayout.createSequentialGroup()
+                                    .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                         .addComponent(pathLabel)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(exportPanelLayout.createSequentialGroup()
-                                        .addComponent(bookNameLabel)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(bookNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(113, Short.MAX_VALUE))))
+                                        .addComponent(bookNameLabel))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(exportPanelLayout.createSequentialGroup()
+                                            .addComponent(bookNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel1))
+                                        .addGroup(exportPanelLayout.createSequentialGroup()
+                                            .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, 334, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addGroup(exportPanelLayout.createSequentialGroup()
+                                .addComponent(backBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(exportBtn)))
+                        .addContainerGap(20, Short.MAX_VALUE))))
         );
 
         exportPanelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, exportBtn});
@@ -254,21 +273,22 @@ public class ExportPanel extends MyPanel {
                 .addContainerGap()
                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bookNameTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
                     .addComponent(bookNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(9, 9, 9)
                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(pathLabel)
                     .addComponent(pathTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pathLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(bookPathBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(exportRadioPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(26, 26, 26)
                 .addComponent(exportTippSP, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(exportPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(exportBtn)
-                    .addComponent(backBtn))
-                .addGap(14, 14, 14))
+                    .addComponent(backBtn)
+                    .addComponent(exportBtn))
+                .addGap(24, 24, 24))
         );
 
         exportPanelLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backBtn, exportBtn});
@@ -279,17 +299,17 @@ public class ExportPanel extends MyPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(exportPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(14, 14, 14))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(exportPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -318,6 +338,10 @@ public class ExportPanel extends MyPanel {
         }
 
         File f = new File(path);
+        if (!f.exists() && f.getParentFile().exists()) {
+            f.mkdir();
+        }
+        
         if (!f.exists()) {
             JOptionPane.showMessageDialog(null, "Bitte geben Sie einen gültigen Pfad ein", "Warnung", JOptionPane.WARNING_MESSAGE);
         } else if (type.equals("")) {
@@ -374,6 +398,10 @@ public class ExportPanel extends MyPanel {
         }
     }//GEN-LAST:event_bookPathBtnActionPerformed
 
+    private void bookNameTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bookNameTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bookNameTFActionPerformed
+
     public String getType() {
         return type;
     }
@@ -392,6 +420,7 @@ public class ExportPanel extends MyPanel {
     private javax.swing.JPanel exportRadioPanel;
     private javax.swing.JScrollPane exportTippSP;
     private javax.swing.JTextArea exportTippTA;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel pathLabel;
     private javax.swing.JTextField pathTF;
     private javax.swing.ButtonGroup radioBtnG;

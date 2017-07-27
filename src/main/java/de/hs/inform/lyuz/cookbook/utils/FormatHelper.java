@@ -311,7 +311,7 @@ public class FormatHelper {
     }
 
     public static String outputCategories(String cat) {
-        String output = cat;
+        String output = cat.toUpperCase();
         if (cat.equals("SALAT")) {
             output = "Salate";
         } else if (cat.equals("SUPPE")) {
@@ -324,7 +324,7 @@ public class FormatHelper {
             output = "Fleischgerichte";
         } else if (cat.equals("GEFLÜGEL")) {
             output = "Geflügelgerichte";
-        } else if (cat.equals("Gemüse")) {
+        } else if (cat.equals("GEMÜSE")) {
             output = "Kartoffel- und Gemüsegerichte";
         } else if (cat.equals("VEGETARISCH")) {
             output = "Vegetarisches";
@@ -338,6 +338,13 @@ public class FormatHelper {
             output = "Getränke";
         } else if (cat.startsWith("PASTA")) {
             output = "Pasteten und Terrinen";
+        } else if (cat.startsWith("BEILAGE")) {
+            output = "Beilage";
+        } else {
+            if (cat.length() > 1) {
+                String lowString = cat.substring(1).toLowerCase();
+                output = cat.charAt(0) + lowString;
+            }
         }
         return output;
     }
@@ -355,7 +362,7 @@ public class FormatHelper {
     }
 
     public static BigInteger setCookTime(String line) {
-        if (line != null) {
+        if (line != null && !line.trim().equals("")) {
             int time = 0;
             String time1 = "";
             String time2 = "";
@@ -377,7 +384,7 @@ public class FormatHelper {
                     i++;
                     c = line.trim().charAt(i);
                 }
-                if (c == 'h' || c == 'H') {
+                if (c == 'h' || c == 'H' || c == 's' || c == 'S') {
                     time = Integer.parseInt(time1) * 60;
                     hour = true;
                 } else if (c == 'm' || c == 'M') {
@@ -408,10 +415,8 @@ public class FormatHelper {
 
             if (time == 0 && !time1.equals("")) {
                 time = Integer.parseInt(time1);
-                System.out.println(time);
                 return new BigInteger(time + "");
             } else if (time != 0) {
-                System.out.println(time);
                 return new BigInteger(time + "");
             }
         }
@@ -432,20 +437,22 @@ public class FormatHelper {
 
             }
         }
-        char c = line.trim().charAt(0);
         String qty = "";
-        int i = 0;
-        while (!Character.isDigit(c) && i < line.trim().length() - 1) {
-            i++;
-            c = line.trim().charAt(i);
-        }
-        while (Character.isDigit(c) && i < line.trim().length() - 1) {
-            qty += c;
-            i++;
-            c = line.trim().charAt(i);
-        }
+        if (!line.trim().equals("")) {
+            char c = line.trim().charAt(0);
 
-        int qty_int =1;
+            int i = 0;
+            while (!Character.isDigit(c) && i < line.trim().length() - 1) {
+                i++;
+                c = line.trim().charAt(i);
+            }
+            while (Character.isDigit(c) && i < line.trim().length() - 1) {
+                qty += c;
+                i++;
+                c = line.trim().charAt(i);
+            }
+        }
+        int qty_int = 1;
         try {
             qty_int = Integer.parseInt(qty);
         } catch (Exception e) {
@@ -456,10 +463,10 @@ public class FormatHelper {
         } else {
             serving[1] = "Portion";
         }
-        serving[0] = qty_int+"";
+        serving[0] = qty_int + "";
         return serving;
     }
-    
+
     //    public static BigInteger setCookTime(String line) {
     //
     //        if (line != null) {
@@ -488,7 +495,6 @@ public class FormatHelper {
     //        }
     //        return null;
     //    }
-
     public static Ingredient formatIngredient(String line) {
         String[] words = reformatLine(line).split(" ");
 //        String[] words = new String[]{};
@@ -622,5 +628,24 @@ public class FormatHelper {
             }
         }
         return output;
+    }
+
+    public static String reformatTime(String t) {
+        String time;
+        int timeH;
+        try {
+            timeH = Integer.parseInt(t);
+        } catch (Exception e) {
+            return t;
+        }
+        if (timeH > 60) {
+            time = timeH / 60 + " h ";
+            if (timeH % 60 != 0) {
+                time += timeH % 60 + " min";
+            }
+        } else {
+            time = t + " min";
+        }
+        return time;
     }
 }

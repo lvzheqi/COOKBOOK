@@ -16,80 +16,90 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="backBtn" linkSize="7" min="-2" pref="77" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="toExpBtn" linkSize="7" min="-2" pref="87" max="-2" attributes="0"/>
-                  </Group>
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="catTempLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                      <Component id="catExtraLabel" min="-2" pref="127" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="catTemplateSP" min="-2" pref="168" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="catTemplateSP" alignment="0" min="-2" pref="168" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                              <Component id="backBtn" linkSize="7" min="-2" pref="77" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="leftBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="upBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="downBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="deleteBtn" linkSize="2" alignment="0" max="32767" attributes="0"/>
-                          <Component id="renameBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="allocateBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="saveCatBtn" linkSize="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="rightBtn" linkSize="8" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="upBtn" linkSize="8" min="-2" max="-2" attributes="0"/>
+                          <Component id="downBtn" linkSize="8" min="-2" max="-2" attributes="0"/>
+                          <Component id="deleteBtn" linkSize="8" alignment="0" min="-2" pref="125" max="-2" attributes="0"/>
+                          <Component id="renameBtn" linkSize="8" min="-2" max="-2" attributes="0"/>
+                          <Component id="allocateBtn" linkSize="8" min="-2" max="-2" attributes="0"/>
+                          <Component id="saveCatBtn" linkSize="8" min="-2" max="-2" attributes="0"/>
+                          <Component id="leftBtn" linkSize="8" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="17" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="catTempLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="catExtraLabel" min="-2" pref="127" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="catExtraSP" min="-2" pref="162" max="-2" attributes="0"/>
+                      <Component id="toExpBtn" linkSize="7" min="-2" pref="87" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+              <EmptySpace pref="29" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="catTempLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="leftBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="upBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="downBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="deleteBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="renameBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="allocateBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="saveCatBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="catTempLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="catExtraLabel" alignment="3" min="-2" pref="17" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                              <Component id="catTemplateSP" min="-2" pref="260" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="catTemplateSP" pref="260" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="leftBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
+                                  <Component id="catExtraSP" min="-2" pref="260" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="backBtn" linkSize="6" min="-2" max="-2" attributes="0"/>
+                          <Component id="toExpBtn" linkSize="6" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="catExtraLabel" min="-2" pref="17" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                      <Component id="rightBtn" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="catExtraSP" min="-2" pref="260" max="-2" attributes="0"/>
+                      <Component id="upBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="downBtn" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="deleteBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="renameBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="allocateBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="saveCatBtn" linkSize="4" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="toExpBtn" linkSize="6" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="backBtn" linkSize="6" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="17" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -231,6 +241,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveCatBtnActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="rightBtn">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="nach rechts"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rightBtnActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

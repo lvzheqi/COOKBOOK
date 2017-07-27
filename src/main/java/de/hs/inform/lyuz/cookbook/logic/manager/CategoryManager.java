@@ -79,9 +79,13 @@ public class CategoryManager {
     }
 
     public void leftCategory(MyBook myBook, String catakt) {
-
         myBook.getCatTemplate().add(catakt);
         myBook.getCatExtra().remove(catakt);
+    }
+    
+    public void rightCategory(MyBook myBook, String catakt) {
+        myBook.getCatExtra().add(catakt);
+        myBook.getCatTemplate().remove(catakt);
     }
 
     public void upDownCategory(MyBook myBook, DefaultListModel catTempListModel) {

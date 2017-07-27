@@ -50,8 +50,12 @@ public class CmlToTex {
                 vorspann += "\\includepdf[fitpaper]{cover.pdf}\n\n";
             }
         }
-        tex = vorspann + "\\author{" + exportInfo.getFirstName() + " " + exportInfo.getLastName() + "}\n\\title{" + exportInfo.getBookname()
-                + "}\n\\maketitle\n" + tex;
+        String content = vorspann + "\\author{" + exportInfo.getFirstName() + " " + exportInfo.getLastName() + "}\n\\title{" + exportInfo.getBookname()
+                + "}\n\\maketitle\n";
+        if (exportInfo.isHasCat()) {
+            content += "\\tableofcontents\\pagebreak \n \n";
+        }
+        tex = content + tex;
         return tex;
     }
 
@@ -85,9 +89,6 @@ public class CmlToTex {
     // Sectionueberschriften sind die Kategorien
     private String cat2Tex(String cat) {
         String cattex = "";
-        if (exportInfo.isHasCat()) {
-            cattex += "\\tableofcontents\\pagebreak \n \n";
-        }
         cattex += "%----------------------------------------------------\n";
         cattex += "\\nopagebreak{ \n";
         cattex += "\\" + "section{" + FormatHelper.outputCategories(cat) + "} \n\n";
@@ -172,7 +173,7 @@ public class CmlToTex {
 
         BigInteger time = head.getTimeallqty();
         if (time != null) {
-            timetex += "Gesamtzeit " + time.toString() + " min";
+            timetex += "Gesamtzeit " + FormatHelper.reformatTime(time.toString());
         }
 
         time = head.getTimecookqty();
@@ -180,7 +181,7 @@ public class CmlToTex {
             if (!timetex.equals("")) {
                 timetex += ", ";
             }
-            timetex += "Kochzeit " + time.toString() + " min";
+            timetex += "Kochzeit " + FormatHelper.reformatTime(time.toString());
         }
 
         time = head.getTimeprepqty();
@@ -188,7 +189,7 @@ public class CmlToTex {
             if (!timetex.equals("")) {
                 timetex += ", ";
             }
-            timetex += "Vorbereitungszeit: " + time.toString() + " min";
+            timetex += "Vorbereitungszeit: " + FormatHelper.reformatTime(time.toString());
         }
 
         if (!timetex.equals("")) {

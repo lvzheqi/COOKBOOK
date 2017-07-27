@@ -242,8 +242,6 @@ public class ImportPanel extends MyPanel {
                 path += " "+split[i];
             }
             for (File f : files) {
-                System.out.println(f.getPath());
-                System.out.println(dlString);
                 if (f.getPath().equals(path) && f.getName().equals(name)) {
                     files.remove(f);
                     
@@ -256,6 +254,7 @@ public class ImportPanel extends MyPanel {
 
     private void codeCBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_codeCBActionPerformed
         String s = (String) codeCB.getSelectedItem();
+        action = true;
         switch(s){
             case "UTF-8":
                 FilesUtils.ENCODING = "UTF-8";

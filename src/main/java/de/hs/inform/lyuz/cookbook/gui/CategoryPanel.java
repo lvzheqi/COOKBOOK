@@ -127,6 +127,7 @@ public class CategoryPanel extends MyPanel {
         allocateBtn = new javax.swing.JButton();
         backBtn = new javax.swing.JButton();
         saveCatBtn = new javax.swing.JButton();
+        rightBtn = new javax.swing.JButton();
 
         catTempList.setToolTipText("die kategorien zum Export zeigen");
         catTempList.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -215,79 +216,91 @@ public class CategoryPanel extends MyPanel {
             }
         });
 
+        rightBtn.setText("nach rechts");
+        rightBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rightBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(toExpBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(catTempLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(catExtraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(catTemplateSP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(catTemplateSP, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(backBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(leftBtn)
+                            .addComponent(rightBtn)
                             .addComponent(upBtn)
                             .addComponent(downBtn)
-                            .addComponent(deleteBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(deleteBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(renameBtn)
                             .addComponent(allocateBtn)
-                            .addComponent(saveCatBtn))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                        .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(40, 40, 40))
+                            .addComponent(saveCatBtn)
+                            .addComponent(leftBtn)))
+                    .addComponent(catTempLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(catExtraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(toExpBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, saveCatBtn, upBtn});
-
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {backBtn, toExpBtn});
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, rightBtn, saveCatBtn, upBtn});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(catTempLabel)
-                        .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(leftBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(upBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(downBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deleteBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(renameBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(allocateBtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(saveCatBtn))
-                            .addComponent(catTemplateSP, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(catTempLabel)
+                                    .addComponent(catExtraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(6, 6, 6)
+                                .addComponent(catTemplateSP, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(leftBtn)
+                                    .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(backBtn)
+                            .addComponent(toExpBtn)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(catExtraLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(65, 65, 65)
+                        .addComponent(rightBtn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(catExtraSP, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(toExpBtn)
-                    .addComponent(backBtn))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(upBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(downBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(deleteBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(renameBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(allocateBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(saveCatBtn)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {allocateBtn, deleteBtn, downBtn, leftBtn, renameBtn, saveCatBtn, upBtn});
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {allocateBtn, deleteBtn, leftBtn, renameBtn, saveCatBtn});
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {backBtn, toExpBtn});
 
@@ -448,6 +461,23 @@ public class CategoryPanel extends MyPanel {
         }
     }//GEN-LAST:event_catTempListMouseClicked
 
+    private void rightBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightBtnActionPerformed
+        if (!catTempList.isSelectionEmpty()) {
+            int n = JOptionPane.showConfirmDialog(null, "Wollen Sie die Kategorie " + catTempListModel.get(catTempList.getSelectedIndex())
+                    + " auf der rechten Seite hinzufügen, \n damit wird die Rezepte unter der Kategorie nicht importiert", "Warnung", JOptionPane.YES_NO_OPTION);
+            if (n == 0) {
+                String catItem = (String) catTempListModel.get(catTempList.getSelectedIndex());
+
+                catExtraListModel.addElement(catItem);
+                catTempListModel.remove(catTempList.getSelectedIndex());
+
+                categoryManager.rightCategory(cookConvert.getMyBook(), catItem);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Bitte wählen Sie eine Kategorie aus linken Seite aus", "Warnung", JOptionPane.WARNING_MESSAGE);
+        }
+     }//GEN-LAST:event_rightBtnActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton allocateBtn;
@@ -462,6 +492,7 @@ public class CategoryPanel extends MyPanel {
     private javax.swing.JButton downBtn;
     private javax.swing.JButton leftBtn;
     private javax.swing.JButton renameBtn;
+    private javax.swing.JButton rightBtn;
     private javax.swing.JButton saveCatBtn;
     private javax.swing.JButton toExpBtn;
     private javax.swing.JButton upBtn;

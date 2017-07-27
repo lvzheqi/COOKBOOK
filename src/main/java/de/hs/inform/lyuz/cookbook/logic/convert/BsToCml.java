@@ -20,7 +20,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 
-//TODO: where is the files for image
+
 public class BsToCml {
 
     private Cookml cookml;

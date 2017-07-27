@@ -2,7 +2,6 @@ package de.hs.inform.lyuz.cookbook.utils;
 
 import de.hs.inform.lyuz.cookbook.model.ExportInfo;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +11,7 @@ public class XalanHelper {
     private static int servQty = 1;
     private static HashMap<String, String> content = new HashMap<>();
     public static HashMap<String, String> refTitle = new HashMap<>();
-    private static String category="";
+    private static String category = "";
     private static int recipeNum = 1;
 
     public static int getRecipeNum() {
@@ -22,9 +21,7 @@ public class XalanHelper {
     public static void setRecipeNum(int recipeNum) {
         XalanHelper.recipeNum = recipeNum;
     }
-    
-    
-    
+
     public static String getRefTitle(String title) {
         for (String refKey : refTitle.keySet()) {
             if (refKey.equals(title)) {
@@ -98,24 +95,28 @@ public class XalanHelper {
             System.err.println("Fehler beim Konvert ServQty");
         }
     }
-    
-    public static String getTime(String cook, String pre, String all){
+
+    public static String getTime(String cook, String pre, String all) {
         String text = "";
-        if (cook!=null || pre!=null || all!=null) {
-            if(cook!=null && !cook.trim().equals("")){
-                text += "Arbeitszeit: "+cook.trim()+" min, ";
+        if (cook != null || pre != null || all != null) {
+            if (cook != null && !cook.trim().equals("")) {
+                text += "Arbeitszeit: " + FormatHelper.reformatTime(cook.trim()) + ", ";
             }
-            if(pre!=null  && !pre.trim().equals("")){
-                text += "Vorbereitungszeit: "+pre.trim()+" min, ";
+            if (pre != null && !pre.trim().equals("")) {
+                text += "Vorbereitungszeit: " + FormatHelper.reformatTime(pre.trim()) + ", ";
             }
-            if(all!=null  && !all.trim().equals("")){
-                text += "Gesamtzeit: "+all.trim()+" min, ";
+            if (all != null && !all.trim().equals("")) {
+                text += "Gesamtzeit: " + FormatHelper.reformatTime(all.trim()) + ", ";
             }
-            if (!text.equals("") && text.length()>2) {
-                text = text.substring(0, text.length() - 2)+"\n";
+            if (!text.equals("") && text.length() > 2) {
+                text = text.substring(0, text.length() - 2) + "\n";
             }
         }
         return text;
+    }
+
+    public static String getCategory(String category) {
+        return FormatHelper.outputCategories(category);
     }
 
     public static String getCategory() {
@@ -123,7 +124,7 @@ public class XalanHelper {
     }
 
     public static void setCategory(String category) {
-        XalanHelper.category = category;
+        XalanHelper.category = FormatHelper.outputCategories(category);
     }
 
 }

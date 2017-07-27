@@ -1,13 +1,15 @@
 <?xml version="1.0" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:pn="xalan://de.hs.inform.lyuz.cookbook.utils.XalanHelper"
+                extension-element-prefixes="pn">
     <xsl:output
-            method="xml"
-            version="1.0"
-            encoding="utf-8"
-            indent="yes"
-            omit-xml-declaration="no"
-            media-type="application/xml+xhtml"/>
-            <!--doctype-system="about:legacy-compat"-->
+        method="xml"
+        version="1.0"
+        encoding="utf-8"
+        indent="yes"
+        omit-xml-declaration="no"
+        media-type="application/xml+xhtml"/>
+    <!--doctype-system="about:legacy-compat"-->
 
 
     <xsl:template match="catalog" >
@@ -37,28 +39,28 @@
 
     <xsl:template match="link">
         <li>
-        <a>
-            <xsl:attribute name="href">
-                <xsl:value-of select="@href" />
-            </xsl:attribute>
-            <xsl:value-of select="@value" />
-        </a>
-        <ol>
-            <xsl:apply-templates select="sublink"/>
-        </ol>
+            <a>
+                <xsl:attribute name="href">
+                    <xsl:value-of select="@href" />
+                </xsl:attribute>
+                <xsl:value-of select="pn:getCategory(@value)" />
+            </a>
+            <ol>
+                <xsl:apply-templates select="sublink"/>
+            </ol>
         </li>
     </xsl:template>
 
 
     <xsl:template match="sublink">
-       <li>
-        <a>
-            <xsl:attribute name="href">
-                <xsl:value-of select="@href" />
-            </xsl:attribute>
-            <xsl:value-of select="@value" />
-        </a>
-       </li>
+        <li>
+            <a>
+                <xsl:attribute name="href">
+                    <xsl:value-of select="@href" />
+                </xsl:attribute>
+                <xsl:value-of select="@value" />
+            </a>
+        </li>
     </xsl:template>
 
 

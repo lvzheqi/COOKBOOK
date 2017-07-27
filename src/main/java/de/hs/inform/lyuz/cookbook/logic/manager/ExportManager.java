@@ -9,16 +9,18 @@ import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.SystemErrorException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.epub.EpubWriter;
+import org.apache.commons.io.FileUtils;
 
 public class ExportManager {
 
     private MyBook myBook;
 
-    private String errorMessage="";
+    private String errorMessage = "";
 
     public String getErrorMessage() {
         return errorMessage;
@@ -60,8 +62,15 @@ public class ExportManager {
             Logger.getLogger(ExportManager.class.getName()).log(Level.SEVERE, null, ex);
             throw new ConvertErrorException("Fehler beim Export EPUB2", ex.getClass().getName());
         }
-
         errorMessage += epubCreater.getErrorMessage();
+         try {
+            FileUtils.deleteDirectory(new File(epubCreater.getFilepath()));
+        } catch (IOException ex) {
+            Logger.getLogger(ExportManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Fehler beim Löschen EPUB Hilfeatei ");
+            errorMessage += "Fehler beim Löschen EPUB Hilfeatei: " + epubCreater.getFilepath() + "\n";
+        }
+         
         System.out.println("Fertig!");
     }
 
@@ -72,9 +81,16 @@ public class ExportManager {
         EPUB3Writer epub3Writer = new EPUB3Writer();
         epub3Writer.write(epubCreater.getFilepath(),
                 new File(myBook.getExportInfo().getFilepath() + myBook.getExportInfo().getBookname() + ".epub"));
-
-        
         errorMessage += epubCreater.getErrorMessage();
+
+        try {
+            FileUtils.deleteDirectory(new File(epubCreater.getFilepath()));
+        } catch (IOException ex) {
+            Logger.getLogger(ExportManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Fehler beim Löschen EPUB Hilfeatei ");
+            errorMessage += "Fehler beim Löschen EPUB Hilfeatei: " + epubCreater.getFilepath() + "\n";
+        }
+        
         System.out.println("Fertig!");
     }
 

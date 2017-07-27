@@ -109,4 +109,8 @@ public class MCBParser {
     public Cookbook getMcb() {
         return mcb;
     }
+    
+    public String getFilePath() {
+        return path;
+    }
 }

@@ -1,5 +1,6 @@
 package de.hs.inform.lyuz.cookbook.logic.convert;
 
+import de.hs.inform.lyuz.cookbook.logic.manager.ExportManager;
 import de.hs.inform.lyuz.cookbook.utils.FormatHelper;
 import de.hs.inform.lyuz.cookbook.logic.parser.MCBParser;
 import de.hs.inform.lyuz.cookbook.model.cookml.Cookml;
@@ -19,10 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
-// TODO: when more than a categroy fehler
-/**
- * imageurl, video ignore
- */
+
 public class McbToCml {
 
     private Cookml cookml;
@@ -51,6 +49,14 @@ public class McbToCml {
                 throw new ConvertErrorException("Fehler beim Konvertierung von MCB", ex.getClass().getName());
             }
         }
+        
+         try {
+            FileUtils.deleteDirectory(new File(mcbParser.getFilePath()));
+        } catch (IOException ex) {
+            Logger.getLogger(ExportManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println("Fehler beim Löschen MCB Hilfeatei ");
+            errorMessage += "Fehler beim Löschen MCB Hilfeatei: " + mcbParser.getFilePath()+ "\n";
+        }
     }
 
     private void setRecipe(Cookbook.Recipe recipe) {
@@ -71,7 +77,17 @@ public class McbToCml {
         }
 
         if (recipe.getRating() != null) {
-            headakt.setQuality(Short.parseShort(recipe.getRating()));
+            try {
+                Short ranking = Short.parseShort(recipe.getRating());
+                if (ranking > 0 && ranking < 6) {
+                    headakt.setQuality(ranking);
+                }
+            } catch (Exception e) {
+                Logger.getLogger(McbToCml.class.getName()).log(Level.SEVERE, null, e);
+                System.err.println("Fehler beim Konvertierung der Berwertung --Mcb");
+                errorMessage += "Fehler beim Konvertierung der Berwertung " + recipe.getTitle() + "\n";
+
+            }
         }
 
         // ingredient
