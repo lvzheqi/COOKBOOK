@@ -6,7 +6,7 @@
 
   <recipe lang="DE">
       <part>
-          <ingredient qty="1.0" item="Zwiebel "><inote>dfdasfdfa</inote><inote>dfsf</inote></ingredient>
+          <ingredient qty="1.0" item="Zwiebel" />
           <ingredient qty="150.0" unit="g" item="Risottoreis "/>
           <ingredient qty="1.0" unit="El" item="zerlassene Butter "/>
           <ingredient qty="500.0" unit="ml" item="Gemüsebrühe "/>

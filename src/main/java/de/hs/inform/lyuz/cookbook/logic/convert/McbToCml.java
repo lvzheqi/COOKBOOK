@@ -13,13 +13,15 @@ import de.hs.inform.lyuz.cookbook.model.cookml.Step;
 import de.hs.inform.lyuz.cookbook.model.exception.ConvertErrorException;
 import de.hs.inform.lyuz.cookbook.model.exception.ParserErrorException;
 import de.hs.inform.lyuz.cookbook.model.mycookbook.Cookbook;
+import de.hs.inform.lyuz.cookbook.model.mycookbook.Li;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBElement;
 import org.apache.commons.io.FileUtils;
-
 
 public class McbToCml {
 
@@ -49,13 +51,13 @@ public class McbToCml {
                 throw new ConvertErrorException("Fehler beim Konvertierung von MCB", ex.getClass().getName());
             }
         }
-        
-         try {
+
+        try {
             FileUtils.deleteDirectory(new File(mcbParser.getFilePath()));
         } catch (IOException ex) {
             Logger.getLogger(ExportManager.class.getName()).log(Level.SEVERE, null, ex);
             System.err.println("Fehler beim Löschen MCB Hilfeatei ");
-            errorMessage += "Fehler beim Löschen MCB Hilfeatei: " + mcbParser.getFilePath()+ "\n";
+            errorMessage += "Fehler beim Löschen MCB Hilfeatei: " + mcbParser.getFilePath() + "\n";
         }
     }
 
@@ -92,32 +94,68 @@ public class McbToCml {
 
         // ingredient
         Recipe.Part partakt = new Recipe.Part();
-        recipe.getIngredient().getContent().forEach((l) -> {
-            if (!l.getValue().equals("")) {
-                partakt.getIngredient().add(FormatHelper.formatIngredient(l.getValue().trim()));
+        Iterator iterator = recipe.getIngredient().getContent().iterator();
+        while (iterator.hasNext()) {
+            try {
+                JAXBElement je = (JAXBElement) iterator.next();
+                Li l = (Li) je.getValue();
+                if (!l.getValue().equals("")) {
+                    partakt.getIngredient().add(FormatHelper.formatIngredient(l.getValue().trim()));
+                }
+            } catch (Exception e) {
             }
-        });
+
+        }
+//            if (!l.getValue().equals("")) {
+//                partakt.getIngredient().add(FormatHelper.formatIngredient(l.getValue().trim()));
+//            }
+//        });
         recakt.getPart().add(partakt);
 
         // main content
         Preparation prepakt = new Preparation();
         prepakt.setText("");
         if (recipe.getRecipetext() != null && recipe.getRecipetext().getContent() != null) {
-            recipe.getRecipetext().getContent().forEach((l) -> {
-                if (!l.getValue().equals("")) {
-                    Step step = new Step();
-                    step.setText(l.getValue());
-                    prepakt.getStep().add(step);
+//            recipe.getRecipetext().getContent().forEach((l) -> {
+            iterator = recipe.getRecipetext().getContent().iterator();
+            while (iterator.hasNext()) {
+                Object ob = iterator.next();
+                try {
+                    JAXBElement je = (JAXBElement) ob;
+                    Li l = (Li) je.getValue();
+                    if (!l.getValue().equals("")) {
+                        Step step = new Step();
+                        step.setText(l.getValue());
+                        prepakt.getStep().add(step);
 
+                    }
+                } catch (Exception e) {
+                    try {
+                        String text = (String) ob;
+                        if (!text.equals("")) {
+                            prepakt.setText(prepakt.getText() + " " + text);
+                        }
+                    } catch (Exception ex) {
+                    }
                 }
-            });
+
+            }
+//            });
         }
+
         if (recipe.getDescription() != null && recipe.getDescription().getContent() != null) {
-            recipe.getDescription().getContent().forEach((l) -> {
-                if (!l.getValue().equals("")) {
-                    prepakt.setText(prepakt.getText() + "\n" + l.getValue());
+            iterator = recipe.getDescription().getContent().iterator();
+            while (iterator.hasNext()) {
+                try {
+                    JAXBElement je = (JAXBElement) iterator.next();
+                    Li l = (Li) je.getValue();
+                    if (!l.getValue().equals("")) {
+                        prepakt.setText(prepakt.getText() + "\n" + l.getValue());
+                    }
+                } catch (Exception e) {
                 }
-            });
+
+            }
         }
 
         if (recipe.getQuantity() != null) {
@@ -156,30 +194,64 @@ public class McbToCml {
         // remark
         Remark remakt = new Remark();
         if (recipe.getComments() != null && recipe.getComments().getContent() != null) {
-            recipe.getComments().getContent().forEach((l) -> {
+//            recipe.getComments().getContent().forEach((l) -> {
+            iterator = recipe.getComments().getContent().iterator();
+            while (iterator.hasNext()) {
+                try {
+                    JAXBElement je = (JAXBElement) iterator.next();
+                    Li l = (Li) je.getValue();
+                    remakt.getLine().add(l.getValue());
+                } catch (Exception e) {
+                }
 
-                remakt.getLine().add(l.getValue());
-            });
-        }
-
-        // source
-        if (recipe.getUrl() != null) {
-            headakt.getSourceline().add(recipe.getUrl());
-        }
-        if (recipe.getSource() != null && recipe.getSource().getContent() != null) {
-            recipe.getSource().getContent().forEach((l) -> {
-                headakt.getSourceline().add(l.getValue());
-            });
-        }
-
-        // nutrition
-        String nutrition = "";
-        if (recipe.getNutrition() != null && recipe.getNutrition().getContent() != null) {
-            nutrition = recipe.getNutrition().getContent().stream().map((l) -> l.getValue() + ", ")
-                    .reduce(nutrition, String::concat);
-            if (!nutrition.equals("")) {
-                remakt.getLine().add(nutrition.substring(0, nutrition.length() - 2));
+//            });
             }
+
+            // source
+            if (recipe.getUrl() != null) {
+                headakt.getSourceline().add(recipe.getUrl());
+            }
+
+            if (recipe.getSource() != null && recipe.getSource().getContent() != null) {
+                iterator = recipe.getSource().getContent().iterator();
+                while (iterator.hasNext()) {
+                    try {
+                        JAXBElement je = (JAXBElement) iterator.next();
+                        Li l = (Li) je.getValue();
+                        headakt.getSourceline().add(l.getValue());
+                    } catch (Exception e) {
+                    }
+                }
+//                recipe.getSource().getContent().forEach((l) -> {
+//                    headakt.getSourceline().add(l.getValue());
+//                });
+            }
+
+            // nutrition
+            String nutrition = "";
+            if (recipe.getNutrition() != null && recipe.getNutrition().getContent() != null) {
+
+                iterator = recipe.getNutrition().getContent().iterator();
+                while (iterator.hasNext()) {
+                    try {
+                        JAXBElement je = (JAXBElement) iterator.next();
+                        Li l = (Li) je.getValue();
+                        if (!l.getValue().equals("")) {
+                            nutrition += l.getValue() + ",";
+                        }
+                    } catch (Exception e) {
+                    }
+//            });
+                }
+                if (!nutrition.equals("")) {
+                    remakt.getLine().add(nutrition.trim().substring(0, nutrition.trim().length() - 1));
+                }
+            }
+//            nutrition = recipe.getNutrition().getContent().stream().map((l) -> l.getValue() + ", ")
+//                    .reduce(nutrition, String::concat);
+//            if (!nutrition.equals("")) {
+//                remakt.getLine().add(nutrition.substring(0, nutrition.length() - 2));
+//            }
         }
 
         // image;

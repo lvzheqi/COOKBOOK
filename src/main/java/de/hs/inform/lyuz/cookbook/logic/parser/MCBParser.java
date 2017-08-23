@@ -22,8 +22,9 @@ import org.apache.commons.io.FileUtils;
 public class MCBParser {
 
     private Cookbook mcb = null;
-    private File[] files = null;
+    private File[] files = new File[0];
     private File xml = null;
+//    private File xml = new File("test.xml");
 
     private String path = "";
 
